@@ -1,93 +1,190 @@
-# Bharath Agro Demo
+# [Vue Material Dashboard](https://demos.creative-tim.com/vue-material-dashboard) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/home?status=Vue%20Material%20Dashboard,%20a%20free%20Material%20Admin%20Template%20%E2%9D%A4%EF%B8%8F%20https%3A//bit.ly/2Nh5aVy%20%20%23vue%20%23material%20%23design%20%23developers%20%23freebie%20%20via%20%40CreativeTim)
 
+![version](https://img.shields.io/badge/version-1.5.2-blue.svg) ![license](https://img.shields.io/badge/license-MIT-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/vue-material-dashboard.svg?maxAge=2592000)](https://github.com/creativetimofficial/vue-material-dashboard/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/vue-material-dashboard.svg?maxAge=2592000)](https://github.com/creativetimofficial/vue-material-dashboard/issues?q=is%3Aissue+is%3Aclosed) [![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/creative-tim-general/Lobby) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/E4aHAQy)
 
+![Product Gif](https://s3.amazonaws.com/creativetim_bucket/github/gif/vue-material-dashboard.gif)
 
-## Getting started
+Vue Material Dashboard is a beautiful resource built over [Vue Material](https://vuematerial.io/) and [Vuejs](https://vuejs.org/v2/guide/). It will help you get started developing dashboards in no time. Vue Material Dashboard is the official Vuejs version of the Original Material Dashboard. Using the Dashboard is pretty simple but requires basic knowledge of Javascript, [Vuejs](https://vuejs.org/v2/guide/) and [Vue Router](https://router.vuejs.org/en/).
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+We have created it thinking about things you actually need in a dashboard. Vue Material Dashboard contains handpicked and optimised Vuejs plugins. Everything is designed to fit with one another. As you will be able to see, the dashboard you can access on Creative Tim is a customisation of this product.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Let us know what you think and what we can improve below. And good luck with development!
 
-## Add your files
+## Table of Contents
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- [Versions](#versions)
+- [Demo](#demo)
+- [Quick Start](#quick-start)
+- [Documentation](#documentation)
+- [File Structure](#file-structure)
+- [Browser Support](#browser-support)
+- [Resources](#resources)
+- [Reporting Issues](#reporting-issues)
+- [Technical Support or Questions](#technical-support-or-questions)
+- [Licensing](#licensing)
+- [Useful Links](#useful-links)
+
+## Versions
+
+[<img src="https://s3.amazonaws.com/creativetim_bucket/github/html.png" width="60" height="60" />](https://www.creative-tim.com/product/material-kit)[<img src="https://s3.amazonaws.com/creativetim_bucket/github/react.svg" width="60" height="60" />](https://www.creative-tim.com/product/material-kit-react)
+[<img src="https://s3.amazonaws.com/creativetim_bucket/github/vuejs.png" width="60" height="60" />](https://www.creative-tim.com/product/vue-material-dashboard)
+[<img src="https://s3.amazonaws.com/creativetim_bucket/github/angular.png" width="60" height="60" />](https://www.creative-tim.com/product/material-dashboard-angular2)
+
+| HTML                                                                                                                                                                       | React                                                                                                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![Material Dashboard  HTML](https://s3.amazonaws.com/creativetim_bucket/products/50/thumb/opt_md_thumbnail.jpg)](https://www.creative-tim.com/product/material-dashboard) | [![Material Dashboard  React](https://s3.amazonaws.com/creativetim_bucket/products/71/thumb/opt_mdr_thumbnail.jpg)](https://www.creative-tim.com/product/material-dashboard-react) |
+
+| Vue                                                                                                                                                                              | Angular                                                                                                                                                                                         |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![Vue Material Dashboard](https://s3.amazonaws.com/creativetim_bucket/products/81/thumb/opt_md_vue_thumbnail.jpg)](https://www.creative-tim.com/product/vue-material-dashboard) | [![Material Dashboard Angular 2](https://s3.amazonaws.com/creativetim_bucket/products/53/thumb/opt_md_angular_thumbnail.jpg)](https://www.creative-tim.com/product/material-dashboard-angular2) |
+
+## Demo
+
+| Dashboard                                                                                               | User Profile                                                                                                             | Tables                                                                                                         | Maps                                                                                                     | Notification                                                                                                                      |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| [![Start page](src/assets/github/dashboard.png)](https://demos.creative-tim.com/vue-material-dashboard) | [![User profile page](src/assets/github/user_profile.png)](https://demos.creative-tim.com/vue-material-dashboard/#/user) | [![Tables page ](src/assets/github/tables.png)](https://demos.creative-tim.com/vue-material-dashboard/#/table) | [![Maps Page](src/assets/github/maps.png)](https://demos.creative-tim.com/vue-material-dashboard/#/maps) | [![Notification page](src/assets/github/notification.png)](https://demos.creative-tim.com/vue-material-dashboard/#/notifications) |
+
+[View More](https://demos.creative-tim.com/vue-material-dashboard).
+
+## Quick start
+
+## :cloud: Build Setup
+
+### install dependencies
+
+`npm install`
+
+### serve with hot reload at localhost:8080
+
+`npm run dev`
+
+### build for production with minification
+
+`npm run build`
+
+- [Download from Github](https://github.com/creativetimofficial/vue-material-dashboard/archive/master.zip).
+- [Download from Creative Tim](https://www.creative-tim.com/product/vue-material-dashboard).
+- Clone the repo: `git clone https://github.com/creativetimofficial/vue-material-dashboard.git`.
+
+For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Documentation
+
+The documentation for the Vue Material Dashboard is hosted at our [website](https://demos.creative-tim.com/vue-material-dashboard/documentation).
+
+## File Structure
+
+Within the download you'll find the following directories and files:
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/navaneetht04/bharath-agro-demo.git
-git branch -M main
-git push -uf origin main
+vue-material-dashboard
+├── README.md
+├── babel.config.js
+├── package.json
+├── postcss.config.js
+├── public
+│   └── index.html
+└── src
+    ├── App.vue
+    ├── assets
+    │   ├── img
+    │   └── scss
+    │       ├── material-dashboard.scss
+    │       └── md
+    ├── components
+    │   ├── Cards
+    │   │   ├── ChartCard.vue
+    │   │   ├── NavTabsCard.vue
+    │   │   └── StatsCard.vue
+    │   ├── Dropdown.vue
+    │   ├── NotificationPlugin
+    │   │   ├── Notification.vue
+    │   │   ├── Notifications.vue
+    │   │   └── index.js
+    │   ├── SidebarPlugin
+    │   │   ├── SideBar.vue
+    │   │   ├── SidebarLink.vue
+    │   │   └── index.js
+    │   ├── Tables
+    │   │   ├── NavTabsTable.vue
+    │   │   ├── OrderedTable.vue
+    │   │   └── SimpleTable.vue
+    │   └── index.js
+    ├── globalComponents.js
+    ├── globalDirectives.js
+    ├── main.js
+    ├── material-dashboard.js
+    ├── pages
+    │   ├── Dashboard.vue
+    │   ├── Icons.vue
+    │   ├── Layout
+    │   │   ├── Content.vue
+    │   │   ├── ContentFooter.vue
+    │   │   ├── DashboardLayout.vue
+    │   │   ├── MobileMenu.vue
+    │   │   └── TopNavbar.vue
+    │   ├── Maps.vue
+    │   ├── Notifications.vue
+    │   ├── TableList.vue
+    │   ├── Typography.vue
+    │   ├── UpgradeToPRO.vue
+    │   ├── UserProfile
+    │   │   ├── EditProfileForm.vue
+    │   │   └── UserCard.vue
+    │   ├── UserProfile.vue
+    │   └── index.js
+    └── routes
+        └── routes.js
 ```
 
-## Integrate with your tools
+## Browser Support
 
-- [ ] [Set up project integrations](https://gitlab.com/navaneetht04/bharath-agro-demo/-/settings/integrations)
+At present, we officially aim to support the last two versions of the following browsers:
 
-## Collaborate with your team
+<img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/chrome.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/firefox.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/edge.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/safari.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/opera.png" width="64" height="64">
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## Resources
 
-## Test and Deploy
+- Demo: <https://demos.creative-tim.com/vue-material-dashboard>
+- Download Page: <https://www.creative-tim.com/product/vue-material-dashboard>
+- Documentation: <https://demos.creative-tim.com/vue-material-dashboard/documentation>
+- License Agreement: <https://www.creative-tim.com/license>
+- Support: <https://www.creative-tim.com/contact-us>
+- Issues: [Github Issues Page](https://github.com/creativetimofficial/vue-material-dashboard/issues)
 
-Use the built-in continuous integration in GitLab.
+## Reporting Issues
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+We use GitHub Issues as the official bug tracker for the Vue Material Dashboard. Here are some advices for our users that want to report an issue:
 
-***
+1. Make sure that you are using the latest version of the Vue Material Dashboard. Check the CHANGELOG from your dashboard on our [website](https://www.creative-tim.com/).
+2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
+3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
 
-# Editing this README
+## Technical Support or Questions
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+If you have questions or need help integrating the product please [contact us](https://www.creative-tim.com/contact-us) instead of opening an issue.
 
-## Suggestions for a good README
+## Licensing
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- Copyright 2024 Creative Tim (https://www.creative-tim.com/)
 
-## Name
-Choose a self-explaining name for your project.
+- Licensed under MIT (https://github.com/creativetimofficial/vue-material-dashboard/blob/master/LICENSE.md)
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Useful Links
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+- [More products](https://www.creative-tim.com/bootstrap-themes) from Creative Tim
+- [Tutorials](https://www.youtube.com/channel/UCVyTG4sCw-rOvB9oHkzZD1w)
+- [Freebies](https://www.creative-tim.com/bootstrap-themes/free) from Creative Tim
+- [Affiliate Program](https://www.creative-tim.com/affiliates/new) (earn money)
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+##### Social Media
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Twitter: <https://twitter.com/CreativeTim>
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+Facebook: <https://www.facebook.com/CreativeTim>
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Dribbble: <https://dribbble.com/creativetim>
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Google+: <https://plus.google.com/+CreativetimPage>
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Instagram: <https://www.instagram.com/CreativeTimOfficial>
