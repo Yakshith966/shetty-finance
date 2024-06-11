@@ -11,6 +11,10 @@
         <md-icon>dashboard</md-icon>
         <p>Dashboard</p>
       </sidebar-link>
+      <sidebar-link to="/usermanagement">
+        <md-icon>supervisor_account</md-icon>
+        <p>User Management</p>
+      </sidebar-link>
       <sidebar-link to="/user">
         <md-icon>person</md-icon>
         <p>User Profile</p>

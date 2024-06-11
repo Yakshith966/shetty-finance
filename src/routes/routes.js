@@ -8,8 +8,15 @@ import Icons from "@/pages/Icons.vue";
 import Maps from "@/pages/Maps.vue";
 import Notifications from "@/pages/Notifications.vue";
 import UpgradeToPRO from "@/pages/UpgradeToPRO.vue";
+import Usermanagement from "@/pages/Usermanagement.vue";
+import LoginView from "@/pages/Auth/LoginView.vue";
 
 const routes = [
+  {
+    path: "/login",
+    name: "Login",
+    component: LoginView,
+  },
   {
     path: "/",
     component: DashboardLayout,
@@ -19,6 +26,11 @@ const routes = [
         path: "dashboard",
         name: "Dashboard",
         component: Dashboard,
+      },
+      {
+        path: "usermanagement",
+        name: "Usermanagement",
+        component: Usermanagement,
       },
       {
         path: "user",
