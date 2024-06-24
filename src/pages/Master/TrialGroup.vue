@@ -93,12 +93,18 @@ export default {
                         <!-- <p class="category">List of Users</p> -->
                     </md-card-header>
                     <md-card-content>
-                        <md-table v-model="users" :table-header-color="tableHeaderColor">
-                            <md-table-row slot="md-table-row" slot-scope="{ item }">
-                                <md-table-cell md-label="Sl No">{{ item.Sl_no }}</md-table-cell>
-                                <md-table-cell md-label="Trial Group Id">{{ item.tg_id }}</md-table-cell>
-                                <md-table-cell md-label="Trial Group Name">{{ item.group_name }}</md-table-cell>
-                            </md-table-row>
+                        <md-table v-model="users" :table-header-color="tableHeaderColor" class="custom-table">
+                            <tr>
+                                <th>Sl No</th>
+                                <th>Trial Group Id</th>
+                                <th>Trial Group Name</th>
+                            </tr>
+                            <tr  v-for="item in users" :key="item.Sl_no">
+                               <td >{{ item.Sl_no }}</td>
+                               <td >{{ item.tg_id }}</td>
+                               <td >{{ item.group_name }}</td>
+                            </tr>
+
                         </md-table>
                     </md-card-content>
                 </md-card>
