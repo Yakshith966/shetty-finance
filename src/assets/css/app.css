@@ -1,0 +1,12 @@
+.custom-table{
+    text-align: center;
+}
+.custom-table td {
+    padding: 1rem;
+    font-size: 14px;
+    border-top: 1px solid;
+    border-top-color: rgba(0, 0, 0, 0.12);
+}
+.custom-table th {
+    font-size: 16px;
+}
