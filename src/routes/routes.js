@@ -46,7 +46,7 @@ const routes = [
         component: AllocationGroupwiseTare,
       },
       {
-        path: "Trial Group",
+        path: "trialgroup",
         name: "Trial Group",
         component: TrialGroup,
       },
