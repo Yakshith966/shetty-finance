@@ -132,7 +132,7 @@
 
       &:hover > a,
       .dropdown:hover > a {
-        background: rgba(200, 200, 200, 0.2);
+        // background: rgba(200, 200, 200, 0.2);
         color: $black-color;
       }
 
@@ -161,7 +161,7 @@
     }
 
     i {
-      font-size: 24px !important;
+      font-size: 20px !important;
       float: left;
       margin-right: 15px !important;
       margin-left: 0;

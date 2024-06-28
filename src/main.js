@@ -30,7 +30,7 @@ import Notifications from "./components/NotificationPlugin";
 import MaterialDashboard from "./material-dashboard";
 
 import Chartist from "chartist";
-
+import './assets/css/app.css';
 // configure router
 const router = new VueRouter({
   routes, // short for routes: routes

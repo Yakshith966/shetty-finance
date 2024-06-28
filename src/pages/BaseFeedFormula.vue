@@ -7,7 +7,9 @@
                     <div>
                         <md-card-content>
               <md-card-content>
+
                   <hr>
+
                   <div>
                     <div class="table-header">
                         <div class="table-cell">Raw Material</div>
@@ -36,7 +38,9 @@
                 <div class="struct2">
                     <div><md-button @click="addRowRaw" class="md-primary">Add Row</md-button> </div>
                 </div>
+
                   <hr>
+                  
                   <div>
                     <div class="table-header">
                         <div class="table-cell">ADDITIVES</div>
@@ -94,7 +98,9 @@
                 <div class="struct2" >
                     <div><md-button @click="addRowNutrients" class="md-primary">Add Row</md-button> </div>
                 </div>
+
                   <hr>
+
                   <div class="table-header">
                         <div class="table-cell">COST PER KG</div>
                         <div class="table-cell">40.25</div>

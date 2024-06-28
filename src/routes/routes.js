@@ -1,5 +1,4 @@
 import DashboardLayout from "@/pages/Layout/DashboardLayout.vue";
-
 import Dashboard from "@/pages/Dashboard.vue";
 import UserProfile from "@/pages/UserProfile.vue";
 import TableList from "@/pages/TableList.vue";
@@ -16,6 +15,20 @@ import Experimentinfo from "@/pages/ExperimentInfo.vue";
 import DataScreenEntry from "@/pages/DataScreenEntry.vue";
 import BodyWeight from "@/pages/BodyWeight.vue";
 import BaseFeedFormula from "@/pages/BaseFeedFormula.vue";
+import TrialGroup from "@/pages/Master/TrialGroup.vue";
+import BatchMaster from "@/pages/Master/BatchMaster.vue";
+import FeedIngredient from "@/pages/Master/FeedIngredient.vue";
+import FeederDrumMaster from "@/pages/Master/FeederDrumMaster.vue";
+import CrateMaster from "@/pages/Master/CrateMaster.vue";
+import Feeder from "@/pages/Master/Feeder.vue";
+import GroupwiseWeight from "@/pages/Reports/GroupwiseWeight.vue";
+import BirdRatio from "@/pages/Reports/BirdRatio.vue";
+import PenwiseWeight from "@/pages/Reports/PenwiseWeight.vue";
+import WeeklyReport from "../pages/Reports/WeeklyReport.vue";
+import Weight5thWeek from "../pages/Reports/Weight5thWeek.vue";
+import MortalDetails from "../pages/Reports/MortalDetails.vue";
+import AllocationGroupwiseTare from "../pages/AllocationGroupwiseTare.vue";
+
 
 const routes = [
   {
@@ -32,6 +45,71 @@ const routes = [
         path: "dashboard",
         name: "Dashboard",
         component: Dashboard,
+      },
+      {
+        path: "allocationgroupwisetare",
+        name: "Allocation Groupwise Tare",
+        component: AllocationGroupwiseTare,
+      },
+      {
+        path: "trialgroup",
+        name: "Trial Group",
+        component: TrialGroup,
+      },
+      {
+        path: "batchmaster",
+        name: "Batch Master",
+        component: BatchMaster,
+      },
+      {
+        path: "feedingredient",
+        name: "Feed Ingredient",
+        component: FeedIngredient,
+      },
+      {
+        path: "feederdrummaster",
+        name: "Feeder Drum Master",
+        component: FeederDrumMaster,
+      },
+      {
+        path: "feeder",
+        name: "Feeder",
+        component: Feeder,
+      },
+      {
+        path: "cratemaster",
+        name: "Crate Master",
+        component: CrateMaster,
+      },
+      {
+        path: "groupwiseweight",
+        name: "Groupwise Male/Female Bird's Body Weight at 5th Week",
+        component: GroupwiseWeight,
+      },
+      {
+        path: "birdratio",
+        name: "Male/Female Bird Ratio As Equal Numbers",
+        component: BirdRatio,
+      },
+        {
+        path: "mortaldetails",
+        name: "Mortal Details",
+        component: MortalDetails,
+      },
+      {
+        path: "penwiseweight",
+        name: "Penwise Male/Female Bird's Body Weight on 5th Week",
+        component: PenwiseWeight,
+      },
+      {
+        path: "weeklyreport",
+        name: "Weekly Penwise Report",
+        component: WeeklyReport,
+      },
+      {
+        path: "weight5thweek",
+        name: "Bird Weight on 5th Week",
+        component: Weight5thWeek,
       },
       {
         path: "usermanagement",

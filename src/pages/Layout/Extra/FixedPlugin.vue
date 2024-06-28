@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="fixed-plugin" v-click-outside="closeDropDown">
     <div class="dropdown show-dropdown" :class="{ show: isOpen }">
       <a data-toggle="dropdown">
@@ -168,4 +168,4 @@ export default {
   display: flex;
   justify-content: center;
 }
-</style>
+</style> -->

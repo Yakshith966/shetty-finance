@@ -132,9 +132,7 @@
               
                   <md-card-header data-background-color="green">
                     <h4 class="title">BODY WEIGHT PER(GMS)</h4>
-                    <!-- <p class="category">List of Users</p> -->
                     </md-card-header>
-                 <!-- <md-card-content> -->
                     <md-card-content>                                          
                       <table class="styled-table">
         <thead>
