@@ -31,22 +31,23 @@
             </ul>
           </div>
         </div>
+          
       </div>
 
         <div v-if="activeTab === 'list'">
           <div class="row align-items-center mb-3">
               <div class="col">          
                 <md-field class="custom-md-field">
-                <label for="movie">show</label>
-                    <md-select v-model="movie" name="movie" id="movie" class="custom-md-input">
-                        <md-option value="fight-club">5</md-option>
-                        <md-option value="godfather">10</md-option>
-                        <md-option value="godfather-ii">15</md-option>
-                        <!-- <md-option value="godfather-iii">Godfather III</md-option>
-                        <md-option value="godfellas">Godfellas</md-option>
-                        <md-option value="pulp-fiction">Pulp Fiction</md-option>
-                        <md-option value="scarface">Scarface</md-option> -->
-                    </md-select>
+                <!-- <label for="movie">show</label> -->
+                
+                  <label for="country">Show</label>
+                  <md-select v-model="country" name="country" id="country" md-dense>
+                    <md-option value="australia">5</md-option>
+                    <md-option value="brazil">10</md-option>
+                    <md-option value="japan">15</md-option>
+                    <md-option value="all">All</md-option>
+                  </md-select>
+        
                 </md-field>
               </div>
                 <md-field class="custom-md-field" style="margin:0px 0px 0px 0px">
@@ -82,175 +83,113 @@
 
       <div v-if="activeTab === 'apply'">
         <form>
+          
+
+
+
+
           <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
-            <md-card style="width: 55%;">
+            <div class="form-style">
+              <md-card style="width: 55%;">
             <md-card-header data-background-color="green">
                 <h4 class="title">User Management</h4>
-                <!-- <p class="category">Complete your profile</p> -->
+                
             </md-card-header>
             <md-card-content>
               <div class="form-group">
-        <label for="employeeName">Employee Name<span>*</span></label>
-                  <md-field>
-                        <md-select v-model="country" name="country" id="country" placeholder="Select employee">
-                            <md-option value="australia">Raju</md-option>
-                            <md-option value="brazil">Sham</md-option>
-                            <md-option value="japan">Suresh</md-option>
-                            <md-option value="united-states">Rahul</md-option>
-                        </md-select>
-                    </md-field>
-      </div>
+               
+              </div>
+              <div class="struct" id="struct">
+            <label for="country" class="test1"><span class="md-body-2">Employee Name</span></label>
 
-      <!-- User Name -->
-      <div class="form-group">
-        <div class="input-group">
-          <md-field>
-                        <label>User Name</label>
-                        <md-input v-model="username" type="text"></md-input>
-          </md-field>
-          <md-button class="md-primary">Generate User Name</md-button>
-        </div>
-      </div>
-
-      <!-- Password -->
-      <div class="form-group">
-
-        <div class="input-group">
-          <md-field>
-            <label>Confirm Password</label>
-              <md-input v-model="password" type="password"></md-input>
-          </md-field>
-          <md-button class="md-primary">Generate password</md-button>
-        </div>
-      </div>
-
-      <!-- Confirm Password -->
-      <div class="form-group">
-        <md-field>
-                    <label>Confirm Password</label>
-                    <md-input v-model="confirmPassword" type="password"></md-input>
-        </md-field>
-      </div>
-
-      <!-- Show Password Checkbox -->
-
-      <!-- Email -->
-      <div class="form-group">
-                <md-field>
-                    <label>Email</label>
-                    <md-input v-model="lastname" type="email"></md-input>
-                </md-field>
-      </div>
-
-      <!-- Buttons -->
-      <div id="buttons">
-        <!-- <button  class="save-button">Save</button> -->
-        <!-- <md-button  class="md-success">Save</md-button> -->
-        <div>
-          <md-button type="submit" class="md-success" >Save</md-button>
-        </div>
-        <div style="padding-left: 10px;">
-          <md-button type="button" class="md-danger">Cancel</md-button>
-        </div>
-      </div>
-  
-        <!-- <button type="button" id="cancel-button" @click="cancelForm">Cancel</button> -->
-        
-                    <!-- <div class="row">
-                      <div class="md-layout-item md-small-size-100 md-size-96" >
-                    <md-field>
-                        <md-select v-model="country" name="country" id="country" placeholder="Select employee">
-                            <md-option value="australia">Australia</md-option>
-                            <md-option value="brazil">Brazil</md-option>
-                            <md-option value="japan">Japan</md-option>
-                            <md-option value="united-states">United States</md-option>
-                        </md-select>
-                    </md-field>
-                      </div>
-                   </div>
-
-                <div class="md-layout-item md-small-size-100 md-size-96">
-                    <md-field>
-                        <label>User Name</label>
-                        <md-input v-model="username" type="text"></md-input>
-                    </md-field>
-                </div>
-                <div class="row">
-                <div class="md-layout-item md-small-size-100 md-size-96">
-                  <div class="all-buttons">
-
-                        <div>
-                        <md-field>
-                            <label>Password</label>
-                            <md-input v-model="password" type="password"></md-input>
+                        <div class="test2">
+                          <md-field>
+                            <label for="country">Select</label>
+                            <md-select required v-model="country" name="country" id="country" md-dense>
+                              <md-option value="arial">Kiran</md-option>
+                              <md-option value="calibri">Raju</md-option>
+                              <md-option value="cambria">Ram</md-option>
+                              <md-option value="comic-sans">Comic Sans</md-option>
+                              <md-option value="consolas">Consolas</md-option>
+                              <md-option value="courier">Courier</md-option>
+                              <md-option value="droid-sans">Droid Sans</md-option>
+                              <md-option value="georgia">Georgia</md-option>
+                              <md-option value="helvetica">Helvetica</md-option>
+                              <md-option value="impact">Impact</md-option>
+                              <md-option value="roboto">Roboto</md-option>
+                              <md-option value="segoe-ui">Segoe UI</md-option>
+                              <md-option value="times-new-roman">Times New Roman</md-option>
+                              <md-option value="ubuntu">Ubuntu</md-option>
+                              <md-option value="verdana">Verdana</md-option>
+                            </md-select>
                           </md-field>
                         </div>
-
-                  </div>
-                </div>
-                <div>
-                    <md-button class="md-primary">Primary</md-button>
-                </div>
-              </div>
-                    <div class="md-layout-item md-small-size-100 md-size-56">
-                    <md-field>
-                    <label>Confirm Password</label>
-                    <md-input v-model="confirmPassword" type="password"></md-input>
-                    </md-field>
-                </div>
-                    <div class="md-layout-item md-small-size-100 md-size-56">
-                    <md-field>
-                    <label>Email</label>
-                    <md-input v-model="lastname" type="email"></md-input>
-                </md-field>
-                </div> -->
-
-
-
-
-                <!-- <div class="md-layout-item md-small-size-100 md-size-100">
-                    <md-field>
-                    <label>Adress</label>
-                    <md-input v-model="address" type="text"></md-input>
-                </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-33">
-                    <md-field>
-                        <label>City</label>
-                        <md-input v-model="city" type="text"></md-input>
-                    </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-33">
-                    <md-field>
-                    <label>Country</label>
-                    <md-input v-model="country" type="text"></md-input>
-                    </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-33">
-                    <md-field>
-                        <label>Postal Code</label>
-                    <md-input v-model="code" type="number"></md-input>
-                    </md-field>
-                </div>
-                <div class="md-layout-item md-size-100">
-                    <md-field maxlength="5">
-                    <label>About Me</label>
-                    <md-textarea v-model="aboutme"></md-textarea>
-                </md-field>
-            </div> -->
-
-            <!-- <div class="md-layout-item md-size-100 text-right all-buttons">
-              <div class="all-buttons">
-                <md-button class="md-raised md-success">Save</md-button>
-              </div>
-              <div class="all-buttons">
-                <md-button class="md-accent">Cancel</md-button>
-              </div>
-            </div> -->
                     
-        <!-- <md-button class="md-raised md-primary"></md-button> -->
+                        <div class="test3"></div>
+                          <div class="test1">
+                            <label for="country" class="test1"><span class="md-body-2">User Name</span></label>
+                            </div>
+                            <div class="test2">
+                              <md-field>
+                                  <label>User Name</label>
+                                  <md-input v-model="username" type="text" required></md-input>
+                              </md-field>
+                            </div>
+                            <div class="test3">
+                            <md-button class="md-primary">Generate User Name</md-button>
+                            </div>
+                          <div class="test1">
+                            <label for="country" class="test1"><span class="md-body-2">confirm Password</span></label>
+                            </div>
+                            <div class="test2">
+                              <md-field>
+                                <label>Confirm Password</label>
+                                  <md-input v-model="password" type="password"></md-input>
+                              </md-field>
+                            </div>
+                            <div class="test3">
+                            <md-button class="md-primary">Generate Password</md-button>
+                            </div>
+                            <div class="test1">
+                            <label for="country" class="test1"><span class="md-body-2">confirm Password</span></label>
+                            </div>
+                            <div class="test2">
+                              <md-field>
+                                <label>Confirm Password</label>
+                                  <md-input v-model="password" type="password"></md-input>
+                              </md-field>
+                            </div>
+                            <div></div>
+                            <div class="test1">
+                            <label for="country" class="test1"><span class="md-body-2">Email</span></label>
+                            </div>
+                            <div class="test2">
+                              <md-field>
+                                <label>Email</label>
+                                  <md-input v-model="email" type="mail"></md-input>
+                              </md-field>
+                            </div>
+                            <div></div>
+                        </div>
+
+            <!-- User Name -->
+           
+
+      <!-- Buttons -->
+      <div class="row-layout2">
+                    <div id="buttons">
+                        <div>
+                          <md-button type="submit" class="md-success" >Save</md-button>
+                        </div>
+                        <div style="padding-left: 10px;">
+                          <md-button type="button" class="md-danger">Cancel</md-button>
+                        </div>
+                      </div>
+                    </div>  
+
             </md-card-content>
-          </md-card>   
+              </md-card>   
+            </div>
           </div>       
         </form>
     </div>
@@ -304,6 +243,15 @@
   width: 190px; /* Adjust as needed */
 }
 
+.struct{
+    display: grid;
+    grid-template-columns: 135px 260px 38px;
+    grid-gap: 25px;
+    grid-auto-rows: 50px; 
+    
+    /*grid-auto-rows: 50px;  Set all rows to 50px height */
+}
+
 .custom-md-input {
   /* Adjust the size of the input */
   width: 50px; /* Change the width as needed */
@@ -347,15 +295,21 @@
   .mt-0 {
     margin-top: 0 !important;
   }
-  
+  /* md-field, md-select, md-option{
+    max-width: 90px;
+  } */
   .header-title {
     font-size: 1rem;
     margin: 0 0 7px 0;
   }
   
+  .test1{
+    text-align: right;
+  }
+
   .card-box {
     background-color: #fff;
-    padding: 1.5rem 0rem 0rem 0rem;
+    /* padding: 1.5rem 0rem 0rem 0rem; */
     -webkit-box-shadow: 0 .75rem 6rem rgba(56, 65, 74, .03);
     box-shadow: 0 .75rem 6rem rgba(56, 65, 74, .03);
     margin-bottom: 1px;
@@ -492,6 +446,19 @@ button[type="button"].cancel-button {
     display: flex;
     flex-direction: row;
     padding: 5px 10px;
+  }
+
+  .row-layout2{
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end;
+    margin-top: 40px;
+  }
+
+  .form-style{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
   }
   </style>
   

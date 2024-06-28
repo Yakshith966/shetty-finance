@@ -10,6 +10,12 @@ import Notifications from "@/pages/Notifications.vue";
 import UpgradeToPRO from "@/pages/UpgradeToPRO.vue";
 import Usermanagement from "@/pages/Usermanagement.vue";
 import LoginView from "@/pages/Auth/LoginView.vue";
+import FeedFormula from "@/pages/FeedFormula.vue";
+import PreStarter from "@/pages/PreStarter.vue";
+import Experimentinfo from "@/pages/ExperimentInfo.vue";
+import DataScreenEntry from "@/pages/DataScreenEntry.vue";
+import BodyWeight from "@/pages/BodyWeight.vue";
+import BaseFeedFormula from "@/pages/BaseFeedFormula.vue";
 
 const routes = [
   {
@@ -31,6 +37,36 @@ const routes = [
         path: "usermanagement",
         name: "Usermanagement",
         component: Usermanagement,
+      },
+      {
+        path: "experimentinfo",
+        name: "Experiment Info",
+        component: Experimentinfo,
+      },
+      {
+        path: "feedformula",
+        name: "Feed Formula",
+        component: FeedFormula,
+      },
+      {
+        path: "prestarter",
+        name: "Prestarter",
+        component: PreStarter,
+      },
+      {
+        path: "Datascreenentry",
+        name: "Data Screen Entry",
+        component: DataScreenEntry,
+      },
+      {
+        path: "Bodyweightview",
+        name: "Body weight view",
+        component: BodyWeight,
+      },
+      {
+        path: "BaseFeedFormula",
+        name: "Base Feed Formula",
+        component: BaseFeedFormula,
       },
       {
         path: "user",
