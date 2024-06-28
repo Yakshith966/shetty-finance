@@ -98,7 +98,7 @@ export default {
                                 <th>Sl No</th>
                                 <th>Trial Group Id</th>
                                 <th>Trial Group Name</th>
-                            </tr>
+                            </tr> 
                             <tr  v-for="item in users" :key="item.Sl_no">
                                <td >{{ item.Sl_no }}</td>
                                <td >{{ item.tg_id }}</td>

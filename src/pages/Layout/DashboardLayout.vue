@@ -32,7 +32,7 @@ import TopNavbar from "./TopNavbar.vue";
 import ContentFooter from "./ContentFooter.vue";
 import DashboardContent from "./Content.vue";
 import MobileMenu from "@/pages/Layout/MobileMenu.vue";
-import FixedPlugin from "./Extra/FixedPlugin.vue";
+// import FixedPlugin from "./Extra/FixedPlugin.vue";
 import SideBarMenu from "../../components/SidebarPlugin/SideBarMenu.vue";
 
 export default {
@@ -41,7 +41,7 @@ export default {
     DashboardContent,
     ContentFooter,
     MobileMenu,
-    FixedPlugin,
+    // FixedPlugin,
     SideBarMenu,
   },
   data() {

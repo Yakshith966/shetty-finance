@@ -11,7 +11,6 @@
       >
     </li>
 
-
     <li class="p-0">
       <a
         href="javascript:void(0)"
@@ -29,7 +28,9 @@
         ><i class="mdi mdi-chevron-down nav-arrow my-auto"></i
         ><i class="mdi mdi-chevron-up nav-arrow my-auto"></i>
       </a>
+
       <ul class="collapse side-sub-menu level-2" id="collapseExample24">
+        <!-- //--- -->
         <li
           class="side-bar-item"
           :class="{ active: activeItem === 'Bird Ratio' }"
@@ -39,48 +40,79 @@
             class="m-0"
             to="/birdratio"
             style="padding-top: 6px; padding-bottom: 6px"
-            >Bird ratio</router-link
+            >Bird Ratio</router-link
           >
         </li>
+
+        <!-- //// -->
         <li
           class="side-bar-item"
-          :class="{ active: activeItem === 'Group wise weight' }"
-          @click.prevent="handleNavigation('Group wise weight')"
+          :class="{ active: activeItem === 'Groupwise weight' }"
+          @click.prevent="handleNavigation('Groupwise weight')"
         >
           <router-link
             class="m-0"
             to="/groupwiseweight"
             style="padding-top: 6px; padding-bottom: 6px"
-            >Group wise weight</router-link
+            >Groupwise Weight</router-link
           >
         </li>
+
         <li
           class="side-bar-item"
-          :class="{ active: activeItem === 'Pen wise weight' }"
-          @click.prevent="handleNavigation('Pen wise weight')"
+          :class="{ active: activeItem === 'Mortal Details' }"
+          @click.prevent="handleNavigation('Mortal Details')"
+        >
+          <router-link
+            class="m-0"
+            to="/mortaldetails"
+            style="padding-top: 6px; padding-bottom: 6px"
+            >Mortal Details</router-link
+          >
+        </li>
+
+        <li
+          class="side-bar-item"
+          :class="{ active: activeItem === 'Penwise weight' }"
+          @click.prevent="handleNavigation('Penwise weight')"
         >
           <router-link
             class="m-0"
             to="/penwiseweight"
             style="padding-top: 6px; padding-bottom: 6px"
-            >Pen wise weight</router-link
+            >Penwise Weight</router-link
           >
         </li>
+
         <li
           class="side-bar-item"
           :class="{ active: activeItem === 'Weekly report' }"
           @click.prevent="handleNavigation('Weekly report')"
         >
-          <a
+          <router-link
             class="m-0"
-            href="javascript:void(0)"
+            to="/weeklyreport"
             style="padding-top: 6px; padding-bottom: 6px"
-            >Weekly report</a
+            >Weekly Report</router-link
+          >
+        </li>
+
+        <li
+          class="side-bar-item"
+          :class="{ active: activeItem === 'Weight on 5th week' }"
+          @click.prevent="handleNavigation('Weight on 5th week')"
+        >
+          <router-link
+            class="m-0"
+            to="/weight5thweek"
+            style="padding-top: 6px; padding-bottom: 6px"
+            >Weight 5th Week</router-link
           >
         </li>
       </ul>
     </li>
-        <li class="p-0">
+
+    <li class="p-0">
       <a
         href="javascript:void(0)"
         class="m-0 side-bar-item"
@@ -108,13 +140,60 @@
             data-target="#collapseExample22"
             aria-expanded="false"
             aria-controls="collapseExample22"
-           
           >
             <label class="w-100">Master</label
             ><i class="mdi mdi-chevron-down nav-arrow my-auto"></i
             ><i class="mdi mdi-chevron-up nav-arrow my-auto"></i>
           </a>
           <ul class="collapse side-sub-menu" id="collapseExample22" style="">
+            <li
+              class="side-bar-sub-item submenu-list-design"
+              :class="{ active: activeItem === 'Batch Master' }"
+              @click.prevent="handleNavigation('Batch Master')"
+            >
+              <router-link class="m-0 py-2" to="/batchmaster"
+                >-Batch Master</router-link
+              >
+            </li>
+
+            <li
+              class="side-bar-sub-item submenu-list-design"
+              :class="{ active: activeItem === 'Crate Master' }"
+              @click.prevent="handleNavigation('Crate Master')"
+            >
+              <router-link class="m-0 py-2" to="/cratemaster"
+                >-Crate Master</router-link
+              >
+            </li>
+
+            <li
+              class="side-bar-sub-item submenu-list-design"
+              :class="{ active: activeItem === 'Feeder' }"
+              @click.prevent="handleNavigation('Feeder')"
+            >
+              <router-link class="m-0 py-2" to="/feeder">-Feeder</router-link>
+            </li>
+
+            <li
+              class="side-bar-sub-item submenu-list-design"
+              :class="{ active: activeItem === 'Feeder Drum' }"
+              @click.prevent="handleNavigation('Feeder Drum')"
+            >
+              <router-link class="m-0 py-2" to="/feederdrummaster"
+                >-Feeder Drum</router-link
+              >
+            </li>
+
+            <li
+              class="side-bar-sub-item submenu-list-design"
+              :class="{ active: activeItem === 'Feed Ingredient' }"
+              @click.prevent="handleNavigation('Feed Ingredient')"
+            >
+              <router-link class="m-0 py-2" to="/feedingredient"
+                >-Feed Ingredient</router-link
+              >
+            </li>
+
             <li
               class="side-bar-sub-item submenu-list-design"
               :class="{ active: activeItem === 'Trial Group' }"
@@ -124,15 +203,7 @@
                 >-Trial Group</router-link
               >
             </li>
-            <li
-              class="side-bar-sub-item submenu-list-design"
-              :class="{ active: activeItem === 'Ingredient' }"
-              @click.prevent="handleNavigation('Ingredient')"
-            >
-              <router-link class="m-0 py-2" to="/feedingredient"
-                >-Ingredient</router-link
-              >
-            </li>
+
           </ul>
         </li>
         <li class="">
@@ -218,7 +289,6 @@ export default {
   border-left: 1px dotted;
   color: rgba(245, 245, 245, 0.696);
 }
-
 
 .side-sub-menu .side-bar-item.active {
   background-color: #1a3d1b;

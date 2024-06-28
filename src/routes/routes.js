@@ -18,6 +18,11 @@ import Feeder from "@/pages/Master/Feeder.vue";
 import GroupwiseWeight from "@/pages/Reports/GroupwiseWeight.vue";
 import BirdRatio from "@/pages/Reports/BirdRatio.vue";
 import PenwiseWeight from "@/pages/Reports/PenwiseWeight.vue";
+import WeeklyReport from "../pages/Reports/WeeklyReport.vue";
+import Weight5thWeek from "../pages/Reports/Weight5thWeek.vue";
+import MortalDetails from "../pages/Reports/MortalDetails.vue";
+import AllocationGroupwiseTare from "../pages/AllocationGroupwiseTare.vue";
+
 
 const routes = [
   {
@@ -36,7 +41,12 @@ const routes = [
         component: Dashboard,
       },
       {
-        path: "trialgroup",
+        path: "allocationgroupwisetare",
+        name: "Allocation Groupwise Tare",
+        component: AllocationGroupwiseTare,
+      },
+      {
+        path: "Trial Group",
         name: "Trial Group",
         component: TrialGroup,
       },
@@ -75,10 +85,25 @@ const routes = [
         name: "Male/Female Bird Ratio As Equal Numbers",
         component: BirdRatio,
       },
+        {
+        path: "mortaldetails",
+        name: "Mortal Details",
+        component: MortalDetails,
+      },
       {
         path: "penwiseweight",
         name: "Penwise Male/Female Bird's Body Weight on 5th Week",
         component: PenwiseWeight,
+      },
+      {
+        path: "weeklyreport",
+        name: "Weekly Penwise Report",
+        component: WeeklyReport,
+      },
+      {
+        path: "weight5thweek",
+        name: "Bird Weight on 5th Week",
+        component: Weight5thWeek,
       },
       {
         path: "usermanagement",

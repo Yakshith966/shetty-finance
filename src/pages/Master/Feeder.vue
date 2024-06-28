@@ -63,17 +63,27 @@
         <md-card>
           <md-card-header data-background-color="green">
             <h4 class="title">FEEDER</h4>
-            <!-- <p class="category">List of Users</p> -->
+
           </md-card-header>
           <md-card-content>
-            <md-table v-model="users" :table-header-color="tableHeaderColor">
-              <md-table-row slot="md-table-row" slot-scope="{ item }">
-                <md-table-cell md-label="Sl No">{{ item.Sl_no }}</md-table-cell>
-                <md-table-cell md-label="Small">{{ item.small }}</md-table-cell>
-                <md-table-cell md-label="wt">{{ item.wt }}</md-table-cell>
-                <md-table-cell md-label="Big">{{ item.big }}</md-table-cell>
-                <md-table-cell md-label="Wt">{{ item.wt }}</md-table-cell>
-              </md-table-row>
+            <md-table v-model="users" :table-header-color="tableHeaderColor" class="custom-table">
+
+              <tr>
+                <th>Sl No</th>
+                <th>Small</th>
+                <th>Wt</th>
+                <th>Big</th>
+                <th>Wt</th>
+              </tr>
+
+              <tr v-for="item in users" :key="item.Sl_no">
+                <td>{{ item.Sl_no }}</td>
+                <td>{{ item.small }}</td>
+                <td>{{ item.s_wt }}</td>
+                <td>{{ item.big }}</td>
+                <td>{{ item.b_wt }}</td>
+              </tr>
+
             </md-table>
           </md-card-content>
         </md-card>
@@ -133,14 +143,14 @@
               </div>
 
               <!-- Buttons -->
-              <div id="buttons" class="row" style="margin-top: 20px">
-                <div class="col">
-                  <md-button type="submit" class="md-success">Save</md-button>
-                </div>
-                <div class="col" style="padding-left: 10px">
+              <div id="buttons" class="row ml-1" style="margin-top: 20px">
+                <md-button type="submit" class="md-success">Save</md-button>
+
+                <div style="padding-left: 10px">
                   <md-button type="button" class="md-danger">Cancel</md-button>
                 </div>
               </div>
+
             </md-card-content>
           </md-card>
         </div>

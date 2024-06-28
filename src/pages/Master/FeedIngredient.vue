@@ -33,21 +33,17 @@
 
     <div v-if="activeTab === 'list'">
       <div class="row align-items-center mb-3">
+        
         <div class="col">
-          <md-field class="custom-md-field">
-            <label for="movie">show</label>
-            <md-select
-              v-model="movie"
-              name="movie"
-              id="movie"
-              class="custom-md-input"
-            >
-              <md-option value="5">5</md-option>
-              <md-option value="10">10</md-option>
-              <md-option value="15">15</md-option>
-              <md-option value="All">All</md-option>
-            </md-select>
-          </md-field>
+
+          <label for="movie" class="custom-input-width">Show         
+             <select name="" class="form-control" id="">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="">All</option>
+          </select></label>
+
         </div>
 
         <md-field class="custom-md-field" style="margin: 0px 0px 0px 0px">
@@ -66,13 +62,20 @@
             <!-- <p class="category">List of Users</p> -->
           </md-card-header>
           <md-card-content>
-            <md-table v-model="users" :table-header-color="tableHeaderColor">
-              <md-table-row slot="md-table-row" slot-scope="{ item }">
-                <md-table-cell md-label="Sl No">{{ item.Sl_no }}</md-table-cell>
-                <md-table-cell md-label="Ingredients">{{
-                  item.Ingredients
-                }}</md-table-cell>
-              </md-table-row>
+            <md-table
+              v-model="users"
+              :table-header-color="tableHeaderColor"
+              class="custom-table"
+            >
+              <tr>
+                <th>Sl No</th>
+                <th>Ingredients</th>
+              </tr>
+
+              <tr v-for="item in users" :key="item.Sl_no">
+                <td>{{ item.Sl_no }}</td>
+                <td>{{ item.Ingredients }}</td>
+              </tr>
             </md-table>
           </md-card-content>
         </md-card>
