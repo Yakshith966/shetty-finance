@@ -19,3 +19,9 @@ input[type="text"]:disabled{
 .custom-input-width{
     max-width: 8rem;
 }
+.custom-input-sm{
+   max-width: 5rem;
+}
+.width-10{
+    width: 10rem;
+}

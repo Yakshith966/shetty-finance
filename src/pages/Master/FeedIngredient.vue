@@ -36,7 +36,7 @@
         
         <div class="col">
 
-          <label for="movie" class="custom-input-width">Show         
+          <label for="movie" class="custom-input-sm">Show         
              <select name="" class="form-control" id="">
             <option value="5">5</option>
             <option value="10">10</option>

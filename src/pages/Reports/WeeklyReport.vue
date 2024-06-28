@@ -2,29 +2,23 @@
     <div>
       <div v-if="activeTab === 'list'">
         <div class="row align-items-center mb-3">
-          <div class="col">
-            <md-field class="custom-md-field">
-              <label for="movie">Select Trial No</label>
-              <md-select
-                v-model="movie"
-                name="movie"
-                id="movie"
-                class="custom-md-input"
-              >
-                <md-option value="T10/10/22">T10/10/22</md-option>
-                <md-option value="T11/10/22">T11/10/22</md-option>
-                <md-option value="T12/10/22">T12/10/22</md-option>
-              </md-select>
-            </md-field>
+         <div class="col-md-4 d-flex">
+           <label for="movie" class="mt-2 font-weight-bold"> Trial No:    </label>     
+             <select name="" class="form-control width-10 ml-2 pl-2" id="">
+              <option disabled>Select</option>
+            <option value="T10/10/22">T10/10/22</option>
+            <option value="T11/10/22">T11/10/22</option>
+            <option value="T12/10/22">T12/10/22</option>
+          </select>
           </div>
   
-          <div class="col d-flex">
-            <label for="" class="d-flex mt-2"> start date </label>
+          <div class="col-md-4 d-flex">
+            <label for="" class="d-flex mt-2 font-weight-bold"> Start date </label>
             <input
               type="text"
               value="15/10/2022"
-              readonly
-              class="form-control w-50 ml-2"
+              disabled
+              class="form-control w-50 ml-2 pl-2"
             />
           </div>
   
@@ -33,13 +27,13 @@
             <md-button class="greyblue-button">19/11/2022</md-button>
           </div> -->
   
-          <div class="col d-flex">
-            <label for="" class="d-flex mt-2"> End date </label>
+          <div class="col-md-4 d-flex">
+            <label for="" class="d-flex mt-2 font-weight-bold"> End date </label>
             <input
               type="text"
               value="19/11/2022"
-              readonly
-              class="form-control w-50 ml-2"
+              disabled
+              class="form-control w-50 ml-2 pl-2"
             />
           </div>
   
@@ -53,31 +47,24 @@
   
         <div class="row align-items-center mb-3">
 
-                  <div class="col">
-          <md-field class="custom-md-field" style="max-width: 100px">
-            <label for="movie">show</label>
-            <md-select
-              v-model="movie"
-              name="movie"
-              id="movie"
-              class="custom-md-input"
-            >
-              <md-option value="5">5</md-option>
-              <md-option value="10">10</md-option>
-              <md-option value="15">15</md-option>
-              <md-option value=" ">All</md-option>
-            </md-select>
-          </md-field>
+                  <div class="col-md-4">
+  <!-- <label for="movie" class="custom-input-sm">Show         
+             <select name="" class="form-control" id="">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="">All</option>
+          </select></label> -->
         </div>
   
-          <div class="col">
+          <div class="col-md-2">
             <!-- <md-button class="greyblue-button">Generate Report</md-button> -->
             <button type="button" class="btn btn-sm btn-info">
               <md-icon class="text-white">list</md-icon> Generate Report
             </button>
           </div>
   
-          <div class="col">
+          <div class="col-md-2">
             <!-- <md-button class="bg-info">
               <md-icon>download</md-icon> Export Data
             </md-button> -->
@@ -86,20 +73,20 @@
             </button>
           </div>
   
-          <div class="col">
-            <!-- <md-button class="bg-success">
-              <md-icon>download</md-icon> Download PDF
-            </md-button> -->
+          <div class="col-md-2">
+
             <button type="button" class="btn btn-sm btn-success">
               <md-icon class="text-white">download</md-icon> Download PDF
             </button>
           </div>
-  
+           <div class="col-md-2 d-flex">
           <md-field class="custom-md-field">
             <label>Search...</label>
             <md-input v-model="initial"></md-input>
           </md-field>
           <md-icon>search</md-icon>
+           </div>
+
         </div>
   
         <div
@@ -111,67 +98,123 @@
               <!-- <p class="category">List of Users</p> -->
             </md-card-header>
             <md-card-content>
-              <md-table v-model="users" :table-header-color="tableHeaderColor">
+              <md-table v-model="users" :table-header-color="tableHeaderColor" class="custom-table">
 
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell md-label="Group No">{{
+       
+                  <tr>
+                    <th></th>
+                    <th colspan="3">Day 1</th>
+                    <th colspan="4">Week 1</th>
+                    <th colspan="4">Week 2</th>
+                    <th colspan="4">Week 3</th>
+                    <th colspan="4">Week 4</th>
+                    <th colspan="4">Week 5</th>
+                  </tr>
+                  <tr>
+                    <th>Group No</th>
+
+                    <th>Pen No.</th>
+                    <th>No of birds</th>
+                    <th>Avg wt/bird</th>
+
+                    <th>No of birds</th>
+                    <th>Feed consumed per bird</th>
+                    <th>Avg wt/bird</th>
+                    <th>FCR</th>
+
+                    <th>No of birds</th>
+                    <th>Feed consumed per bird</th>
+                    <th>Avg wt/bird</th>
+                    <th>FCR</th>
+
+                    <th>No of birds</th>
+                    <th>Feed consumed per bird</th>
+                    <th>Avg wt/bird</th>
+                    <th>FCR</th>
+
+                    <th>No of birds</th>
+                    <th>Feed consumed per bird</th>
+                    <th>Avg wt/bird</th>
+                    <th>FCR</th>
+
+                    <th>No of birds</th>
+                    <th>Feed consumed per bird</th>
+                    <th>Avg wt/bird</th>
+                    <th>FCR</th>
+                  </tr>
+                  <tr v-for="(item,index) in users" :key="index">
+                   <td >{{
                     item.Group
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Pen No.">{{
+                  }}</td>
+                  <td >{{
                     item.pen_no
-                  }}</md-table-cell>
-                  <md-table-cell md-label="No of Birds">{{
+                  }}</td>
+                  <td >{{
                     item.no_of_birds
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Avg weight">{{ item.male }}</md-table-cell>
-                  <md-table-cell md-label="no of birds">{{
-                    item.Female
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Feed consumed per bird">{{
+                  }}</td>
+                  <td >{{ item.male }}</td>
+                  <td >{{
+                    item.male
+                  }}</td>
+                  <td>{{
                     item.Feed
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Avg wt/bird">{{
+                  }}</td>
+                  <td >{{
                     item.Avg_bird_wt
-                  }}</md-table-cell>
-                  <md-table-cell md-label="FCR">{{
+                  }}</td>
+                  <td >{{
                     item.Avg_male_wt
-                  }}</md-table-cell>
-                  <md-table-cell md-label="no of birds">{{
+                  }}</td>
+                  <td >{{
                     item.Avg_female_wt
-                  }}</md-table-cell>
-                    <md-table-cell md-label="Feed consumed per bird">{{
+                  }}</td>
+                    <td>{{
                     item.Feed
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Avg wt/bird">{{
+                  }}</td>
+                  <td >{{
                     item.Avg_bird_wt
-                  }}</md-table-cell>
-                  <md-table-cell md-label="FCR">{{
+                  }}</td>
+                  <td >{{
                     item.Avg_male_wt
-                  }}</md-table-cell>
-                    <md-table-cell md-label="no of birds">{{
+                  }}</td>
+                    <td >{{
                     item.Avg_female_wt
-                  }}</md-table-cell>
-                    <md-table-cell md-label="Feed consumed per bird">{{
+                  }}</td>
+                    <td>{{
                     item.Feed
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Avg wt/bird">{{
+                  }}</td>
+                  <td >{{
                     item.Avg_bird_wt
-                  }}</md-table-cell>
-                  <md-table-cell md-label="FCR">{{
+                  }}</td>
+                  <td >{{
                     item.Avg_male_wt
-                  }}</md-table-cell>
-                                      <md-table-cell md-label="no of birds">{{
+                  }}</td>
+                                      <td >{{
                     item.Avg_female_wt
-                  }}</md-table-cell>
-                    <md-table-cell md-label="Feed consumed per bird">{{
+                  }}</td>
+                    <td>{{
                     item.Feed
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Avg wt/bird">{{
+                  }}</td>
+                  <td >{{
                     item.Avg_bird_wt
-                  }}</md-table-cell>
-                  
-                  <md-table-cell md-label="FCR">{{ item.FCR }}</md-table-cell>
-                </md-table-row>
+                  }}</td>
+                   <td >{{
+                    item.FCR
+                  }}</td>
+                                         <td >{{
+                    item.Avg_female_wt
+                  }}</td>
+                    <td>{{
+                    item.Feed
+                  }}</td>
+                  <td >{{
+                    item.Avg_bird_wt
+                  }}</td>
+                   <td >{{
+                    item.FCR
+                  }}</td>
+                  </tr>
+               
               </md-table>
             </md-card-content>
           </md-card>

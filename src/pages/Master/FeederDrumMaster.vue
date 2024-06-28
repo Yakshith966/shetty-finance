@@ -34,20 +34,14 @@
     <div v-if="activeTab === 'list'">
       <div class="row align-items-center mb-3">
         <div class="col">
-          <md-field class="custom-md-field">
-            <label for="movie">show</label>
-            <md-select
-              v-model="movie"
-              name="movie"
-              id="movie"
-              class="custom-md-input"
-            >
-              <md-option value="5">5</md-option>
-              <md-option value="10">10</md-option>
-              <md-option value="15">15</md-option>
-              <md-option value=" ">All</md-option>
-            </md-select>
-          </md-field>
+       
+             <label for="movie" class="custom-input-sm">Show         
+             <select name="" class="form-control" id="">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="">All</option>
+          </select></label>
         </div>
 
         <md-field class="custom-md-field" style="margin: 0px 0px 0px 0px">
