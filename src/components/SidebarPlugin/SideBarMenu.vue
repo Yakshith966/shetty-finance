@@ -10,6 +10,75 @@
         ><label class="w-100 my-auto"> Dashboard</label></router-link
       >
     </li>
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'Experimentinfo' }"
+      @click.prevent="handleNavigation('Experimentinfo')"
+    >
+      <router-link to="/experimentinfo" class="m-0"
+        ><md-icon>add_circle</md-icon>
+        <label class="w-100 my-auto"> Experiment Info</label></router-link
+      >
+    </li>
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'Prestarter' }"
+      @click.prevent="handleNavigation('Prestarter')"
+    >
+      <router-link to="/prestarter" class="m-0"
+        ><md-icon>calculate</md-icon>
+        <label class="w-100 my-auto"> Feed Formula</label></router-link
+      >
+    </li>
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'Feedformula' }"
+      @click.prevent="handleNavigation('Feedformula')"
+    >
+      <router-link to="/feedformula" class="m-0"
+        ><md-icon>start</md-icon>
+        <label class="w-100 my-auto"> Broiler Nutrition Details</label></router-link
+      >
+    </li>
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'Datascreenentry' }"
+      @click.prevent="handleNavigation('Datascreenentry')"
+    >
+      <router-link to="/Datascreenentry" class="m-0"
+        ><md-icon>table_view</md-icon>
+        <label class="w-100 my-auto"> Day wise Entry</label></router-link
+      >
+    </li>
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'BaseFeedFormula' }"
+      @click.prevent="handleNavigation('BaseFeedFormula')"
+    >
+      <router-link to="/BaseFeedFormula" class="m-0"
+        ><md-icon>functions</md-icon><label class="w-100 my-auto"> Base Feed Formula</label></router-link
+      >
+    </li>
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'bodyweightview' }"
+      @click.prevent="handleNavigation('bodyweightview')"
+    >
+      <router-link to="/bodyweightview" class="m-0"
+        ><md-icon>visibility</md-icon>
+        <label class="w-100 my-auto"> Body Weight View</label></router-link
+      >
+    </li>
+    <!-- <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'Dashboard' }"
+      @click.prevent="handleNavigation('Dashboard')"
+    >
+      <router-link to="/dashboard" class="m-0"
+        ><i class="md-icon md-icon-font md-theme-default">dashboard</i
+        ><label class="w-100 my-auto"> Dashboard</label></router-link
+      >
+    </li> -->
 
     <li class="p-0">
       <a
