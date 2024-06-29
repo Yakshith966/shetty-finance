@@ -2,8 +2,8 @@
   <div>
     <div v-if="activeTab === 'list'">
       <div class="row align-items-center mb-3">
-        <div class="col">
-          <md-field class="custom-md-field">
+        <div class="col-md-4 d-flex ">
+          <!-- <md-field class="custom-md-field">
             <label for="movie">Select Trial No</label>
             <md-select
               v-model="movie"
@@ -15,25 +15,45 @@
               <md-option value="T11/10/22">T11/10/22</md-option>
               <md-option value="T12/10/22">T12/10/22</md-option>
             </md-select>
-          </md-field>
+          </md-field> -->
+          <label for="movie" class="mt-2 font-weight-bold"> Trial No:    </label>     
+             <select name="" class="form-control width-10 ml-2 pl-2" id="">
+              <option disabled>Select</option>
+            <option value="T10/10/22">T10/10/22</option>
+            <option value="T11/10/22">T11/10/22</option>
+            <option value="T12/10/22">T12/10/22</option>
+          </select>
         </div>
 
-        <div class="col">
-          <md-button class="greyblue-button">Generate Report</md-button>
-        </div>
+          <div class="col-md-2">
+            <!-- <md-button class="greyblue-button">Generate Report</md-button> -->
+            <button type="button" class="btn btn-sm btn-info">
+              <md-icon class="text-white">list</md-icon> Generate Report
+            </button>
+          </div>
+  
+          <div class="col-md-2">
+            <!-- <md-button class="bg-info">
+              <md-icon>download</md-icon> Export Data
+            </md-button> -->
+            <button type="button" class="btn btn-sm btn-primary">
+              <md-icon class="text-white">download</md-icon>Export Data
+            </button>
+          </div>
+  
+          <div class="col-md-2">
 
-        <div class="col">
-          <md-button class="blue-button">
-            <md-icon>download</md-icon> Export Data
-          </md-button>
+            <button type="button" class="btn btn-sm btn-success">
+              <md-icon class="text-white">download</md-icon> Download PDF
+            </button>
+          </div>
+        <div class="col-md-2 d-flex">
+            <md-field class="custom-md-field">
+          <label>Search...</label>
+          <md-input v-model="initial"></md-input>
+        </md-field>
+        <md-icon>search</md-icon>
         </div>
-
-        <div class="col">
-          <md-button class="green-button">
-            <md-icon>download</md-icon> Download PDF
-          </md-button>
-        </div>
-
         <!-- 
                 <md-field class="custom-md-field" style="margin:0px 0px 0px 0px">
                     <label>Search...</label>
@@ -42,31 +62,7 @@
                 <md-icon>search</md-icon> -->
       </div>
 
-      <div class="row align-items-center mb-3">
-       
-        <div class="col">
-          <md-field class="custom-md-field" style="max-width: 100px">
-            <label for="movie">show</label>
-            <md-select
-              v-model="movie"
-              name="movie"
-              id="movie"
-              class="custom-md-input"
-            >
-              <md-option value="5">5</md-option>
-              <md-option value="10">10</md-option>
-              <md-option value="15">15</md-option>
-              <md-option value=" ">All</md-option>
-            </md-select>
-          </md-field>
-        </div>
 
-        <md-field class="custom-md-field">
-          <label>Search...</label>
-          <md-input v-model="initial"></md-input>
-        </md-field>
-        <md-icon>search</md-icon>
-      </div>
 
       <div
         class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
