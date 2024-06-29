@@ -67,12 +67,12 @@
                   <md-table v-model="users" :table-header-color="tableHeaderColor">
                     <md-table-row slot="md-table-row" slot-scope="{ item }">
                       <md-table-cell md-label="Sl No">{{ item.name }}</md-table-cell>
-                      <md-table-cell md-label="Emp Code">{{ item.country }}</md-table-cell>
-                      <md-table-cell md-label="Name">{{ item.city }}</md-table-cell>
-                      <md-table-cell md-label="User Name">{{ item.salary }}</md-table-cell>
-                      <md-table-cell md-label="Edit"><md-icon>edit</md-icon></md-table-cell>
-                      <md-table-cell md-label="Reset Password"><md-icon>lock_reset</md-icon></md-table-cell>
-                      <md-table-cell md-label="Access Card"><md-icon>key</md-icon></md-table-cell>
+                      <md-table-cell md-label="Emp Code">{{ item.salary }}</md-table-cell>
+                      <md-table-cell md-label="Name">{{ item.country }}</md-table-cell>
+                      <md-table-cell md-label="User Name">{{ item.city }}</md-table-cell>
+                      <md-table-cell md-label="Edit"><button><md-icon>edit</md-icon></button></md-table-cell>
+                      <md-table-cell md-label="Reset Password"><button><md-icon>lock_reset</md-icon></button></md-table-cell>
+                      <md-table-cell md-label="Access Card"><button><md-icon>key</md-icon></button></md-table-cell>
                       <md-table-cell md-label="Status">Active</md-table-cell>
                     </md-table-row>
                   </md-table>
@@ -210,12 +210,12 @@
       return {
         activeTab: 'list', // Default active tab
         users: [
-          { name: "Dakota Rice", salary: "$36,738", country: "Niger", city: "Oud-Turnhout" },
-          { name: "Minerva Hooper", salary: "$23,738", country: "Curaçao", city: "Sinaai-Waas" },
-          { name: "Sage Rodriguez", salary: "$56,142", country: "Netherlands", city: "Overland Park" },
-          { name: "Philip Chaney", salary: "$38,735", country: "Korea, South", city: "Gloucester" },
-          { name: "Doris Greene", salary: "$63,542", country: "Malawi", city: "Feldkirchen in Kārnten" },
-          { name: "Mason Porter", salary: "$78,615", country: "Chile", city: "Gloucester" },
+          { name: "1", salary: "738", country: "Jhon", city: "Jhon12" },
+          { name: "2", salary: "738", country: "Rahul", city: "Rahul56" },
+          { name: "3", salary: "142", country: "Ram", city: "Ram23" },
+          { name: "4", salary: "735", country: "Sham", city: "Sham12" },
+          { name: "5", salary: "542", country: "Shiv", city: "Shiv23" },
+          { name: "6", salary: "615", country: "Mahesh", city: "Mahesh55" },
         ],
         otherUsers: [
           { name: "Jane Doe", salary: "$48,000", country: "USA", city: "New York" },

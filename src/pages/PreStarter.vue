@@ -53,7 +53,7 @@
               </div>
                 <md-field class="custom-md-field" style="margin:0px 0px 0px 0px">
                   <label>Search...</label>
-                  <md-input v-model="initial"></md-input>
+                  <md-input></md-input>
                 </md-field>
                 <md-icon>search</md-icon>
           </div>
@@ -85,11 +85,11 @@
                 <td>
                     <template v-if="!item.isEditing">{{ item.ingredients }}</template>
                     <template v-else>
-                        <select v-model="item.feedTrailGroup" class="slct">
-                            <option value="volvo">Soya</option>
-                            <option value="saab">Maize</option>
-                            <option value="opel">Opel</option>
-                            <option value="audi">Audi</option>
+                        <select v-model="item.ingredients" class="slct2">
+                            <option value="Soya">Soya</option>
+                            <option value="Maize">Maize</option>
+                            <option value="7.5StarterPremix">7.5 Starter Premix</option>
+                            <option value="OIL">OIL</option>
                         </select>
                     </template>
                 </td>
@@ -97,19 +97,19 @@
                 <td>
                     <template v-if="!item.isEditing">{{ item.prestarter }}</template>
                     <template v-else>
-                        <input v-model="item.noBirds" class="custm"/>
+                        <input v-model="item.prestarter" class="custm"/>
                     </template>
                 </td>
                 <td>
                     <template v-if="!item.isEditing">{{ item.starter }}</template>
                     <template v-else>
-                        <input v-model="item.feedAlloted" class="custm"/>
+                        <input v-model="item.starter" class="custm"/>
                     </template>
                 </td>
                 <td>
                     <template v-if="!item.isEditing">{{ item.finisher  }}</template>
                     <template v-else>
-                        <input v-model="item.feedConsumed" class="custm"/>
+                        <input v-model="item.finisher" class="custm"/>
                     </template>
                 </td>
                 
@@ -135,8 +135,8 @@
           <div style="max-width:75%">
             <md-card max-width="60%">
               <md-card-header data-background-color="green">
-                        <h4 class="title">Boiler Nutrition Trails</h4>
-                        <!-- <p class="category">List of Users</p> -->
+                        <h4 class="title">Feed Formula using Concentrate</h4>
+
               </md-card-header>
               <md-card-content>
         
@@ -148,13 +148,10 @@
 
     <div class="test2">
       <md-field>
-        <label for="country">Select</label>
-        <md-select required v-model="country" name="country" id="country" md-dense>
-          <md-option value="australia">T10/10/22</md-option>
-          <md-option value="brazil">Bean</md-option>
-          <md-option value="japan">Japan</md-option>
-          <md-option value="united-states">United States</md-option>
-        </md-select>
+        <!-- <label for="country">Select</label> -->
+        <!-- <md-field> -->
+                        <md-input v-model="initial" readonly></md-input>
+                    <!-- </md-field> -->
       </md-field>
     </div>
 
@@ -840,8 +837,8 @@
                         <label>Select</label>
                         <md-select v-model="row.font" md-dense>
                           <md-option value="arial">GMS</md-option>
-                          <md-option value="calibri">MGMS</md-option>
-                          <md-option value="cambria">Cambria</md-option>
+                          <md-option value="calibri">ML</md-option>
+                          <!-- <md-option value="cambria">Cambria</md-option> -->
                         </md-select>
                       </md-field>
                     </div>
@@ -865,8 +862,7 @@
                             <label for="font">Select</label>
                             <md-select v-model="font" name="font" md-dense>
                               <md-option value="arial">GMS</md-option>
-                              <md-option value="calibri">GMS</md-option>
-                              <md-option value="cambria">Cambria</md-option>
+                          <md-option value="calibri">ML</md-option>
                             </md-select>
                           </md-field>
                       </div>
@@ -891,7 +887,7 @@
           </div>    
         </form>
       </div>
-      <div>
+      <!-- <div>
         <div class="md-layout md-gutter">
           <div class="md-layout-item">
             <md-field>
@@ -905,15 +901,16 @@
                     <md-option value="P6">P6</md-option>
                     <md-option value="P7">P7</md-option>
                   </md-select>
-                </md-field>
+            </md-field>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </template>
   
   <script>
   let id=0;
+
   export default {
     name: "simple-table",
     props: {
@@ -924,10 +921,11 @@
     },
     data() {
       return {
+        initial:"T1/10/22",
         temp:[{ slNo: 1,ingredients:"Soya",prestarter:"560",starter:"120",finisher:"65",isEditing: false, id: Date.now() + Math.random()},
         { slNo: 2,ingredients:"Maize",prestarter:"560",starter:"120",finisher:"65",isEditing: false, id: Date.now() + Math.random()},
         { slNo: 3,ingredients:"Soya",prestarter:"560",starter:"120",finisher:"65",isEditing: false, id: Date.now() + Math.random()},
-        { slNo: 4,ingredients:"7.2 premix",prestarter:"560",starter:"120",finisher:"65",isEditing: false, id: Date.now() + Math.random()},
+        { slNo: 4,ingredients:"7.5StarterPremix",prestarter:"560",starter:"120",finisher:"65",isEditing: false, id: Date.now() + Math.random()},
 
         ],
         activeTab: 'list', // Default active tab

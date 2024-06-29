@@ -27,7 +27,7 @@
     >
       <router-link to="/prestarter" class="m-0"
         ><md-icon>calculate</md-icon>
-        <label class="w-100 my-auto"> Feed Formula</label></router-link
+        <label class="w-100 my-auto">Feed Formula</label></router-link
       >
     </li>
     <li
@@ -37,7 +37,7 @@
     >
       <router-link to="/feedformula" class="m-0"
         ><md-icon>start</md-icon>
-        <label class="w-100 my-auto"> Broiler Nutrition Details</label></router-link
+        <label class="w-100 my-auto">Broiler Nutrition Details</label></router-link
       >
     </li>
     <li
@@ -47,7 +47,7 @@
     >
       <router-link to="/Datascreenentry" class="m-0"
         ><md-icon>table_view</md-icon>
-        <label class="w-100 my-auto"> Day wise Entry</label></router-link
+        <label class="w-100 my-auto">Broiler Nutrition Trials</label></router-link
       >
     </li>
     <li
@@ -56,7 +56,7 @@
       @click.prevent="handleNavigation('BaseFeedFormula')"
     >
       <router-link to="/BaseFeedFormula" class="m-0"
-        ><md-icon>functions</md-icon><label class="w-100 my-auto"> Base Feed Formula</label></router-link
+        ><md-icon>functions</md-icon><label class="w-100 my-auto">Base Feed Formula</label></router-link
       >
     </li>
     <li
@@ -66,19 +66,9 @@
     >
       <router-link to="/bodyweightview" class="m-0"
         ><md-icon>visibility</md-icon>
-        <label class="w-100 my-auto"> Body Weight View</label></router-link
+        <label class="w-100 my-auto">Result Submission</label></router-link
       >
     </li>
-    <!-- <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'Dashboard' }"
-      @click.prevent="handleNavigation('Dashboard')"
-    >
-      <router-link to="/dashboard" class="m-0"
-        ><i class="md-icon md-icon-font md-theme-default">dashboard</i
-        ><label class="w-100 my-auto"> Dashboard</label></router-link
-      >
-    </li> -->
 
     <li class="p-0">
       <a

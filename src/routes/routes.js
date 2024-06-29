@@ -138,7 +138,7 @@ const routes = [
       },
       {
         path: "Bodyweightview",
-        name: "Body weight view",
+        name: "Result",
         component: BodyWeight,
       },
       {

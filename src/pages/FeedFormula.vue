@@ -97,13 +97,13 @@
           <div style="max-width:75%">
             <md-card max-width="60%">
               <md-card-header data-background-color="green">
-                        <h4 class="title">TRAIL FORMULA BY USING CONCENTRATE</h4>
+                        <h4 class="title">Corrected Feed Formula</h4>
               </md-card-header>
               <md-card-content>
               <md-card-content>
                 <div class="table-layout">
 
-                    <div class="struct" id="struct">
+                    <div class="structax" id="struct">
             <label for="country" class="test1"><span class="md-body-2">Trial Number</span></label>
 
                         <div class="test2">
@@ -111,9 +111,11 @@
                             <label for="country">Select</label>
                             <md-select required v-model="country" name="country" id="country" md-dense>
                               <md-option value="australia">T10/10/22</md-option>
-                              <md-option value="brazil">Bean</md-option>
-                              <md-option value="japan">Japan</md-option>
-                              <md-option value="united-states">United States</md-option>
+                              <md-option value="australia">T11/10/22</md-option>
+                              <md-option value="australia">T12/10/22</md-option>
+                              <md-option value="australia">T14/10/22</md-option>
+                              <!-- <md-option value="brazil">Bean</md-option> -->
+                       
                             </md-select>
                           </md-field>
                         </div>
@@ -196,17 +198,17 @@
 
                   <div class="table-layout">
 
-<div class="struct">
+<div class="structx">
 <label for="country" class="test1"><span class="md-body-2">Select Chick Category</span></label>
 
 <div class="test2">
   <md-field>
     <label for="country">Select</label>
-    <md-select required v-model="country" name="country" id="country" md-dense>
-      <md-option value="australia">T10/10/22</md-option>
-      <md-option value="brazil">Bean</md-option>
-      <md-option value="japan">Japan</md-option>
-      <md-option value="united-states">United States</md-option>
+    <md-select required v-model="chickCategory" name="country" id="country" md-dense>
+      <md-option value="prestarter">Pre-Starter</md-option>
+      <md-option value="starter">Starter</md-option>
+      <md-option value="finisher">Finisher</md-option>
+      <!-- <md-option value="united-states">United States</md-option> -->
     </md-select>
   </md-field>
 </div>
@@ -218,10 +220,11 @@
   <md-field>
     <label for="country">Select</label>
     <md-select required v-model="country" name="country" id="country" md-dense>
-      <md-option value="australia">T10/10/22</md-option>
-      <md-option value="brazil">Bean</md-option>
-      <md-option value="japan">Japan</md-option>
-      <md-option value="united-states">United States</md-option>
+      <md-option value="australia">T1</md-option>
+      <md-option value="australia">T2</md-option>
+      <md-option value="australia">T3</md-option>
+      <md-option value="australia">T4</md-option>
+      <md-option value="australia">T5</md-option>
     </md-select>
   </md-field>
 </div>
@@ -230,7 +233,7 @@
 
 <label for="country" class="test1"><span class="md-body-2">Select</span></label>
                         <div>
-                          <div class="col-md-3">
+                          <div class="col-mk-3">
                         <label><span class="md-body-2">Pens</span></label>
                           <div class="w-100">
                             <div
@@ -238,7 +241,7 @@
                               :class="{ isActive: isDropdownOpen }"
                               @click="toggleDropdown"
                             >
-                              <span style="font-size: 0.9rem;">Select the applicable</span>
+                              <span style="font-size: 12px;">Select the applicable</span>
                               <i :class="dropdownIconClass"></i>
                             </div>
                             <div
@@ -305,6 +308,27 @@
   </md-field>
 </div>
 <!-- <div class="test5"></div> -->
+
+<div class="test1"></div>
+<!-- <label for="country">Select Chick Category&nbsp;&nbsp;&nbsp;&nbsp;</label> -->
+<div class="test2">
+  
+</div>
+<label for="country" class="test3" v-if="showFormula"><span class="md-body-2">Formula</span></label>
+<div v-else></div>
+
+
+
+<div class="test4" v-if="showFormula">
+  <md-field>
+    <md-select required v-model="formula" name="country" id="country" md-dense>
+      <md-option value="fn1">FN1</md-option>
+      <md-option value="fn2">FN2</md-option>
+    </md-select>
+  </md-field>
+</div>
+<div v-else></div>
+
 
 <div class="test1"></div>
 <!-- <label for="country">Select Chick Category&nbsp;&nbsp;&nbsp;&nbsp;</label> -->
@@ -405,7 +429,7 @@
                       <md-field>
                         <label>Select</label>
                           <md-select required v-model="row.ingredients" md-dense>
-                            <md-option value="T10/10/22">T10/10/22</md-option>
+                            <!-- <md-option value="T10/10/22">T10/10/22</md-option> -->
                             <md-option value="Soya">Soya</md-option>
                             <md-option value="Maize">Maize</md-option>
                             <md-option value="7.5 Starter Premix">7.5 Starter Premix</md-option>
@@ -429,9 +453,8 @@
                       <md-field>
                         <label>Select</label>
                         <md-select v-model="row.font" md-dense>
-                          <md-option value="GMS">GMS</md-option>
-                          <md-option value="MGMS">MGMS</md-option>
-                          <md-option value="ML">ML</md-option>
+                          <md-option value="arial">GMS</md-option>
+                          <md-option value="calibri">ML</md-option>
                         </md-select>
                       </md-field>
                     </div>
@@ -442,7 +465,10 @@
                   <hr>
             <div class="struct2" style="padding-top: 20px;">
                 <div><md-button @click="addRow" class="md-primary">Add Row</md-button> </div>
-                        <div class="test2"></div>
+                        <div class="test2"><md-field>
+      <label><b>Feed Cost</b></label>
+      <md-input v-model="feedCost" readonly></md-input>
+    </md-field></div>
                         <label for="country" class="test3"><span class="md-body-2">Total</span></label>
                         <div class="test4">
                           <md-field>
@@ -456,8 +482,7 @@
                             <label for="font">Select</label>
                             <md-select v-model="font" name="font" md-dense>
                               <md-option value="arial">GMS</md-option>
-                              <md-option value="calibri">GMS</md-option>
-                              <md-option value="cambria">Cambria</md-option>
+                          <md-option value="calibri">ML</md-option>
                             </md-select>
                           </md-field>
                       </div>
@@ -505,6 +530,10 @@
     },
     data() {
       return {
+        feedCost:56,
+        chickCategory: '',
+      formula: '',
+      showFormula: false,
         activeTab: 'list', // Default active tab
         isDropdownOpen: false,
       searchQuery: '',
@@ -559,6 +588,9 @@
     }
   },
   watch:{
+    chickCategory(newValue) {
+      this.showFormula = newValue === 'finisher';
+    },
     selectedItems(newSelectedItems) {
       this.temp = this.users.filter(user => newSelectedItems.includes(user.name));
       console.log("hi",this.temp);
@@ -617,12 +649,17 @@
   </script>
   
   <style scoped>
-.struct{
+.structax{
     display: grid;
-    grid-template-columns: 105px 160px 58px 200px;
+    grid-template-columns:75px 230px 58px 200px;
     grid-gap: 25px;
-    /* grid-auto-rows: 50px;  */
-    /*grid-auto-rows: 50px;  Set all rows to 50px height */
+    padding-top:20px;
+}
+.structx{
+    display: grid;
+    grid-template-columns:75px 230px 58px 200px;
+    grid-gap: 25px;
+    padding-top:20px; 
 }
 
 .struct2{
@@ -640,10 +677,6 @@
 .grid-item {
     height: 50px;
 }
-
-/* .test1, .test2, .test3, .test4, .test5 {
-  flex: 1; /* Adjust the flex-grow as needed 
-} */
 
 /* Ensure that each test class has some default width */
 .test1 {

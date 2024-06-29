@@ -1,7 +1,7 @@
 <template>
      <md-card>
                 <md-card-header data-background-color="green">
-                <h4 class="title">BODY WEIGHT PER(GMS)</h4>
+                <h4 class="title">Base Feed Formula</h4>
                 </md-card-header>
                 <md-card-content>
                     <div>
@@ -12,6 +12,7 @@
 
                   <div>
                     <div class="table-header">
+                        <div class="table-cell">Controls</div>
                         <div class="table-cell">Raw Material</div>
                         <div class="table-cell">PBS</div>
                         <div class="table-cell">BS</div>
@@ -19,12 +20,22 @@
                         <div class="table-cell">Action</div>
                     </div>
                     <div v-for="row in rawMaterials" :key="row.id" class="table-row">
+                      <div class="table-cell"> 
+                <!-- <label for="country">Select</label> -->
+                <select required v-model="row.control" name="country" id="country" class="slct">
+                  <option value="arial">Positive Control</option>
+                  <option value="calibri">Control</option>
+                  <option value="cambria">Negative Control 1</option>
+                  <option value="comic-sans">Negative Control 2</option>
+                  <option value="consolas">Negative Control 3</option>
+                </select>
+              </div>
                         <div class="table-cell"> 
                             <select name="cars" v-model="row.Raw_Material" class="slct">
-                                    <option value="volvo">Maize</option>
-                                    <option value="saab">Jowar</option>
-                                    <option value="opel">Rice</option>
-                                    <option value="audi">Meat</option>
+                                    <option value="Maize">Maize</option>
+                                    <option value="Jowar">Jowar</option>
+                                    <option value="Rice">Rice</option>
+                                    <option value="Meat">Meat</option>
                                 </select>
                         </div>
                         <div class="table-cell"><input type="number" v-model="row.PBS" /></div>
@@ -52,10 +63,10 @@
                     <div v-for="(row) in additives" :key="row.id" class="table-row">
                         <div class="table-cell"> 
                             <select name="cars" v-model="row.Additives" class="slct">
-                                    <option value="volvo">Maize</option>
-                                    <option value="saab">Jowar</option>
-                                    <option value="opel">Rice</option>
-                                    <option value="audi">Meat</option>
+                                    <option value="Maize">Maize</option>
+                                    <option value="Jowar">Jowar</option>
+                                    <option value="Rice">Rice</option>
+                                    <option value="Meat">Meat</option>
                                 </select>
                         </div>
                         <div class="table-cell"><input type="number" v-model="row.PBS" /></div>
@@ -81,10 +92,10 @@
                     <div v-for="(row) in nutrients" :key="row.id" class="table-row">
                         <div class="table-cell"> 
                             <select name="cars" v-model="row.Nutrients" class="slct">
-                                    <option value="volvo">Maize</option>
-                                    <option value="saab">Jowar</option>
-                                    <option value="opel">Rice</option>
-                                    <option value="audi">Meat</option>
+                                    <option value="Maize">Maize</option>
+                                    <option value="Jowar">Jowar</option>
+                                    <option value="Rice">Rice</option>
+                                    <option value="Meat">Meat</option>
                                 </select>
                         </div>
                         <div class="table-cell"><input type="number" v-model="row.PBS" /></div>
@@ -166,7 +177,7 @@ export default {
   },
   methods: {
     addRowRaw() {
-      this.rawMaterials.push({ Raw_Material: '', PBS: '', BS: '', BF_1: '', isEditing: false, id: this.id1++ });
+      this.rawMaterials.push({ control:'',Raw_Material: '', PBS: '', BS: '', BF_1: '', isEditing: false, id: this.id1++ });
     },
     addRowAdditives() {
       this.additives.push({ Additives: '', PBS: '', PBS_2: '', BS: '', isEditing: false, id: this.id2++ });

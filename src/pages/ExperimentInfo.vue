@@ -38,7 +38,7 @@
                 <!-- <md-field>
                 <md-textarea v-model="textarea" md-counter="100" class="custom-textarea"></md-textarea>
                 </md-field> -->
-                <textarea rows="5" cols="50"></textarea>
+                <textarea rows="5" cols="64"></textarea>
                 </div>
             <div>
                 <div><label><span class="md-body-2">Methodology</span></label></div>
@@ -46,11 +46,11 @@
                         <label>Textarea</label>
                         <md-textarea v-model="textarea" md-counter="50" style="color:black;"></md-textarea>
                     </md-field> -->
-                    <textarea rows="5" cols="50"></textarea>
+                    <textarea rows="5" cols="64"></textarea>
                 </div>
         </div>
         <label for="country" class="test1"><span class="md-body-2">Treatment Details</span></label>
-        <div class="struct" id="struct">
+        <div class="structa1" id="structa1">
             <!-- <label for="country" class="test1"><span class="md-body-2">Employee Name</span></label> -->
             <div class="test2">
               <md-field>
@@ -60,17 +60,7 @@
                   <md-option value="calibri">T2 Group</md-option>
                   <md-option value="cambria">T3 Group</md-option>
                   <md-option value="comic-sans">T4 Group</md-option>
-                  <md-option value="consolas">Consolas</md-option>
-                  <md-option value="courier">Courier</md-option>
-                  <md-option value="droid-sans">Droid Sans</md-option>
-                  <md-option value="georgia">Georgia</md-option>
-                  <md-option value="helvetica">Helvetica</md-option>
-                  <md-option value="impact">Impact</md-option>
-                  <md-option value="roboto">Roboto</md-option>
-                  <md-option value="segoe-ui">Segoe UI</md-option>
-                  <md-option value="times-new-roman">Times New Roman</md-option>
-                  <md-option value="ubuntu">Ubuntu</md-option>
-                  <md-option value="verdana">Verdana</md-option>
+                  <md-option value="consolas">T5 Group</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -104,17 +94,7 @@
                   <md-option value="calibri">T2 Group</md-option>
                   <md-option value="cambria">T3 Group</md-option>
                   <md-option value="comic-sans">T4 Group</md-option>
-                  <md-option value="consolas">Consolas</md-option>
-                  <md-option value="courier">Courier</md-option>
-                  <md-option value="droid-sans">Droid Sans</md-option>
-                  <md-option value="georgia">Georgia</md-option>
-                  <md-option value="helvetica">Helvetica</md-option>
-                  <md-option value="impact">Impact</md-option>
-                  <md-option value="roboto">Roboto</md-option>
-                  <md-option value="segoe-ui">Segoe UI</md-option>
-                  <md-option value="times-new-roman">Times New Roman</md-option>
-                  <md-option value="ubuntu">Ubuntu</md-option>
-                  <md-option value="verdana">Verdana</md-option>
+                  <md-option value="consolas">T5 Group</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -172,17 +152,7 @@
                   <md-option value="calibri">T2 Group</md-option>
                   <md-option value="cambria">T3 Group</md-option>
                   <md-option value="comic-sans">T4 Group</md-option>
-                  <md-option value="consolas">Consolas</md-option>
-                  <md-option value="courier">Courier</md-option>
-                  <md-option value="droid-sans">Droid Sans</md-option>
-                  <md-option value="georgia">Georgia</md-option>
-                  <md-option value="helvetica">Helvetica</md-option>
-                  <md-option value="impact">Impact</md-option>
-                  <md-option value="roboto">Roboto</md-option>
-                  <md-option value="segoe-ui">Segoe UI</md-option>
-                  <md-option value="times-new-roman">Times New Roman</md-option>
-                  <md-option value="ubuntu">Ubuntu</md-option>
-                  <md-option value="verdana">Verdana</md-option>
+                  <md-option value="consolas">T5 Group</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -206,17 +176,7 @@
                   <md-option value="calibri">T2 Group</md-option>
                   <md-option value="cambria">T3 Group</md-option>
                   <md-option value="comic-sans">T4 Group</md-option>
-                  <md-option value="consolas">Consolas</md-option>
-                  <md-option value="courier">Courier</md-option>
-                  <md-option value="droid-sans">Droid Sans</md-option>
-                  <md-option value="georgia">Georgia</md-option>
-                  <md-option value="helvetica">Helvetica</md-option>
-                  <md-option value="impact">Impact</md-option>
-                  <md-option value="roboto">Roboto</md-option>
-                  <md-option value="segoe-ui">Segoe UI</md-option>
-                  <md-option value="times-new-roman">Times New Roman</md-option>
-                  <md-option value="ubuntu">Ubuntu</md-option>
-                  <md-option value="verdana">Verdana</md-option>
+                  <md-option value="consolas">T5 Group</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -237,21 +197,21 @@
         <label for="country" class="test1"><span class="md-body-2">Materials and Methods</span></label>
         <div class="struct-last">
 
-          <label for="country"><span class="md-body-2">Chicks</span></label>
-          <label for="country" ><span class="md-body-2">Batch</span></label>
+          <label for="country" style="background-color: bisque;"><span class="md-body-2">Chicks</span></label>
+          <label for="country" style="background-color: bisque;"><span class="md-body-2">Batch</span></label>
             
-                <div><input type="text" id="fname" name="fname" ><br><br></div>
-                <div><input type="text" id="fname" name="fname" ><br><br></div>
+                <div><input type="text" id="fname" name="fname" style="width: 240px;"><br><br></div>
+                <div><input type="text" id="fname" name="fname" style="width: 240px;"><br><br></div>
             
         </div>
         <div class="struct-last">
-          <label for="country" ><span class="md-body-2">Description</span></label>
-          <label for="country" ><span class="md-body-2">Premix</span></label>
+          <label for="country" style="background-color: bisque;" ><span class="md-body-2">Description:</span></label>
+          <label for="country" style="background-color: bisque;"><span class="md-body-2">Premix:</span></label>
                 <textarea rows="5" cols="50"></textarea>
                 <textarea rows="5" cols="50"></textarea>
             
         </div>
-            <div class="row-layout2">
+            <div class="row-layout2a">
                 <div id="buttons">
                         <div>
                         <md-button type="submit" class="md-success" >Save</md-button>
@@ -338,11 +298,12 @@
     flex-direction: row;
 }
 
-.struct{
+.structa1{
     display: grid;
-    grid-template-columns: 135px 260px;
+    grid-template-columns: 240px 240px;
     grid-gap: 5px;
     grid-auto-rows: 50px; 
+    
     /* padding-left:110px; */
     /*grid-auto-rows: 50px;  Set all rows to 50px height */
     /* border: 1px solid rgba(0, 0, 0, 0.8); */
@@ -678,11 +639,11 @@ button[type="button"].cancel-button {
     padding: 5px 10px;
   }
 
-  .row-layout2{
+  .row-layout2a{
     display: flex;
     flex-direction: column; 
     align-items: flex-end;
-    margin-top: 40px;
+    /* margin-top: 40px; */
   }
 
   .form-style{

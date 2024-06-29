@@ -1,5 +1,24 @@
 <template>
-    <div>
+  <div>
+  <div v-if="chck">
+                            <md-card>
+                              <md-card-header data-background-color="green">
+                              <h4 class="title">Body Weight Details in Grams</h4>
+                              <!-- <p class="category">List of Users</p> -->
+                              </md-card-header>
+                                <md-card-content>
+                                  <md-table v-model="bwView" :table-header-color="tableHeaderColor">
+                                      <md-table-row slot="md-table-row" slot-scope="{ item }">
+                                      <md-table-cell md-label="Age in Days">{{ item.selectVal }}</md-table-cell>
+                                      <md-table-cell md-label="T1 Group">{{ item.trailGroup }}</md-table-cell>
+                                     
+                                      </md-table-row>
+                                  </md-table>
+                                </md-card-content>
+                            </md-card>
+  </div>
+
+    <div v-else>
         <div class="card-box">
         <div class="row align-items-center mb-3">
             <div class="col-auto">
@@ -37,25 +56,29 @@
                       <hr>
                       <div class="table-container">
                         <div class="custm-header">
-                            <div class="t-cell">Age in Days/Weeks</div>
+                            <div class="t-cell">Age in Days/Week</div>
                             <div class="t-cell">Trail Group</div>
                             <div class="t-cell">Pen No</div>
-                            <div class="t-cell">Crate Weight</div>
-                            <div class="t-cell">Tare Weight</div>
-                            <div class="t-cell">Body Weight</div>
+                            <div class="t-cell">No of Birds</div>
+                            <div class="t-cell">Body Wt/Bird(Gms)</div>
+                            <!-- <div class="t-cell">Body Weight</div> -->
                             <div class="t-cell">Mortality</div>
-                            <div class="t-cell">Mortal Bird</div>
+                            <div class="t-cell">Mortal Bird Wt</div>
+                            <div class="t-cell">Leg Weak Bird</div>
+                            <div class="t-cell">Leg Weak Bird Wt</div>
                             <div class="t-cell">Male</div>
                             <div class="t-cell">Female</div>
-                            <div class="t-cell">Temperature</div>
+                            <div class="t-cell">Temp</div>
                             <div class="t-cell">Humidity</div>
-                            <div class="t-cell">Vaccine Med</div>
+                            <div class="t-cell">Vaccine Given</div>
+                            <div class="t-cell">Medicine Given</div>
                             <!-- <div class="t-cell">Action</div> -->
                         </div>
                         <div v-for="row in BodyWeight" :key="row.id" class="custm-row">
                             <div class="t-cell"> 
                                 <select name="cars" v-model="row.selectVal" id="cars" class="select-style">
-                                        <option value="1">7</option>
+                                        <option value="1">1</option>
+                                        <option value="7">7</option>
                                         <option value="14">14</option>
                                         <option value="21">21</option>
                                         <option value="28">28</option>
@@ -105,6 +128,7 @@
                             </div>
                             <div class="t-cell"><input type="number" v-model="row.crateWt" /></div>
                             <div class="t-cell"><input type="number" v-model="row.tareWt" /></div>
+                            <div class="t-cell"><input type="number" v-model="row.totalWt" /></div>
                             <div class="t-cell"><input type="number" v-model="row.bodyWt" /></div>
                             <div class="t-cell"><input type="number" v-model="row.mortality" /></div>
                             <div class="t-cell"><input type="number" v-model="row.mortalBird" /></div>
@@ -113,6 +137,7 @@
                             <div class="t-cell"><input type="number" v-model="row.temp" /></div>
                             <div class="t-cell"><input type="number" v-model="row.humidity" /></div>
                             <div class="t-cell"><input type="number" v-model="row.vaccineMed" /></div>
+                            <div class="t-cell"><input type="number" v-model="row.medicineGiven" /></div>
                             
                             </div>
                       </div>
@@ -137,19 +162,23 @@
                       <table class="styled-table">
         <thead>
             <tr>
-                <th>Age in Days/Week</th>
+                <th class="temp-th">Age in Days/Week</th>
                 <th>Trail Group</th>
                 <th>Pen No</th>
-                <th>Crate Weight</th>
-                <th>Tare Weight</th>
-                <th>Body Weight</th>
+                <th>No of Birds</th>
+                <th>Body Wt/Bird(Gms)</th>
                 <th>Mortality</th>
-                <th>Mortal Bird</th>
+                <!-- <th>Mortality</th> -->
+                <!-- <th>Mortal Bird</th> -->
+                <th>Mortal Bird Wt</th>
+                <th>Leg Weak Bird</th>
+                <th>Leg Weak Bird Wt</th>
                 <th>Male</th>
                 <th>Female</th>
-                <th>Temperature</th>
+                <th>Temp</th>
                 <th>Humidity</th>
-                <th>Vaccine Med</th>
+                <th>Vaccine Given</th>
+                <th>Medicine Given</th>
                 <th>Edit</th>
                 <!-- <th>Delete</th> -->
             </tr>
@@ -161,7 +190,8 @@
                     <template v-else>
                       
                                 <select name="cars" v-model="item.selectVal" id="cars" class="select-style">
-                                        <option value="1">7</option>
+                                        <option value="1">1</option>
+                                        <option value="7">7</option>
                                         <option value="14">14</option>
                                         <option value="21">21</option>
                                         <option value="28">28</option>
@@ -234,6 +264,12 @@
                     </template>
                 </td>
                 <td>
+                    <template v-if="!item.isEditing">{{ item.totalWt }}</template>
+                    <template v-else>
+                        <input v-model="item.tareWt" class="custm"/>
+                    </template>
+                </td>
+                <td>
                     <template v-if="!item.isEditing">{{ item.bodyWt }}</template>
                     <template v-else>
                         <input v-model="item.bodyWt" class="custm"/>
@@ -282,6 +318,12 @@
                     </template>
                 </td>
                 <td>
+                    <template v-if="!item.isEditing">{{ item.medicineGiven }}</template>
+                    <template v-else>
+                        <input v-model="item.medicineGiven" class="custm"/>
+                    </template>
+                </td>
+                <td>
                     <button v-if="!item.isEditing" @click="toggleEdit(item)">
                         <md-icon>edit_square</md-icon>
                     </button>
@@ -289,19 +331,10 @@
                         <md-icon>save</md-icon>
                     </button>
                 </td>
-                <!-- <td>
-                    <button>
-                      <div class="t-cell" @click="removeBodyWeightRow(item)" style="cursor: pointer;">
-                                <md-icon>clear</md-icon>
-                            </div>
-                    </button>
-                </td> -->
             </tr>
         </tbody>
                       </table>
                     </md-card-content>
-             
-                <!-- </md-card-content> -->
               </md-card>
             </md-card>
 
@@ -334,27 +367,51 @@
                         <div v-for="row in FeedConsumption" :key="row.id" class="custm-row">
                             <div class="t-cell"> 
                                 <select name="cars" v-model="row.ageDays" id="cars" class="select-style">
-                                        <option value="volvo">Volvo</option>
-                                        <option value="saab">Saab</option>
-                                        <option value="opel">Opel</option>
-                                        <option value="audi">Audi</option>
+                                  <option value="1">1</option>
+                                  <option value="7">7</option>
+                                        <option value="14">14</option>
+                                        <option value="21">21</option>
+                                        <option value="28">28</option>
+                                        <option value="35">35</option>
                                     </select>
                             </div>
                             <div class="t-cell">
                                 <select name="cars" v-model="row.feedTrailGroup" id="cars" class="select-style">
-                                    <option value="volvo">Volvo</option>
-                                    <option value="saab">Saab</option>
-                                    <option value="opel">Opel</option>
-                                    <option value="audi">Audi</option>
+                                  <option value="T1">T1</option>
+                                    <option value="T2">T2</option>
+                                    <option value="T3">T3</option>
+                                    <option value="T4">T4</option>
+                                    <option value="T5">T5</option>
                                 </select>
                               
                             </div>
                             <div class="t-cell">
                                 <select name="cars" v-model="row.feedPenNo" id="cars" class="select-style">
-                                        <option value="volvo">Volvo</option>
-                                        <option value="saab">Saab</option>
-                                        <option value="opel">Opel</option>
-                                        <option value="audi">Audi</option>
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                  <option value="6">6</option>
+                                  <option value="7">7</option>
+                                  <option value="8">8</option>
+                                  <option value="9">9</option>
+                                  <option value="10">10</option>
+                                  <option value="11">11</option>
+                                  <option value="12">12</option>
+                                  <option value="13">13</option>
+                                  <option value="14">14</option>
+                                  <option value="15">15</option>
+                                  <option value="16">16</option>
+                                  <option value="17">17</option>
+                                  <option value="18">18</option>
+                                  <option value="19">19</option>
+                                  <option value="20">20</option>
+                                  <option value="21">21</option>
+                                  <option value="22">22</option>
+                                  <option value="23">23</option>
+                                  <option value="24">24</option>
+                                  <option value="25">25</option>
                                     </select>
                               
                             </div>
@@ -367,6 +424,7 @@
                       </div>
                       <hr>
                       <div class="sec-row">
+                        
                     <div><md-button @click="addRowFeedConsumption" class="md-primary">Add Row</md-button> </div>
                     <div></div>
                     <div></div>
@@ -405,33 +463,57 @@
                 <td>
                     <template v-if="!item.isEditing">{{ item.ageDays }}</template>
                     <template v-else>
-                        <select v-model="item.ageDays" class="slct">
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="opel">Opel</option>
-                            <option value="audi">Audi</option>
+                        <select v-model="item.ageDays" class="slct2">
+                          <option value="1">1</option>
+                          <option value="7">7</option>
+                                        <option value="14">14</option>
+                                        <option value="21">21</option>
+                                        <option value="28">28</option>
+                                        <option value="35">35</option>
                         </select>
                     </template>
                 </td>
                 <td>
                     <template v-if="!item.isEditing">{{ item.feedTrailGroup }}</template>
                     <template v-else>
-                        <select v-model="item.feedTrailGroup" class="slct">
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="opel">Opel</option>
-                            <option value="audi">Audi</option>
+                        <select v-model="item.feedTrailGroup" class="slct2">
+                          <option value="T1">T1</option>
+                                    <option value="T2">T2</option>
+                                    <option value="T3">T3</option>
+                                    <option value="T4">T4</option>
+                                    <option value="T5">T5</option>
                         </select>
                     </template>
                 </td>
                 <td>
                     <template v-if="!item.isEditing">{{ item.feedPenNo }}</template>
                     <template v-else>
-                        <select v-model="item.feedPenNo" class="slct">
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="opel">Opel</option>
-                            <option value="audi">Audi</option>
+                        <select v-model="item.feedPenNo" class="slct2">
+                          <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                  <option value="6">6</option>
+                                  <option value="7">7</option>
+                                  <option value="8">8</option>
+                                  <option value="9">9</option>
+                                  <option value="10">10</option>
+                                  <option value="11">11</option>
+                                  <option value="12">12</option>
+                                  <option value="13">13</option>
+                                  <option value="14">14</option>
+                                  <option value="15">15</option>
+                                  <option value="16">16</option>
+                                  <option value="17">17</option>
+                                  <option value="18">18</option>
+                                  <option value="19">19</option>
+                                  <option value="20">20</option>
+                                  <option value="21">21</option>
+                                  <option value="22">22</option>
+                                  <option value="23">23</option>
+                                  <option value="24">24</option>
+                                  <option value="25">25</option>
                         </select>
                     </template>
                 </td>
@@ -484,13 +566,18 @@
             </md-card>
 
         </div>
-        <div class="row-layout2">
-                <div id="buttons">
+        
+       
+          
+    </div>
+
+    <div class="row-layout2">
+                <div id="buttons" v-if="!chck">
                         <div>
-                            <md-button type="submit"  class="md-success">Submit</md-button>
+                            <md-button type="submit" class="md-success">Submit</md-button>
                         </div>
                         
-                        <div style="padding-left: 10px;">
+                        <div style="padding-left: 10px;" @click="result">
                             <md-button type="button" class="md-danger">Calculate Day wise Result</md-button>
                         </div>
                         <div style="padding-left: 10px;">
@@ -500,12 +587,13 @@
                             <md-button type="button" class="md-danger">Calculate Day 35 Result</md-button>
                         </div>
                 </div>
-          </div> 
-    <div>
-       
-    </div>
-          
-    </div>
+                <div v-else>
+                    <div @click="result">
+                        <md-button type="submit" class="md-success">Back</md-button>
+                    </div>
+                </div>
+    </div> 
+  </div>
 </template>
 <script>
     let id1 = 0;
@@ -515,14 +603,23 @@
 export default{
     data(){
         return{
+          chck:false,
           bwView:[],
           fcView:[],
             activeTabMain: 'view',
             activeTab: 'FeedConsumption',
             temp2:[],
+            tempBodyWeight:[
+            { AgeinDays:"7",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"14",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"21",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"28",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"35",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+            ],
             BodyWeight: [
-          { selectVal:'',trailGroup:'',penNo:'',crateWt:'',tareWt:'',totalWt:'',bodyWt:'',mortality:'',mortalBird:'',male:'',female:'',temp:'',humidity:'',vaccineMed:'',isEditing: false, id: id1}
+          { selectVal:'',trailGroup:'',penNo:'',crateWt:'',tareWt:'',totalWt:'',bodyWt:'',mortality:'',mortalBird:'',male:'',female:'',temp:'',humidity:'',vaccineMed:'',medicineGiven:'',isEditing: false, id: id1}
         ],
+        
             FeedConsumption: [
           { ageDays:'',feedTrailGroup:'',feedPenNo:'',noBirds:'',feedAlloted:'',feedConsumed:'',feedConsumedPerBird:'',isEditing: false, id: id2++}
         ],
@@ -549,13 +646,19 @@ methods:{
         // Additional logic to save changes if needed
       },
     addRowBodyWeight(){
-        this.BodyWeight.push({selectVal:'',trailGroup:'',penNo:'',crateWt:'',tareWt:'',totalWt:'',bodyWt:'',mortality:'',mortalBird:'',male:'',female:'',temp:'',humidity:'',vaccineMed:'',isEditing: false, id: Date.now() + Math.random()});
+        this.BodyWeight.push({selectVal:'',trailGroup:'',penNo:'',crateWt:'',tareWt:'',totalWt:'',bodyWt:'',mortality:'',mortalBird:'',male:'',female:'',temp:'',humidity:'',vaccineMed:'',medicineGiven:'',isEditing: false, id: Date.now() + Math.random()});
         console.log("BodyWeight",this.BodyWeight);
     },
     addRowFeedConsumption(){
-        this.FeedConsumption.push({ ageDays:'',feedTrailGroup:'',feedPenNo:'',noBirds:'',feedAlloted:'',feedConsumed:'',feedConsumedPerBird:'',isEditing: false, id: id++});
+        this.FeedConsumption.push({ ageDays:'',feedTrailGroup:'',feedPenNo:'',noBirds:'',feedAlloted:'',feedConsumed:'',feedConsumedPerBird:'',isEditing: false, id: Date.now() + Math.random()});
         console.log("FeedConsumption",this.FeedConsumption);
     },
+    result(){
+      this.chck=!this.chck;
+    },
+    // backin(){
+    //   this.chck=!this.chck;
+    // },
     clear(){
         this.selectVal='';
         this.trailGroup='';
@@ -607,9 +710,35 @@ methods:{
       }));
     },
     displayCf(){
-        this.fcView=[];
-        this.fcView.push(...this.FeedConsumption);
+      this.fcView.push(...this.FeedConsumption);
+        this.FeedConsumption=[{
+          ageDays: '',
+          feedTrailGroup: '',
+          feedPenNo: '',
+        noBirds: '',
+        feedAlloted: '',
+        feedConsumed: '',
+        feedConsumedPerBird: '',
+        isEditing: false,
+        id:0,
+      }];
+      this.clearFcInputs();
+        // this.fcView=[];
+        // this.fcView.push(...this.FeedConsumption);
         console.log(this.fcView);
+    },
+    clearFcInputs(){
+    this.BodyWeight = this.BodyWeight.map(item => ({
+        ageDays: '',
+          feedTrailGroup: '',
+          feedPenNo: '',
+        noBirds: '',
+        feedAlloted: '',
+        feedConsumed: '',
+        feedConsumedPerBird: '',
+        isEditing: false,
+        id:Date.now() + Math.random(),
+      }));
     },
     removeBodyWeightRow(row) {
       this.bwView = this.bwView.filter((r) => r.id !== row.id);
@@ -619,7 +748,14 @@ methods:{
     },
 },
 watch:{
-    
+  bwView: {
+      handler(newValue, oldValue) {
+        // This function will run every time bwView changes
+        console.log('bwView changed:', newValue);
+        // You can perform any additional actions or logic here
+      },
+      deep: true, // This is optional but useful if bwView is an array or object
+    }
 }
 };
 </script>
@@ -972,6 +1108,10 @@ hr {
   border: 1px solid #dddddd;
 }
 
+.temp-th{
+  padding:0px 0px;
+}
+
 .styled-table tbody tr {
   border-bottom: 1px solid #dddddd;
 }
@@ -998,8 +1138,8 @@ hr {
   outline: none;
 }
  
-.slct{
-    height:20px;
+.slct2{
+    height:40px;
     width:130px;
 }
   /* .form-container {
