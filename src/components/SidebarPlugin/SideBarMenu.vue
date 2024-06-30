@@ -50,6 +50,18 @@
         <label class="w-100 my-auto">Broiler Nutrition Trials</label></router-link
       >
     </li>
+
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'AllocationGroupwiseTare' }"
+      @click.prevent="handleNavigation('AllocationGroupwiseTare')"
+    >
+      <router-link to="/allocationgroupwisetare" class="m-0"
+        ><md-icon>description</md-icon><label class="w-100 my-auto"> Groupwise Tare Allocation</label></router-link
+      >
+    </li>
+
+
     <li
       class="side-bar-item pl-1"
       :class="{ active: activeItem === 'BaseFeedFormula' }"

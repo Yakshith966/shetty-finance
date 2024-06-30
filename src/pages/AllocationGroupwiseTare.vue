@@ -5,7 +5,7 @@
       <div class="card-box">
         <div class="row align-items-center mb-3">
           <div class="col">
-            <h4 class="mt-0 header-title">FEED INGREDIENT MASTER</h4>
+            <h4 class="mt-0 header-title">ALLOCATION OF GROUPWISE TARE WT</h4>
           </div>
   
           <div class="col-auto">
@@ -70,170 +70,134 @@
                 class="custom-table"
               >
                 <tr>
-                  <th>Sl No</th>
-                  <th>Ingredients</th>
+                  <th>Pen No</th>
+                  <th>PST</th>
+                  <th>ST</th>
+                  <th>FN1</th>
+                  <th>FN2</th>
                 </tr>
   
-                <tr v-for="item in users" :key="item.Sl_no">
-                  <td>{{ item.Sl_no }}</td>
-                  <td>{{ item.Ingredients }}</td>
+                <tr v-for="item in users" :key="item.pen_no">
+                  <td>{{ item.pen_no }}</td>
+                  <td>{{ item.PST }}</td>
+                  <td>{{ item.ST }}</td>
+                  <td>{{ item.FN1 }}</td>
+                  <td>{{ item.FN2 }}</td>
+
                 </tr>
               </md-table>
             </md-card-content>
           </md-card>
         </div>
       </div>
+
+      <!----------//here---------------------------------------------------------------------------------------------------------->
   
       <div v-if="activeTab === 'apply'" class="mt-3">
-        <form>
-          <div
-            class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
-          >
-            <md-card style="width: 55%">
-              <md-card-header data-background-color="green">
-                <h4 class="title">FEED INGREDIENT MASTER</h4>
-                <!-- <p class="category">Complete your profile</p> -->
-              </md-card-header>
-              <md-card-content>
-                <!-- <div class="form-group"> -->
-                <!-- <label for="employeeName">Employee Name<span>*</span></label> -->
-                <!-- <md-field>
-                          <md-select v-model="country" name="country" id="country" placeholder="Select employee">
-                              <md-option value="australia">Raju</md-option>
-                              <md-option value="brazil">Sham</md-option>
-                              <md-option value="japan">Suresh</md-option>
-                              <md-option value="united-states">Rahul</md-option>
-                          </md-select>
-                      </md-field> -->
-                <!-- </div> -->
-  
-                <div class="radio-container d-flex">
-                  <label class="ml-1">
-                    <input type="radio" name="options" value="option1" /> Feeder Drum
-                  </label>
-                  <label class="ml-4">
-                    <input type="radio" name="options" value="option2" />
-                    Drum
-                  </label>
-                  <label class="ml-4">
-                    <input type="radio" name="options" value="option3" />
-                    Feeder
-                  </label>
-                  <label class="ml-4">
-                    <input type="radio" name="options" value="option3" />
-                    Drinker
-                  </label>
-                </div>
-  
-       
-              <div class="form-group">
-
-                <!-- First Row -->
-                <div class="row">
-                  <!-- 1PST Input -->
-                  <div class="col">
-                    <md-field>
-                      <label>Pen No</label>
-                      <md-input v-model="pst" type="text"></md-input>
-                    </md-field>
-                  </div>
-
-                  <!-- 2ST Input -->
-                  <div class="col">
-                    <md-field>
-                      <label>PST</label>
-                      <md-input v-model="st" type="text"></md-input>
-                    </md-field>
-                  </div>
-
-                      <!-- 3ST Input -->
-                      <div class="col">
-                    <md-field>
-                      <label>ST</label>
-                      <md-input v-model="st" type="text"></md-input>
-                    </md-field>
-                  </div>
-
-                      <!-- 4ST Input -->
-                      <div class="col">
-                    <md-field>
-                      <label>FN1</label>
-                      <md-input v-model="st" type="text"></md-input>
-                    </md-field>
-                  </div>
-
-                      <!-- 5ST Input -->
-                      <div class="col">
-                    <md-field>
-                      <label>FN2</label>
-                      <md-input v-model="st" type="text"></md-input>
-                    </md-field>
-                  </div>
-                </div>
+        <!-- <div v-if="activeTab === 'FeedConsumption'"> -->
+      <md-card>
+        <md-card-header data-background-color="green">
+          <h4 class="title">ALLOCATION OF GROUPWISE TARE WT</h4>
+          <!-- <p class="category">List of Users</p> -->
+        </md-card-header>
 
 
+        <md-card-content>
+          <!-- <div class="table-layout">
 
+                      </div> -->
+          <hr />
 
-                <!-- Second Row -->
-             <div class="row">
-                  <!-- 1PST Input -->
-                  <div class="col">
-                    <md-field>
-                      <label>Pen No</label>
-                      <md-input v-model="pst" type="text"></md-input>
-                    </md-field>
-                  </div>
-
-                  <!-- 2ST Input -->
-                  <div class="col">
-                    <md-field>
-                      <label>PST</label>
-                      <md-input v-model="st" type="text"></md-input>
-                    </md-field>
-                  </div>
-
-                      <!-- 3ST Input -->
-                      <div class="col">
-                    <md-field>
-                      <label>ST</label>
-                      <md-input v-model="st" type="text"></md-input>
-                    </md-field>
-                  </div>
-
-                      <!-- 4ST Input -->
-                      <div class="col">
-                    <md-field>
-                      <label>FN1</label>
-                      <md-input v-model="st" type="text"></md-input>
-                    </md-field>
-                  </div>
-
-                      <!-- 5ST Input -->
-                      <div class="col">
-                    <md-field>
-                      <label>FN2</label>
-                      <md-input v-model="st" type="text"></md-input>
-                    </md-field>
-                  </div>
-                </div>
-
+          <div class="table-container">
+            <div class="custm-header">
+              <div class="t-cell">Age in Days/Week</div>
+              <div class="t-cell">Trail Group</div>
+              <div class="t-cell">Pen Number</div>
+              <div class="t-cell">No of Birds</div>
+              <div class="t-cell">Alloted Feed(Gms)</div>
+              <div class="t-cell">Consumed Feed(in Gms)</div>
+              <div class="t-cell">Feed Consumed Per Bird(Gms)</div>
+              <!-- <div class="t-cell">Action</div> -->
+            </div>
+            <div v-for="row in FeedConsumption" :key="row.id" class="custm-row">
+              <div class="t-cell">
+                <select
+                  name="cars"
+                  v-model="row.ageDays"
+                  id="cars"
+                  class="select-style"
+                >
+                  <option value="volvo">Volvo</option>
+                  <option value="saab">Saab</option>
+                  <option value="opel">Opel</option>
+                  <option value="audi">Audi</option>
+                </select>
               </div>
-
-              <!-- Buttons -->
-              <div id="buttons" class="row ml-1" style="margin-top: 20px">
-                <md-button type="submit" class="md-success">Save</md-button>
-
-                <div style="padding-left: 10px">
-                  <md-button type="button" class="md-danger">Cancel</md-button>
-                </div>
+              <div class="t-cell">
+                <select
+                  name="cars"
+                  v-model="row.feedTrailGroup"
+                  id="cars"
+                  class="select-style"
+                >
+                  <option value="volvo">Volvo</option>
+                  <option value="saab">Saab</option>
+                  <option value="opel">Opel</option>
+                  <option value="audi">Audi</option>
+                </select>
               </div>
-
-
-              </md-card-content>
-            </md-card>
+              <div class="t-cell">
+                <select
+                  name="cars"
+                  v-model="row.feedPenNo"
+                  id="cars"
+                  class="select-style"
+                >
+                  <option value="volvo">Volvo</option>
+                  <option value="saab">Saab</option>
+                  <option value="opel">Opel</option>
+                  <option value="audi">Audi</option>
+                </select>
+              </div>
+              <div class="t-cell">
+                <input type="number" v-model="row.noBirds" />
+              </div>
+              <div class="t-cell">
+                <input type="number" v-model="row.feedAlloted" />
+              </div>
+              <div class="t-cell">
+                <input type="number" v-model="row.feedConsumed" />
+              </div>
+              <div class="t-cell">
+                <input type="number" v-model="row.feedConsumedPerBird" />
+              </div>
+            </div>
           </div>
-        </form>
-      </div>
+          <hr />
+          <div class="sec-row">
+            <div>
+              <md-button @click="addRowFeedConsumption" class="md-primary"
+                >Add Row</md-button
+              >
+            </div>
+            <div></div>
+            <div></div>
+            <div>
+              <md-button type="submit" @click="displayCf" class="md-success"
+                >Save</md-button
+              >
+            </div>
+            <div>
+              <md-button type="button" class="md-danger">Reset</md-button>
+            </div>
+          </div>
+        </md-card-content>'
+        
+      </md-card>
+    </div>
+
+
+
     </div>
   </template>
   
@@ -250,8 +214,12 @@
       return {
         activeTab: "list", // Default active tab
         users: [
-          { Sl_no: "1", Ingredients: "Soya" },
-          { Sl_no: "2", Ingredients: "Maize" },
+          { pen_no: "1", PST: "1.150", ST: "2.090", FN1: "1.230", FN2: "1.210" },
+          { pen_no: "6", PST: "1.250", ST: "2.200", FN1: "1.270", FN2: "1.230" },
+          { pen_no: "11", PST: "1.220", ST: "2.090", FN1: "1.210", FN2: "1.220" },
+          { pen_no: "22", PST: "1.230", ST: "2.110", FN1: "1.190", FN2: "1.240"},
+          { pen_no: "Avg", PST: "1.226", ST: "2.112", FN1: "1.190", FN2: "1.240" },
+
         ],
       };
     },
