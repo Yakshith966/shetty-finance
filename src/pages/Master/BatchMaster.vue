@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="card-box">
+    <div>
       <div class="row align-items-center mb-3">
         <div class="col">
-          <h4 class="mt-0 header-title">TRIAL GROUP MASTER</h4>
+          <!-- <h4 class="mt-0 header-title">BATCH MASTER</h4> -->
         </div>
 
         <div class="col-auto">
@@ -371,5 +371,9 @@ dl {
   display: flex;
   flex-direction: row;
   padding: 5px 10px;
+}
+
+.card-box {
+background-color: transparent !important;
 }
 </style>

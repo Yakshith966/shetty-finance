@@ -48,12 +48,12 @@ const routes = [
       },
       {
         path: "allocationgroupwisetare",
-        name: "Allocation Groupwise Tare",
+        name: "Allocation of Groupwise Tare wt",
         component: AllocationGroupwiseTare,
       },
       {
         path: "trialgroup",
-        name: "Trial Group",
+        name: "Trial Group master",
         component: TrialGroup,
       },
       {
@@ -63,7 +63,7 @@ const routes = [
       },
       {
         path: "feedingredient",
-        name: "Feed Ingredient",
+        name: "Feed Ingredient master",
         component: FeedIngredient,
       },
       {
@@ -93,7 +93,7 @@ const routes = [
       },
         {
         path: "mortaldetails",
-        name: "Mortal Details",
+        name: "Mortal birds Details",
         component: MortalDetails,
       },
       {
@@ -138,7 +138,7 @@ const routes = [
       },
       {
         path: "Bodyweightview",
-        name: "Result",
+        name: "Results",
         component: BodyWeight,
       },
       {

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="card-box">
+    <div>
       <div class="row align-items-center mb-3">
         <div class="col">
-          <h4 class="mt-0 header-title">FEED INGREDIENT MASTER</h4>
+          <!-- <h4 class="mt-0 header-title">FEED INGREDIENT MASTER</h4> -->
         </div>
 
         <div class="col-auto">

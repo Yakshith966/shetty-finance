@@ -1,48 +1,10 @@
-<!-- 
-
-
-/*
-<template>
-  <form>
-    <md-card>
-
-    <md-card-header :data-background-color="dataBackgroundColor">
-    <center>
-    <h4 class="title">Trial Group Master</h4>
-    </center>
-     </md-card-header>
-
-      <md-card-content>
-        <div class="md-layout">
-
-        </div>
-      </md-card-content>
-    </md-card>
-  </form>
-</template>
-
-<script>
-export default {
-  name: "edit-profile-form",
-  props: {
-    dataBackgroundColor: {
-      type: String,
-      default: "green",
-    },
-  },
-};
-</script>
-<style></style>
-
-*/  -->
-
 <template>
     <div>
-        <div class="card-box">
+        <div>
 
             <div class="row align-items-center mb-3">
                 <div class="col">
-                    <h4 class="mt-0 header-title">TRIAL GROUP MASTER</h4>
+                    <!-- <h4 class="mt-0 header-title">TRIAL GROUP</h4> -->
                 </div>
 
                 <div class="col-auto">
@@ -87,7 +49,7 @@ export default {
             <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                 <md-card>
                     <md-card-header data-background-color="green">
-                        <h4 class="title">TRIAL GROUP MASTER</h4>
+                        <h4 class="title">TRIAL GROUP</h4>
                         <!-- <p class="category">List of Users</p> -->
                     </md-card-header>
                     <md-card-content>
@@ -114,7 +76,7 @@ export default {
                 <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                     <md-card style="width: 55%;">
                         <md-card-header data-background-color="green">
-                            <h4 class="title">TRIAL GROUP MASTER</h4>
+                            <h4 class="title">TRIAL GROUP</h4>
                             <!-- <p class="category">Complete your profile</p> -->
                         </md-card-header>
                         <md-card-content>
