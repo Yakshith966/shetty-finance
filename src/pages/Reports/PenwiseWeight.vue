@@ -187,7 +187,7 @@ export default {
           FCR: "1.713",
         },
         {
-          Group: "",
+          Group: "T1",
           pen_no: "6",
           no_of_birds: "28",
           male: "22",
@@ -199,7 +199,7 @@ export default {
           FCR: "1.623",
         },
         {
-          Group: "",
+          Group: "T1",
           pen_no: "11",
           no_of_birds: "30",
           male: "23",
@@ -211,7 +211,7 @@ export default {
           FCR: "1.572",
         },
         {
-          Group: "",
+          Group: "T1",
           pen_no: "17",
           no_of_birds: "29",
           male: "11",
@@ -223,7 +223,7 @@ export default {
           FCR: "1.595",
         },
         {
-          Group: "",
+          Group: "T1",
           pen_no: "22",
           no_of_birds: "29",
           male: "16",
@@ -235,7 +235,7 @@ export default {
           FCR: "1.595",
         },
         {
-          Group: "",
+          Group: "T1",
           pen_no: "Total",
           no_of_birds: "144",
           male: "95",
@@ -262,7 +262,7 @@ export default {
           FCR: "1.713",
         },
         {
-          Group: "",
+          Group: "T2",
           pen_no: "7",
           no_of_birds: "28",
           male: "22",
@@ -275,7 +275,7 @@ export default {
         },
 
         {
-          Group: "",
+          Group: "T2",
           pen_no: "12",
           no_of_birds: "30",
           male: "23",
@@ -287,7 +287,7 @@ export default {
           FCR: "1.572",
         },
         {
-          Group: "",
+          Group: "T2",
           pen_no: "16",
           no_of_birds: "29",
           male: "11",
@@ -299,7 +299,7 @@ export default {
           FCR: "1.595",
         },
         {
-          Group: "",
+          Group: "T2",
           pen_no: "21",
           no_of_birds: "29",
           male: "16",
@@ -311,7 +311,7 @@ export default {
           FCR: "1.595",
         },
         {
-          Group: "",
+          Group: "T2",
           pen_no: "Total",
           no_of_birds: "144",
           male: "95",
@@ -323,7 +323,7 @@ export default {
           FCR: "1.619",
         },
         {
-          Group: " ",
+          Group: "T2",
           pen_no: "Total",
           no_of_birds: "288",
           male: "190",

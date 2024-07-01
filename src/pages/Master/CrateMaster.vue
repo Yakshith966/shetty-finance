@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card-box">
+    <div>
       <div class="row align-items-center mb-3">
         <div class="col">
           <h4 class="mt-0 header-title">TARE WEIGHT (KGS)</h4>
