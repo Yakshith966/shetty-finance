@@ -1,5 +1,5 @@
 <template>
-  <md-toolbar md-elevation="0" class="md-transparent mb-4" style="background-color: silver !important;">
+  <md-toolbar md-elevation="0" class="md-transparent mb-4" style="background-color: lightgrey !important;">
     <div class="md-toolbar-row">
       <div class="md-toolbar-section-start">
         <h3 class="md-title font-weight-bold text-uppercase">{{ $route.name }}</h3>
