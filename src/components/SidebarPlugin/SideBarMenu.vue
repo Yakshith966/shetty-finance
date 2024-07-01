@@ -30,6 +30,27 @@
         <label class="w-100 my-auto">Feed Formula</label></router-link
       >
     </li>
+
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'BaseFeedFormula' }"
+      @click.prevent="handleNavigation('BaseFeedFormula')"
+    >
+      <router-link to="/BaseFeedFormula" class="m-0"
+        ><md-icon>functions</md-icon><label class="w-100 my-auto">Base Feed Formula</label></router-link
+      >
+    </li>
+
+    <li
+      class="side-bar-item pl-1"
+      :class="{ active: activeItem === 'AllocationGroupwiseTare' }"
+      @click.prevent="handleNavigation('AllocationGroupwiseTare')"
+    >
+      <router-link to="/allocationgroupwisetare" class="m-0"
+        ><md-icon>description</md-icon><label class="w-100 my-auto"> Groupwise Tare Allocation</label></router-link
+      >
+    </li>
+
     <li
       class="side-bar-item pl-1"
       :class="{ active: activeItem === 'Feedformula' }"
@@ -47,30 +68,10 @@
     >
       <router-link to="/Datascreenentry" class="m-0"
         ><md-icon>table_view</md-icon>
-        <label class="w-100 my-auto">Broiler Nutrition Trials</label></router-link
+        <label class="w-100 my-auto">Day/Weekwise Entry</label></router-link
       >
     </li>
 
-    <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'AllocationGroupwiseTare' }"
-      @click.prevent="handleNavigation('AllocationGroupwiseTare')"
-    >
-      <router-link to="/allocationgroupwisetare" class="m-0"
-        ><md-icon>description</md-icon><label class="w-100 my-auto"> Groupwise Tare Allocation</label></router-link
-      >
-    </li>
-
-
-    <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'BaseFeedFormula' }"
-      @click.prevent="handleNavigation('BaseFeedFormula')"
-    >
-      <router-link to="/BaseFeedFormula" class="m-0"
-        ><md-icon>functions</md-icon><label class="w-100 my-auto">Base Feed Formula</label></router-link
-      >
-    </li>
     <!-- <li
       class="side-bar-item pl-1"
       :class="{ active: activeItem === 'bodyweightview' }"

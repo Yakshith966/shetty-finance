@@ -133,7 +133,7 @@ const routes = [
       },
       {
         path: "Datascreenentry",
-        name: "BROILER NUTRITION DETAILS",
+        name: "Day/Weekwise Entry",
         component: DataScreenEntry,
       },
       {
