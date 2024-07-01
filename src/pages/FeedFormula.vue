@@ -526,9 +526,9 @@
     <td><button @click="toggleEdit(4)">{{ editingRow[4] ? 'Save' : 'Edit' }}</button></td>
   </tr>
 </table>
-                    <!-- <table>
+                    <table style="width:1000px;padding-top:300px;">
   <tr>
-    <th>.</th>
+    <th></th>
     <th>Groups</th>
     <th>T1</th>
     <th>T2</th>
@@ -552,7 +552,7 @@
    
   </tr>
   <tr>
-    <td>{{ this.b2 }}</td>
+    <td>{{ b2 }}</td>
     <td>{{ b7 }}</td>
     <td>{{ b12 }}</td>
     <td>{{ b17 }}</td>
@@ -591,7 +591,7 @@
   </tr>
  
 
-</table> -->
+</table>
 
     <md-button type="submit" @click="toggleRslt" class="md-success">Back</md-button>
   </div>
@@ -806,8 +806,9 @@ editingRow: [false, false, false, false, false],
         }
       },
       operate(){
-        this.display();
         console.log("jiaijijais");
+this.display();
+
       if (this.trailGroup === 'T1') {
   this.a1 = this.selectedItems[0];
   this.a2 = this.selectedItems[1];
@@ -820,6 +821,7 @@ editingRow: [false, false, false, false, false],
   this.b3 = this.rows[2].ingredients;
   this.b4 = this.rows[3].ingredients;
   this.b5 = this.rows[4].ingredients;
+
   
 } else if (this.trailGroup === 'T2') {
   this.b1 = this.rows[0].ingredients;
@@ -893,6 +895,7 @@ editingRow: [false, false, false, false, false],
   // this.b29 = this.rows[3].number.toString();
   // this.b30 = this.rows[4].number.toString();
 }
+
 // { rows: [
 //         // { ingredients: '', number: 0, font: '' ,id: },
 //         { ingredients: '', number: 0, font: '', id: id++} // Initial row
@@ -912,11 +915,11 @@ this.operatex();
         if (this.trailGroup === 'T1')
 {
   console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-  this.b6 = this.rows[0].number.toString();
-  this.b7 = this.rows[1].number.toString();
-  this.b8 = this.rows[2].number.toString();
-  this.b9 = this.rows[3].number.toString();
-  this.b10 = this.rows[4].number.toString();
+  this.b6 = this.temp2[0].number.toString();
+  this.b7 = this.temp2[1].number.toString();
+  this.b8 = this.temp2[2].number.toString();
+  this.b9 = this.temp2[3].number.toString();
+  this.b10 = this.temp2[4].number.toString();
 } else if (this.trailGroup === 'T2') {
   this.b11 = this.rows[0].number.toString();
   this.b12 = this.rows[1].number.toString();
@@ -942,6 +945,7 @@ this.operatex();
   this.b29 = this.rows[3].number;
   this.b30 = this.rows[4].number;
 }
+
 
       },
       clearr(){
@@ -1456,4 +1460,6 @@ button[type="button"].cancel-button {
     flex: 0 0 auto;
     /* width: 25%; */
   }
+
+  
 </style>

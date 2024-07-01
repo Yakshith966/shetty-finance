@@ -1408,9 +1408,6 @@ hr {
   border: 1px solid #dddddd;
 }
 
-.temp-th{
-  padding:0px 0px;
-}
 
 .styled-table tbody tr {
   border-bottom: 1px solid #dddddd;
@@ -1718,4 +1715,8 @@ button[type="button"].cancel-button {
     /* width: 25%; */
   }
 
+
+  .temp-th{
+  padding:0px 0px;
+}
 </style>

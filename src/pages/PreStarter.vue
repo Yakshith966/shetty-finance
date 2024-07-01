@@ -61,13 +61,13 @@
           <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                 <md-card>
                 <md-card-header data-background-color="green">
-                <h4 class="title">Corrected Feed Formula</h4>
+                <h4 class="title">Formula By Using Concentrate</h4>
                 <!-- <p class="category">List of Users</p> -->
                 </md-card-header>
                 <md-card-content>
-                  <table class="styled-table">
+                  <table class="styled-tablex">
         <thead>
-            <tr>
+            <tr class="first-option">
                 <th>Sl No</th>
                 <th>Ingredients</th>
                 <th>Pre Starter</th>
@@ -847,7 +847,12 @@
                   <hr>
                     <div class="struct2" style="padding-top: 20px;">
                 <div><md-button @click="addRow" class="md-primary">Add Row</md-button> </div>
-                        <div class="test2"></div>
+                        <div class="test2">
+                          <md-field>
+                            <label><b>Feed Cost</b></label>
+                            <md-input v-model="feedCost2" readonly></md-input>
+                          </md-field>
+                       </div>
                         <label for="country" class="test3"><span class="md-body-2">Total</span></label>
                         <div class="test4">
                           <md-field>
@@ -913,6 +918,7 @@
 
   export default {
     name: "simple-table",
+  
     props: {
       tableHeaderColor: {
         type: String,
@@ -922,6 +928,7 @@
     data() {
       return {
         initial:"T1/10/22",
+        feedCost2:'57',
         temp:[{ slNo: 1,ingredients:"Soya",prestarter:"560",starter:"120",finisher:"65",isEditing: false, id: Date.now() + Math.random()},
         { slNo: 2,ingredients:"Maize",prestarter:"560",starter:"120",finisher:"65",isEditing: false, id: Date.now() + Math.random()},
         { slNo: 3,ingredients:"Soya",prestarter:"560",starter:"120",finisher:"65",isEditing: false, id: Date.now() + Math.random()},
@@ -978,6 +985,25 @@
   </script>
   
   <style scoped>
+
+.styled-tablex {
+    width: 100%;
+    border-collapse: collapse;
+}
+.styled-tablex th, .styled-tablex td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    /* width: auto; */
+}
+.styled-tablex th {
+    background-color: #f2f2f2;
+    font-size: 16px;
+}
+.styled-tablex .slct, .styled-tablex .custm {
+    width: 100%;
+    box-sizing: border-box;
+}
 
 .struct{
     display: grid;
