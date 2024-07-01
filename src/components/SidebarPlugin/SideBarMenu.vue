@@ -59,7 +59,7 @@
         ><md-icon>functions</md-icon><label class="w-100 my-auto">Base Feed Formula</label></router-link
       >
     </li>
-    <li
+    <!-- <li
       class="side-bar-item pl-1"
       :class="{ active: activeItem === 'bodyweightview' }"
       @click.prevent="handleNavigation('bodyweightview')"
@@ -68,7 +68,7 @@
         ><md-icon>visibility</md-icon>
         <label class="w-100 my-auto">Result Submission</label></router-link
       >
-    </li>
+    </li> -->
 
     <li class="p-0">
       <a

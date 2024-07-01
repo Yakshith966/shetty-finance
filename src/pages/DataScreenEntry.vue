@@ -1,25 +1,161 @@
 <template>
   <div>
   <div v-if="chck">
+    <md-card>
+            <md-card-content>
+                <md-card-content>
+                    <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                             <md-card>
                               <md-card-header data-background-color="green">
                               <h4 class="title">Body Weight Details in Grams</h4>
                               <!-- <p class="category">List of Users</p> -->
                               </md-card-header>
                                 <md-card-content>
-                                  <md-table v-model="bwView" :table-header-color="tableHeaderColor">
+                                  <md-table v-model="BodyWeightx" :table-header-color="tableHeaderColor">
                                       <md-table-row slot="md-table-row" slot-scope="{ item }">
-                                      <md-table-cell md-label="Age in Days">{{ item.selectVal }}</md-table-cell>
-                                      <md-table-cell md-label="T1 Group">{{ item.trailGroup }}</md-table-cell>
-                                     
+                                      <md-table-cell md-label="Age in Days">{{ item.AgeinDays }}</md-table-cell>
+                                      <md-table-cell md-label="T1 Group">{{ item.T1 }}</md-table-cell>
+                                      <md-table-cell md-label="T2 Group">{{ item.T2}}</md-table-cell>
+                                      <md-table-cell md-label="T3 Group">{{ item.T3}}</md-table-cell>
+                                      <md-table-cell md-label="T4 Group">{{ item.T4}}</md-table-cell>
+                                      <md-table-cell md-label="T5 Group">{{ item.T5}}</md-table-cell>
                                       </md-table-row>
                                   </md-table>
                                 </md-card-content>
                             </md-card>
+                        </div>
+                            </md-card-content>
+                        </md-card-content>
+        </md-card>
+        <md-card>
+            <md-card-content>
+                <md-card-content>
+                    <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
+        <md-card>
+                <md-card-header data-background-color="green">
+                <h4 class="title">Feed Consumption Per Bird (in Grams)</h4>
+                <!-- <p class="category">List of Users</p> -->
+                </md-card-header>
+                <md-card-content>
+                  <md-table v-model="BodyWeighty" :table-header-color="tableHeaderColor">
+                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                      <md-table-cell md-label="Age in Days">{{ item.AgeinDays }}</md-table-cell>
+                      <md-table-cell md-label="T1 Group">{{ item.T1 }}</md-table-cell>
+                      <md-table-cell md-label="T2 Group">{{ item.T2}}</md-table-cell>
+                      <md-table-cell md-label="T3 Group">{{ item.T3}}</md-table-cell>
+                      <md-table-cell md-label="T4 Group">{{ item.T4}}</md-table-cell>
+                      <md-table-cell md-label="T5 Group">{{ item.T5}}</md-table-cell>
+          
+                      <!-- <md-table-cell md-label="Access Card"><md-icon>key</md-icon></md-table-cell>
+                      <md-table-cell md-label="Status">Active</md-table-cell> -->
+                    </md-table-row>
+                  </md-table>
+                </md-card-content>
+                </md-card>
+              </div>
+                            </md-card-content>
+                        </md-card-content>
+                </md-card>
   </div>
 
-    <div v-else>
-        <div class="card-box">
+  <div v-if="fcr">
+    <md-card>
+            <md-card-content>
+    <md-card-content>
+
+        <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
+                <md-card>
+                <md-card-header data-background-color="green">
+                <h4 class="title">Day Wise FCR</h4>
+                <!-- <p class="category">List of Users</p> -->
+                </md-card-header>
+                <md-card-content>
+                  <md-table v-model="BodyWeighta" :table-header-color="tableHeaderColor">
+                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                      <md-table-cell md-label="Age in Days">{{ item.AgeinDays }}</md-table-cell>
+                      <md-table-cell md-label="T1 Group">{{ item.T1 }}</md-table-cell>
+                      <md-table-cell md-label="T2 Group">{{ item.T2}}</md-table-cell>
+                      <md-table-cell md-label="T3 Group">{{ item.T3}}</md-table-cell>
+                      <md-table-cell md-label="T4 Group">{{ item.T4}}</md-table-cell>
+                      <md-table-cell md-label="T5 Group">{{ item.T5}}</md-table-cell>
+          
+                      <!-- <md-table-cell md-label="Access Card"><md-icon>key</md-icon></md-table-cell>
+                      <md-table-cell md-label="Status">Active</md-table-cell> -->
+                    </md-table-row>
+                  </md-table>
+                </md-card-content>
+                </md-card>
+        </div>
+                 </md-card-content>
+              </md-card-content>
+            </md-card>
+  </div>
+
+  <div v-if="day35">
+    <md-card>
+            <md-card-content>
+    <md-card-content>
+
+        <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
+                <md-card>
+                <md-card-header data-background-color="green">
+                <h4 class="title">Day 35 Result Summary</h4>
+                <!-- <p class="category">List of Users</p> -->
+                </md-card-header>
+                <md-card-content>
+                  <md-table v-model="Day35Result" :table-header-color="tableHeaderColor">
+                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                      <md-table-cell md-label="Parameter">
+                      <md-field>
+                        <!-- <label>Initial Value (Read Only)</label> -->
+                        <md-input v-model="item.AgeinDays" readonly></md-input>
+                      </md-field>
+                    </md-table-cell>
+                      <md-table-cell md-label="T1 Group">
+                        <md-field>
+                        <!-- <label>Initial Value (Read Only)</label> -->
+                        <md-input v-model="item.T1" readonly></md-input>
+                      </md-field>
+                      </md-table-cell>
+                      <md-table-cell md-label="T2 Group">
+                        <md-field>
+                        <!-- <label>Initial Value (Read Only)</label> -->
+                        <md-input v-model="item.T2" readonly></md-input>
+                      </md-field>
+                      </md-table-cell>
+                      <md-table-cell md-label="T3 Group">
+                        <md-field>
+                        <!-- <label>Initial Value (Read Only)</label> -->
+                        <md-input v-model="item.T3" readonly></md-input>
+                      </md-field>
+                       </md-table-cell>
+                      <md-table-cell md-label="T4 Group">
+                        <md-field>
+                        <!-- <label>Initial Value (Read Only)</label> -->
+                        <md-input v-model="item.T4" readonly></md-input>
+                      </md-field>
+                      </md-table-cell>
+                      <md-table-cell md-label="T5 Group">
+                        <md-field>
+                        <!-- <label>Initial Value (Read Only)</label> -->
+                        <md-input v-model="item.T5" readonly></md-input>
+                      </md-field>
+                      </md-table-cell>
+          
+                      <!-- <md-table-cell md-label="Access Card"><md-icon>key</md-icon></md-table-cell>
+                      <md-table-cell md-label="Status">Active</md-table-cell> -->
+                    </md-table-row>
+                  </md-table>
+                </md-card-content>
+                </md-card>
+        </div>
+                 </md-card-content>
+              </md-card-content>
+            </md-card>
+  </div>
+
+    <div v-if="!chck && !fcr && !day35">
+        <div>
         <div class="row align-items-center mb-3">
             <div class="col-auto">
             <ul class="nav nav-pills">
@@ -78,11 +214,46 @@
                             <div class="t-cell"> 
                                 <select name="cars" v-model="row.selectVal" id="cars" class="select-style">
                                         <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
                                         <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
                                         <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
                                         <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
                                         <option value="28">28</option>
-                                        <option value="35">35</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="21">31</option>
+                                        <option value="22">32</option>
+                                        <option value="23">33</option>
+                                        <option value="24">34</option>
+                                        <option value="25">35</option>
+                                        <option value="week1">week1</option>
+                                        <option value="week2">week2</option>
+                                        <option value="week3">week3</option>
+                                        <option value="week4">week4</option>
+                                        <option value="week5">week5</option>
+                                    
                                     </select>
                             </div>
                             <div class="t-cell">
@@ -147,7 +318,7 @@
                     <div></div>
                     <div></div>
                           <div><md-button type="submit" @click="displayBw" class="md-success">Submit</md-button></div>
-                          <div><md-button type="button" class="md-danger">Reset</md-button></div>
+                          <div><md-button type="button" @click="resetBw" class="md-danger">Reset</md-button></div>
                         </div>
                     
                     </md-card-content>
@@ -190,12 +361,46 @@
                     <template v-else>
                       
                                 <select name="cars" v-model="item.selectVal" id="cars" class="select-style">
-                                        <option value="1">1</option>
+                                  <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
                                         <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
                                         <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
                                         <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
                                         <option value="28">28</option>
-                                        <option value="35">35</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="21">31</option>
+                                        <option value="22">32</option>
+                                        <option value="23">33</option>
+                                        <option value="24">34</option>
+                                        <option value="25">35</option>
+                                        <option value="week1">week1</option>
+                                        <option value="week2">week2</option>
+                                        <option value="week3">week3</option>
+                                        <option value="week4">week4</option>
+                                        <option value="week5">week5</option>
                                     </select>
                             
                     </template>
@@ -368,11 +573,45 @@
                             <div class="t-cell"> 
                                 <select name="cars" v-model="row.ageDays" id="cars" class="select-style">
                                   <option value="1">1</option>
-                                  <option value="7">7</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
                                         <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
                                         <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
                                         <option value="28">28</option>
-                                        <option value="35">35</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="21">31</option>
+                                        <option value="22">32</option>
+                                        <option value="23">33</option>
+                                        <option value="24">34</option>
+                                        <option value="25">35</option>
+                                        <option value="week1">week1</option>
+                                        <option value="week2">week2</option>
+                                        <option value="week3">week3</option>
+                                        <option value="week4">week4</option>
+                                        <option value="week5">week5</option>
                                     </select>
                             </div>
                             <div class="t-cell">
@@ -429,7 +668,7 @@
                     <div></div>
                     <div></div>
                           <div><md-button type="submit" @click="displayCf" class="md-success">Submit</md-button></div>
-                          <div><md-button type="button" class="md-danger">Reset</md-button></div>
+                          <div><md-button type="button" @click="resetCf" class="md-danger">Reset</md-button></div>
                         </div>
                      
 
@@ -572,18 +811,18 @@
     </div>
 
     <div class="row-layout2">
-                <div id="buttons" v-if="!chck">
+      <div id="buttons" v-if="!chck && !fcr && !day35">
                         <div>
                             <md-button type="submit" class="md-success">Submit</md-button>
                         </div>
                         
-                        <div style="padding-left: 10px;" @click="result">
+                        <div style="padding-left: 10px;" @click="resultx">
                             <md-button type="button" class="md-danger">Calculate Day wise Result</md-button>
                         </div>
-                        <div style="padding-left: 10px;">
+                        <div style="padding-left: 10px;" @click="fcrx">
                             <md-button type="button" class="md-danger">Calculate Day wise FCR</md-button>
                         </div>
-                        <div style="padding-left: 10px;">
+                        <div style="padding-left: 10px;"  @click="day35x">
                             <md-button type="button" class="md-danger">Calculate Day 35 Result</md-button>
                         </div>
                 </div>
@@ -604,11 +843,44 @@ export default{
     data(){
         return{
           chck:false,
+          fcr:false,
+          day35:false,
           bwView:[],
           fcView:[],
             activeTabMain: 'view',
-            activeTab: 'FeedConsumption',
+            activeTab: 'BodyWeight',
             temp2:[],
+            BodyWeighta:[
+                { AgeinDays:"7",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"14",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"21",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"28",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"35",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+            ],
+            Day35Result:[
+                { AgeinDays:"Bodyweight/Bird",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"Feed Consumed/Bird",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"FCR",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"CFCR",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"Livability",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"BEI",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"Feed Cost/Kg",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"FD Cost/K.g Live Bird wt",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+            ],
+            BodyWeightx:[
+                { AgeinDays:"7",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"14",T1:"184.53",T2:"182.93",T3:"177.26",T4:"178.33",T5:"148.13"},
+                { AgeinDays:"21",T1:"504.53",T2:"499.93",T3:"488.26",T4:"483.33",T5:"360.13"},
+                { AgeinDays:"28",T1:"909",T2:"908",T3:"896",T4:"869",T5:"669"},
+                { AgeinDays:"35",T1:"2002",T2:"1957",T3:"43.26",T4:"43.33",T5:"43.13"},
+            ],
+            BodyWeighty:[
+                { AgeinDays:"7",T1:"156.53",T2:"142.93",T3:"153.26",T4:"133.33",T5:"163.13"},
+                { AgeinDays:"14",T1:"578.53",T2:"558.93",T3:"554.26",T4:"546.33",T5:"452.13"},
+                { AgeinDays:"21",T1:"1269",T2:"1260",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"28",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+                { AgeinDays:"35",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
+            ],
             tempBodyWeight:[
             { AgeinDays:"7",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
                 { AgeinDays:"14",T1:"43.53",T2:"42.93",T3:"43.26",T4:"43.33",T5:"43.13"},
@@ -653,8 +925,36 @@ methods:{
         this.FeedConsumption.push({ ageDays:'',feedTrailGroup:'',feedPenNo:'',noBirds:'',feedAlloted:'',feedConsumed:'',feedConsumedPerBird:'',isEditing: false, id: Date.now() + Math.random()});
         console.log("FeedConsumption",this.FeedConsumption);
     },
+    resetBw(){
+      this.BodyWeight=[
+          { selectVal:'',trailGroup:'',penNo:'',crateWt:'',tareWt:'',totalWt:'',bodyWt:'',mortality:'',mortalBird:'',male:'',female:'',temp:'',humidity:'',vaccineMed:'',medicineGiven:'',isEditing: false, id: id1}
+        ]
+    },
+    resetCf(){
+      this.FeedConsumption=[
+          { ageDays:'',feedTrailGroup:'',feedPenNo:'',noBirds:'',feedAlloted:'',feedConsumed:'',feedConsumedPerBird:'',isEditing: false, id: id2++}
+        ]
+    },
     result(){
-      this.chck=!this.chck;
+      this.chck=false;
+      this.fcr=false;
+      this.day35=false;
+    },
+    resultx(){
+      this.chck=true;
+      this.fcr=false;
+      this.day35=false;
+    },
+    fcrx(){
+      this.fcr=true;
+      this.day35=false;
+      this.chck=false;
+    },
+    day35x(){
+      this.day35=true;
+      this.fcr=false;
+      this.chck=false;
+      
     },
     // backin(){
     //   this.chck=!this.chck;
@@ -842,7 +1142,7 @@ input[type='number'] {
 
 }
 .styled-table th {
-  font-size: 14px;
+  font-size: 12px;
     background-color: #f2f2f2;
 }
 .styled-table .slct, .styled-table .custm {

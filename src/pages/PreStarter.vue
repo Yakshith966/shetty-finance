@@ -1,14 +1,14 @@
 <template>
     <div>
-      <div class="card-box">
+      <div class="">
 
         <div class="row align-items-center mb-3">
           <div class="col">
-            <h4 class="mt-0 header-title"><span class="md-body-2">GROUPWISE FORMULA</span></h4>
+            <h4 class="mt-0 header-title"><span class="md-body-2"></span></h4>
             <p class="text-muted font-14 mb-0">trails</p>
           </div>
           
-          <div class="card-box">
+          <div class="">
           <div class="col-auto">
             <ul class="nav nav-pills">
               <li class="nav-item">
@@ -61,7 +61,7 @@
           <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                 <md-card>
                 <md-card-header data-background-color="green">
-                <h4 class="title">Pre-starter</h4>
+                <h4 class="title">Corrected Feed Formula</h4>
                 <!-- <p class="category">List of Users</p> -->
                 </md-card-header>
                 <md-card-content>

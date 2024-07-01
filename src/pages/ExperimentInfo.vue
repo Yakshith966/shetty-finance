@@ -10,7 +10,7 @@
       </div> -->
       
 
-        <div class="page">
+        <div  class="page">
         <md-card>
             <div id="form"></div>
             <md-card-header data-background-color="green">
@@ -38,7 +38,7 @@
                 <!-- <md-field>
                 <md-textarea v-model="textarea" md-counter="100" class="custom-textarea"></md-textarea>
                 </md-field> -->
-                <textarea rows="5" cols="64"></textarea>
+                <textarea v-model="aim" rows="5" cols="64"></textarea>
                 </div>
             <div>
                 <div><label><span class="md-body-2">Methodology</span></label></div>
@@ -46,28 +46,28 @@
                         <label>Textarea</label>
                         <md-textarea v-model="textarea" md-counter="50" style="color:black;"></md-textarea>
                     </md-field> -->
-                    <textarea rows="5" cols="64"></textarea>
+                    <textarea v-model="meth" rows="5" cols="64"></textarea>
                 </div>
         </div>
-        <label for="country" class="test1"><span class="md-body-2">Treatment Details</span></label>
+        <label class="test1"><span class="md-body-2">Treatment Details</span></label>
         <div class="structa1" id="structa1">
             <!-- <label for="country" class="test1"><span class="md-body-2">Employee Name</span></label> -->
             <div class="test2">
               <md-field>
                 <label for="country">Select</label>
-                <md-select required v-model="country" name="country" id="country" md-dense>
-                  <md-option value="arial">T1 Group</md-option>
-                  <md-option value="calibri">T2 Group</md-option>
-                  <md-option value="cambria">T3 Group</md-option>
-                  <md-option value="comic-sans">T4 Group</md-option>
-                  <md-option value="consolas">T5 Group</md-option>
+                <md-select required v-model="treatmentDetails" id="country" md-dense>
+                  <md-option value="T1">T1 Group</md-option>
+                  <md-option value="T2">T2 Group</md-option>
+                  <md-option value="T3">T3 Group</md-option>
+                  <md-option value="T4">T4 Group</md-option>
+                  <md-option value="T5">T5 Group</md-option>
                 </md-select>
               </md-field>
             </div>
             <div class="test2">
               <md-field>
                 <label for="country">Select</label>
-                <md-select required v-model="country" name="country" id="country" md-dense>
+                <md-select required v-model="country" id="country" md-dense>
                   <md-option value="arial">Positive Control</md-option>
                   <md-option value="calibri">Control</md-option>
                   <md-option value="cambria">Negative Control 1</md-option>
@@ -200,20 +200,20 @@
           <label for="country" style="background-color: bisque;"><span class="md-body-2">Chicks</span></label>
           <label for="country" style="background-color: bisque;"><span class="md-body-2">Batch</span></label>
             
-                <div><input type="text" id="fname" name="fname" style="width: 240px;"><br><br></div>
-                <div><input type="text" id="fname" name="fname" style="width: 240px;"><br><br></div>
+                <div><input type="text" v-model="chicks" id="fname" name="fname" style="width: 240px;"><br><br></div>
+                <div><input type="text" v-model="batch" id="fname" name="fname" style="width: 240px;"><br><br></div>
             
         </div>
         <div class="struct-last">
           <label for="country" style="background-color: bisque;" ><span class="md-body-2">Description:</span></label>
           <label for="country" style="background-color: bisque;"><span class="md-body-2">Premix:</span></label>
-                <textarea rows="5" cols="50"></textarea>
-                <textarea rows="5" cols="50"></textarea>
+                <textarea v-model="description" rows="5" cols="50"></textarea>
+                <textarea v-model="premix" rows="5" cols="50"></textarea>
             
         </div>
             <div class="row-layout2a">
                 <div id="buttons">
-                        <div>
+                        <div @click="displayData">
                         <md-button type="submit" class="md-success" >Save</md-button>
                         </div>
                         <div style="padding-left: 10px;">
@@ -225,6 +225,118 @@
         </md-card-content>
           </md-card>   
         </div>
+
+        <div>
+          <md-card>
+                
+               
+                <md-card-header data-background-color="green">
+                  <h4 class="title">EXPERIMENT INFO</h4>
+                  <!-- <p class="category">List of Users</p> -->
+              </md-card-header>
+           
+                  <md-card-content>     
+                          
+<table class="styled-table">
+      <thead>
+          <tr>
+              <th>Trial No</th>
+              <th>Date</th>
+              <th>Aim of exp</th>
+              <th>Methodology</th>
+              <th>Treatment details</th>
+              <th>Chicks</th>
+              <th>Batch</th>
+              <th>Description</th>
+              <th>Premix</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr v-for="item in temp" :key="item.id">
+              <td>
+                  <template v-if="!item.isEditing">{{ item.initial }}</template>
+                  <template v-else>
+                    <input v-model="item.initial" class="custm"/>
+                  </template>
+              </td>
+              <td>
+                  <template v-if="!item.isEditing">{{ item.selectedDate }}</template>
+                  <template v-else>
+                    <input v-model="item.selectedDate" class="custm"/>
+                  </template>
+              </td>
+              <td>
+                  <template v-if="!item.isEditing">{{ item.aim }}</template>
+                  <template v-else>
+                    <input v-model="item.aim" class="custm"/>
+                  </template>
+              </td>
+              <td>
+                  <template v-if="!item.isEditing">{{ item.meth }}</template>
+                  <template v-else>
+                    <input v-model="item.meth" class="custm"/>
+                  </template>
+              </td>
+              <td>
+                  <template v-if="!item.isEditing">{{ item.treatmentDetails }}</template>
+                  <template v-else>
+                      <select v-model="item.treatmentDetails" class="slct2">
+                        <option value="T1">T1 Group</option>
+                  <option value="T2">T2 Group</option>
+                  <option value="T3">T3 Group</option>
+                  <option value="T4">T4 Group</option>
+                  <option value="T5">T5 Group</option>
+                      </select>
+                  </template>
+              </td>
+              <td>
+                  <template v-if="!item.isEditing">{{ item.chicks }}</template>
+                  <template v-else>
+                      <input v-model="item.chicks" class="custm"/>
+                  </template>
+              </td>
+              <td>
+                  <template v-if="!item.isEditing">{{ item.batch }}</template>
+                  <template v-else>
+                      <input v-model="item.batch" class="custm"/>
+                  </template>
+              </td>
+              <td>
+                  <template v-if="!item.isEditing">{{ item.description  }}</template>
+                  <template v-else>
+                      <input v-model="item.description" class="custm"/>
+                  </template>
+              </td>
+              <td>
+                  <template v-if="!item.isEditing">{{ item.premix }}</template>
+                  <template v-else>
+                      <input v-model="item.premix" class="custm"/>
+                  </template>
+              </td>
+              
+              <td>
+                  <button v-if="!item.isEditing" @click="toggleEdit(item)">
+                      <md-icon>edit_square</md-icon>
+                  </button>
+                  <button v-else @click="saveChanges(item)">
+                      <md-icon>save</md-icon>
+                  </button>
+              </td>
+              <!-- <td>
+                <div class="t-cell" @click="removeFeedRow(row)" style="cursor: pointer;">
+                              <md-icon>clear</md-icon>
+                 </div>
+              </td> -->
+              
+          </tr>
+      </tbody>
+  </table>
+                  </md-card-content>
+                
+            
+            </md-card>
+        </div>
   
    
   </div>
@@ -235,6 +347,7 @@
   
   <script>
   export default {
+    
     name: "simple-table",
     props: {
       tableHeaderColor: {
@@ -244,9 +357,20 @@
     },
     data() {
       return {
+        id1:0,
+        sec1:false,
         textarea: null,
     initial:"T1/10/22",
+    selectedDate:'',
+    aim:'',
+    meth:'',
+    treatmentDetails:'',
+    chicks:'',
+    batch:'',
+    description:'',
+    premix:'',
         activeTab: 'list', // Default active tab
+        temp:[],
         users: [
           { name: "Dakota Rice", salary: "$36,738", country: "Niger", city: "Oud-Turnhout" },
           { name: "Minerva Hooper", salary: "$23,738", country: "Curaçao", city: "Sinaai-Waas" },
@@ -269,7 +393,28 @@
       },
       setActiveTab(tab) {
         this.activeTab = tab;
+      },
+      toggleEdit(item) {
+        item.isEditing = !item.isEditing;
+      },
+      saveChanges(item) {
+        item.isEditing = false;
+        // Additional logic to save changes if needed
+      },
+      displayData(){
+        this.temp.push({initial:"T1/10/22",
+    selectedDate:this.selectedDate,
+    aim:this.aim,
+    meth:this.meth,
+    treatmentDetails:this.treatmentDetails,
+    chicks:this.chicks,
+    batch:this.batch,
+    description:this.description,
+    premix:this.premix,
+    isEditing: false
+  })
       }
+
     }
   };
   </script>

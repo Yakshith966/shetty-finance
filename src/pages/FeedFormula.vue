@@ -1,6 +1,7 @@
 <template>
     <div>
-      <div class="card-box">
+      <div v-if="!page">
+      <div class="">
 
         <div class="row align-items-center mb-3">
           <!-- <div class="col">
@@ -109,7 +110,7 @@
                         <div class="test2">
                           <md-field>
                             <label for="country">Select</label>
-                            <md-select required v-model="country" name="country" id="country" md-dense>
+                            <md-select required v-model="trNo"  id="country" md-dense>
                               <md-option value="australia">T10/10/22</md-option>
                               <md-option value="australia">T11/10/22</md-option>
                               <md-option value="australia">T12/10/22</md-option>
@@ -119,79 +120,6 @@
                             </md-select>
                           </md-field>
                         </div>
-                    
-                       
-                        
-                        <!-- <label for="country" class="test3"><span class="md-body-2">End Date</span></label> -->
-
-                        
-                        <!-- <label for="country" class="test1"><span class="md-body-2">Select</span></label> -->
-                        <!-- <div>
-                          <div class="col-md-3">
-                        <label><span class="md-body-2">Pens</span></label>
-                          <div class="w-100">
-                            <div
-                              class="checkbox-select__trigger"
-                              :class="{ isActive: isDropdownOpen }"
-                              @click="toggleDropdown"
-                            >
-                              <span style="font-size: 0.9rem;">Select the applicable</span>
-                              <i :class="dropdownIconClass"></i>
-                            </div>
-                            <div
-                              id="div"
-                              class="checkbox-select__dropdown"
-                              v-show="isDropdownOpen"
-                            >
-                              <div class="checkbox-select__search-wrapp">
-                                <input
-                                  type="text"
-                                  placeholder="Search"
-                                  v-model="searchQuery"
-                                />
-                              </div>
-                              <div class="checkbox-select__col">
-                                <div class="checkbox-select__select-all">
-                                  <input
-                                  id="divselectAll"
-                                  type="checkbox"
-                                  @change="toggleSelectAll"
-                                  :checked="allSelected"
-                                  />
-                                  <label for="divselectAll">Select All</label>
-                                </div>
-                                <div class="checkbox-select__info">
-                                  {{ selectedItems.length }} SELECTED
-                                </div>
-                              </div>
-                              <ul
-                                id="customScroll"
-                                class="checkbox-select__filters-wrapp"
-                                data-simplebar-auto-hide="false"
-                              >
-                                <li
-                                  v-for="(option, index) in filteredOptions"
-                                  :key="index"
-                                  style="list-style: none;"
-                                >
-                                  <div class="checkbox-select__check-wrapp">
-                                    <input
-                                      :id="'div' + index"
-                                      class="conditions-check"
-                                      type="checkbox"
-                                      :value="option"
-                                      v-model="selectedItems"
-                                    />
-                                    <label :for="'div' + index" class="text-capitalize">
-                                      {{ option }}
-                                    </label>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div> -->
                       
                     </div>
                   </div>
@@ -204,7 +132,7 @@
 <div class="test2">
   <md-field>
     <label for="country">Select</label>
-    <md-select required v-model="chickCategory" name="country" id="country" md-dense>
+    <md-select required v-model="chickCategory"  id="country" md-dense>
       <md-option value="prestarter">Pre-Starter</md-option>
       <md-option value="starter">Starter</md-option>
       <md-option value="finisher">Finisher</md-option>
@@ -219,12 +147,12 @@
 <div class="test4">
   <md-field>
     <label for="country">Select</label>
-    <md-select required v-model="country" name="country" id="country" md-dense>
-      <md-option value="australia">T1</md-option>
-      <md-option value="australia">T2</md-option>
-      <md-option value="australia">T3</md-option>
-      <md-option value="australia">T4</md-option>
-      <md-option value="australia">T5</md-option>
+    <md-select required v-model="trailGroup"  id="country" md-dense>
+      <md-option value="T1">T1</md-option>
+      <md-option value="T2">T2</md-option>
+      <md-option value="T3">T3</md-option>
+      <md-option value="T4">T4</md-option>
+      <md-option value="T5">T5</md-option>
     </md-select>
   </md-field>
 </div>
@@ -304,7 +232,7 @@
 <div class="test4">
   <md-field>
     <label>Quantity</label>
-    <md-input v-model="number" type="number"></md-input>
+    <md-input v-model="penBirdCnt" type="number"></md-input>
   </md-field>
 </div>
 <!-- <div class="test5"></div> -->
@@ -340,7 +268,7 @@
 <div class="test4">
   <md-field>
     <label>Quantity</label>
-    <md-input v-model="number" type="number"></md-input>
+    <md-input v-model="feedPerChick" type="number"></md-input>
   </md-field>
 </div>
 <!-- <div class="test5"></div> -->
@@ -351,7 +279,7 @@
 <div class="test4">
   <md-field>
     <label>Quantity</label>
-    <md-input v-model="number" type="number"></md-input>
+    <md-input v-model="initial" readonly></md-input>
   </md-field>
 </div>
 
@@ -409,6 +337,8 @@
             </md-card>
           </div> 
         </form>
+        <!-- <div "><button>Save</button></div> -->
+      
       </div>
 
       <div v-if="activeTab === 'apply'">
@@ -480,7 +410,7 @@
                         <div class="test5">
                           <md-field>
                             <label for="font">Select</label>
-                            <md-select v-model="font" name="font" md-dense>
+                            <md-select v-model="font" md-dense>
                               <md-option value="arial">GMS</md-option>
                           <md-option value="calibri">ML</md-option>
                             </md-select>
@@ -501,18 +431,170 @@
                       <div id="buttons">
               
                         <div>
-                          <md-button type="submit" @click="display" class="md-success">Submit</md-button>
+                          <md-button type="submit" @click="operate" class="md-success">Save</md-button>
                         </div>
                         <div style="padding-left: 10px;">
-                          <md-button type="button" class="md-danger">Cancel</md-button>
+                          <md-button type="submit" @click="toggleRslt" class="md-success">Submit</md-button>
                         </div>
                         <div style="padding-left: 10px;">
-                          <md-button type="button" class="md-danger">Reset</md-button>
+                          <md-button @click="clearr" type="button" class="md-danger">Reset</md-button>
                         </div>
 
                       </div>
                 </div>  
+                
+                <!-- <md-table v-model="temp" :table-header-color="tableHeaderColor">
                     
+                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                      <md-table-cell md-label="T1">{{ item.name }}</md-table-cell>
+                      <md-table-cell md-label="T2">{{ item.ingredients }}</md-table-cell>
+                      <md-table-cell md-label="T4">{{ item.salary}}</md-table-cell>
+                      <md-table-cell md-label="T5">{{ item.country }}</md-table-cell>
+                      <md-table-cell md-label="Trail Counts">{{ item.city }}</md-table-cell>
+                      <md-table-cell md-label="Replicas">{{ item.city }}</md-table-cell>
+                      <md-table-cell md-label="Action">{{ item.city }}</md-table-cell>
+                      <md-table-cell class="md-body-2" md-label="view"><md-icon>visibility</md-icon></md-table-cell> 
+                      <md-table-cell md-label="Access Card"><md-icon>key</md-icon></md-table-cell>
+                      <md-table-cell md-label="Status">Active</md-table-cell> 
+                    </md-table-row>
+                  </md-table>   -->
+                </div>
+                  <div v-else>
+                    <table>
+  <tr>
+    <th>Trials</th>
+    <th>T1</th>
+    <th>T2</th>
+    <th>T3</th>
+    <th>T4</th>
+    <th>T5</th>
+    <th>Trial Counts</th>
+    <th>Replicas</th>
+    <th>Action</th>
+  </tr>
+  <tr>
+    <td rowspan="5">Alloted Pens</td>
+    <td><span v-if="!editingRow[0]">{{ a1 }}</span><input v-else v-model="a1" /></td>
+    <td><span v-if="!editingRow[0]">{{ a6 }}</span><input v-else v-model="a6" /></td>
+    <td><span v-if="!editingRow[0]">{{ a11 }}</span><input v-else v-model="a11" /></td>
+    <td><span v-if="!editingRow[0]">{{ a16 }}</span><input v-else v-model="a16" /></td>
+    <td><span v-if="!editingRow[0]">{{ a21 }}</span><input v-else v-model="a21" /></td>
+    <td>30</td>
+    <td>5</td>
+    <td><button @click="toggleEdit(0)">{{ editingRow[0] ? 'Save' : 'Edit' }}</button></td>
+  </tr>
+  <tr>
+    <td><span v-if="!editingRow[1]">{{ a2 }}</span><input v-else v-model="a2" /></td>
+    <td><span v-if="!editingRow[1]">{{ a7 }}</span><input v-else v-model="a7" /></td>
+    <td><span v-if="!editingRow[1]">{{ a12 }}</span><input v-else v-model="a12" /></td>
+    <td><span v-if="!editingRow[1]">{{ a17 }}</span><input v-else v-model="a17" /></td>
+    <td><span v-if="!editingRow[1]">{{ a22 }}</span><input v-else v-model="a22" /></td>
+    <td>30</td>
+    <td>5</td>
+    <td><button @click="toggleEdit(1)">{{ editingRow[1] ? 'Save' : 'Edit' }}</button></td>
+  </tr>
+  <tr>
+    <td><template v-if="!editingRow[2]">{{ a3 }}</template>
+      <template v-else><input v-model="a3" /></template>
+    </td>
+    <td><template v-if="!editingRow[2]">{{ a8 }}</template><template v-else><input v-model="a8" /></template></td>
+    <td><template v-if="!editingRow[2]">{{ a13 }}</template><template v-else><input v-model="a13" /></template></td>
+    <td><template v-if="!editingRow[2]">{{ a18 }}</template><template v-else><input v-model="a18" /></template></td>
+    <td><template v-if="!editingRow[2]">{{ a23 }}</template><template v-else><input v-model="a23" /></template></td>
+    <td>30</td>
+    <td>5</td>
+    <td><button @click="toggleEdit(2)">{{ editingRow[2] ? 'Save' : 'Edit' }}</button></td>
+  </tr>
+  <tr>
+    <td><span v-if="!editingRow[3]">{{ a4 }}</span><input v-else v-model="a4" /></td>
+    <td><span v-if="!editingRow[3]">{{ a9 }}</span><input v-else v-model="a9" /></td>
+    <td><span v-if="!editingRow[3]">{{ a14 }}</span><input v-else v-model="a14" /></td>
+    <td><span v-if="!editingRow[3]">{{ a19 }}</span><input v-else v-model="a19" /></td>
+    <td><span v-if="!editingRow[3]">{{ a24 }}</span><input v-else v-model="a24" /></td>
+    <td>30</td>
+    <td>5</td>
+    <td><button @click="toggleEdit(3)">{{ editingRow[3] ? 'Save' : 'Edit' }}</button></td>
+  </tr>
+  <tr>
+    <td><span v-if="!editingRow[4]">{{ a5 }}</span><input v-else v-model="a5" /></td>
+    <td><span v-if="!editingRow[4]">{{ a10 }}</span><input v-else v-model="a10" /></td>
+    <td><span v-if="!editingRow[4]">{{ a15 }}</span><input v-else v-model="a15" /></td>
+    <td><span v-if="!editingRow[4]">{{ a20 }}</span><input v-else v-model="a20" /></td>
+    <td><span v-if="!editingRow[4]">{{ a25 }}</span><input v-else v-model="a25" /></td>
+    <td>30</td>
+    <td>5</td>
+    <td><button @click="toggleEdit(4)">{{ editingRow[4] ? 'Save' : 'Edit' }}</button></td>
+  </tr>
+</table>
+                    <!-- <table>
+  <tr>
+    <th>.</th>
+    <th>Groups</th>
+    <th>T1</th>
+    <th>T2</th>
+    <th>T3</th>
+    <th>T4</th>
+    <th>T5</th>
+
+  </tr>
+  <tr>
+    <td rowspan="7">Ingredients in Kgs</td>
+  </tr>
+  <tr>
+    
+    <td>{{ b1 }}</td>
+    <td>{{ b6 }}</td>
+    <td>{{ b11 }}</td>
+    <td>{{ b16 }}</td>
+    <td>{{ b21 }}</td>
+    <td>{{ b26 }}</td>
+   
+   
+  </tr>
+  <tr>
+    <td>{{ this.b2 }}</td>
+    <td>{{ b7 }}</td>
+    <td>{{ b12 }}</td>
+    <td>{{ b17 }}</td>
+    <td>{{ b22 }}</td>
+    <td>{{ b27 }}</td>
+   
+
+   
+  </tr>
+  <tr>
+    <td>{{ b3 }}</td>
+    <td>{{ b8 }}</td>
+    <td>{{ b13 }}</td>
+    <td>{{ b18 }}</td>
+    <td>{{ b23 }}</td>
+    <td>{{ b28 }}</td>
+
+  </tr>
+  <tr>
+    <td>{{ b4 }}</td>
+    <td>{{ b9 }}</td>
+    <td>{{ b14 }}</td>
+    <td>{{ b19 }}</td>
+    <td>{{ b24 }}</td>
+    <td>{{ b29 }}</td>
+
+  </tr>
+  <tr>
+    <td>{{ b5 }}</td>
+    <td>{{ b10 }}</td>
+    <td>{{ b15 }}</td>
+    <td>{{ b20 }}</td>
+    <td>{{ b25 }}</td>
+    <td>{{ b30 }}</td>
+
+  </tr>
+ 
+
+</table> -->
+
+    <md-button type="submit" @click="toggleRslt" class="md-success">Back</md-button>
+  </div>
   </div>
 
   </template>
@@ -531,12 +613,27 @@
     data() {
       return {
         feedCost:56,
+        page: false,
+        initial:9,
         chickCategory: '',
       formula: '',
       showFormula: false,
         activeTab: 'list', // Default active tab
         isDropdownOpen: false,
       searchQuery: '',
+      // tempo:
+      a1: '', a2: '', a3: '', a4: '', a5: '',
+      a6: '', a7: '', a8: '', a9: '', a10: '',
+      a11: '', a12: '', a13: '', a14: '', a15: '',
+      a16: '', a17: '', a18: '', a19: '', a20: '',
+      a21: '', a22: '', a23: '', a24: '', a25: '',
+editingRow: [false, false, false, false, false],
+      b1: '', b2: '', b3: '', b4: '', b5: '',
+      b6: '', b7: '', b8: '', b9: '', b10: '',
+      b11: '', b12: '', b13: '', b14: '', b15: '',
+      b16: '', b17: '', b18: '', b19: '', b20: '',
+      b21: '', b22: '', b23: '', b24: '', b25: '',
+      b26: '', b27: '', b28: '', b29: '', b30: '',
       options: [
         'P1',
         'P2',
@@ -545,6 +642,24 @@
         'P5',
         'P6',
         'P7',
+        'P8',
+        'P9',
+        'P10',
+        'P11',
+        'P12',
+        'P13',
+        'P14',
+        'P15',
+        'P16',
+        'P17',
+        'P18',
+        'P19',
+        'P20',
+        'P21',
+        'P22',
+        'P23',
+        'P24',
+        'P25',
       ],
       selectedItems: [],
         rows: [
@@ -553,12 +668,41 @@
       ],
       temp: [],
       temp2:[],
+      temp4:[],
+      trailGroup:'',
+      trNo:'',
+        // chickCategory='';
+        // trailGroup='';
+        // this.selectedItems=[];
+        penBirdCnt:'',
+        // this.formula='';
+      feedPerChick:'',
+      
         users: [
           { name: "P1",ingredients:"1.150", salary: "Yellow1", country: "6.660", city: "6.660" },   
           { name: "P2", ingredients:"1.250", salary: "Yellow2", country: "6.660", city: "6.660" },
           { name: "P3", ingredients:"1.220", salary: "Green 1", country: "1.700", city: "2.220" },
           { name: "P4", ingredients:"1.280", salary: "Green2 ", country: "1.700", city: "2.223" },
           { name: "P5", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P6", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P7", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P8", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P9", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P10", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P11", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P12", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P13", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P14", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P15", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P16", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P17", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P19", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P20", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P21", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P22", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P23", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P24", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
+          { name: "P25", ingredients:"1.230", salary: "Orange 1", country: "6.720", city: "6.720" },
           // { name: "6", salary: "615", country: "868", city: "665" },     
         ],
 
@@ -593,7 +737,7 @@
     },
     selectedItems(newSelectedItems) {
       this.temp = this.users.filter(user => newSelectedItems.includes(user.name));
-      console.log("hi",this.temp);
+      console.log("hhhh",this.selectedItems);
     },
     rows: {
       handler(newRows) {
@@ -608,6 +752,12 @@
       isActive(tab) {
         return this.activeTab === tab;
       },
+      toggleEdit(index) {
+      this.editingRow[index] = !this.editingRow[index];
+      this.page=!this.page;
+      this.clearr();
+      this.page=!this.page;
+    },
       // toggleEdit(item) {
       //   item.isEditing = !item.isEditing;
       // },
@@ -615,7 +765,18 @@
       //   item.isEditing = false;
       //   // Additional logic to save changes if needed
       // },
-
+      penWiseAllotement(){
+        this.selectedItems=['p1','p4','p7','p5'];
+          this.temp4.push({Trials: '', T1: 1, T2: 2, T3: 3, T4: 4, T5: 5, TrialCounts: 30, Replicas: 5, editing: false});
+      //     tempo: [
+      //       { Trials: '', T1: 1, T2: 2, T3: 3, T4: 4, T5: 5, TrialCounts: 30, Replicas: 5, editing: false },
+      //   { Trials: '', T1: 6, T2: 7, T3: 8, T4: 9, T5: 10, TrialCounts: 30, Replicas: 5, editing: false },
+      //   { Trials: 'Alloted Pens', T1: 11, T2: 12, T3: 13, T4: 14, T5: 15, TrialCounts: 30, Replicas: 5, editing: false  },
+      //   { Trials: '', T1: 16, T2: 17, T3: 18, T4: 19, T5: 20, TrialCounts: 30, Replicas: 5, editing: false  },
+      //   { Trials: '', T1: 21, T2: 22, T3: 23, T4: 24, T5: 25, TrialCounts: 30, Replicas: 5, editing: false  }
+      // ],
+        
+      },
       display(){
         this.temp2=[];
         this.temp2.push(...this.rows);
@@ -644,11 +805,183 @@
           this.selectedItems = [...this.filteredOptions];
         }
       },
-    }
+      operate(){
+        this.display();
+        console.log("jiaijijais");
+      if (this.trailGroup === 'T1') {
+  this.a1 = this.selectedItems[0];
+  this.a2 = this.selectedItems[1];
+  this.a3 = this.selectedItems[2];
+  this.a4 = this.selectedItems[3];
+  this.a5 = this.selectedItems[4];
+
+  this.b1 = this.rows[0].ingredients;
+  this.b2 = this.rows[1].ingredients;
+  this.b3 = this.rows[2].ingredients;
+  this.b4 = this.rows[3].ingredients;
+  this.b5 = this.rows[4].ingredients;
+  
+} else if (this.trailGroup === 'T2') {
+  this.b1 = this.rows[0].ingredients;
+  this.b2 = this.rows[1].ingredients;
+  this.b3 = this.rows[2].ingredients;
+  this.b4 = this.rows[3].ingredients;
+  this.b5 = this.rows[4].ingredients;
+  this.a6 = this.selectedItems[0];
+  this.a7 = this.selectedItems[1];
+  this.a8 = this.selectedItems[2];
+  this.a9 = this.selectedItems[3];
+  this.a10 = this.selectedItems[4];
+  // this.b1 = this.rows[0].ingredients;
+  // this.b2 = this.rows[1].ingredients;
+  // this.b3 = this.rows[2].ingredients;
+  // this.b4 = this.rows[3].ingredients;
+  // this.b5 = this.rows[4].ingredients;
+  // this.b11 = this.rows[0].number.toString();
+  // this.b12 = this.rows[1].number.toString();
+  // this.b13 = this.rows[2].number.toString();
+  // this.b14 = this.rows[3].number.toString();
+  // this.b15 = this.rows[4].number.toString();
+} else if (this.trailGroup === 'T3') {
+  this.a11 = this.selectedItems[0];
+  this.a12 = this.selectedItems[1];
+  this.a13 = this.selectedItems[2];
+  this.a14 = this.selectedItems[3];
+  this.a15 = this.selectedItems[4];
+  this.b1 = this.rows[0].ingredients;
+  this.b2 = this.rows[1].ingredients;
+  this.b3 = this.rows[2].ingredients;
+  this.b4 = this.rows[3].ingredients;
+  this.b5 = this.rows[4].ingredients;
+  // this.b16 = this.rows[0].number.toString();
+  // this.b17 = this.rows[1].number.toString();
+  // this.b18 = this.rows[2].number.toString();
+  // this.b19 = this.rows[3].number.toString();
+  // this.b20 = this.rows[4].number.toString();
+} else if (this.trailGroup === 'T4') {
+  this.a16 = this.selectedItems[0];
+  this.a17 = this.selectedItems[1];
+  this.a18 = this.selectedItems[2];
+  this.a19 = this.selectedItems[3];
+  this.a20 = this.selectedItems[4];
+  this.b1 = this.rows[0].ingredients;
+  this.b2 = this.rows[1].ingredients;
+  this.b3 = this.rows[2].ingredients;
+  this.b4 = this.rows[3].ingredients;
+  this.b5 = this.rows[4].ingredients;
+  // this.b21 = this.rows[0].number.toString();
+  // this.b22 = this.rows[1].number.toString();
+  // this.b23 = this.rows[2].number.toString();
+  // this.b24 = this.rows[3].number.toString();
+  // this.b25 = this.rows[4].number.toString();
+} else {
+  this.a21 = this.selectedItems[0];
+  this.a22 = this.selectedItems[1];
+  this.a23 = this.selectedItems[2];
+  this.a24 = this.selectedItems[3];
+  this.a25 = this.selectedItems[4];
+
+  this.b1 = this.rows[0].ingredients;
+  this.b2 = this.rows[1].ingredients;
+  this.b3 = this.rows[2].ingredients;
+  this.b4 = this.rows[3].ingredients;
+  this.b5 = this.rows[4].ingredients;
+  
+  // this.b26 = this.rows[0].number.toString();
+  // this.b27 = this.rows[1].number.toString();
+  // this.b28 = this.rows[2].number.toString();
+  // this.b29 = this.rows[3].number.toString();
+  // this.b30 = this.rows[4].number.toString();
+}
+// { rows: [
+//         // { ingredients: '', number: 0, font: '' ,id: },
+//         { ingredients: '', number: 0, font: '', id: id++} // Initial row
+//       ],
+// this.b1 = this.rows[0].ingredients;
+//   this.b2 = this.rows[1].ingredients;
+//   this.b3 = this.rows[2].ingredients;
+//   this.b4 = this.rows[3].ingredients;
+//   this.b5 = this.rows[4].ingredients;
+
+  console.log("this.b6 = this.rows[0].number;",this.rows[0].number);
+  
+this.operatex();
+
+      },
+      operatex(){
+        if (this.trailGroup === 'T1')
+{
+  console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+  this.b6 = this.rows[0].number.toString();
+  this.b7 = this.rows[1].number.toString();
+  this.b8 = this.rows[2].number.toString();
+  this.b9 = this.rows[3].number.toString();
+  this.b10 = this.rows[4].number.toString();
+} else if (this.trailGroup === 'T2') {
+  this.b11 = this.rows[0].number.toString();
+  this.b12 = this.rows[1].number.toString();
+  this.b13 = this.rows[2].number.toString();
+  this.b14 = this.rows[3].number.toString();
+  this.b15 = this.rows[4].number.toString();
+} else if (this.trailGroup === 'T3') {
+  this.b16 = this.rows[0].number;
+  this.b17 = this.rows[1].number;
+  this.b18 = this.rows[2].number;
+  this.b19 = this.rows[3].number;
+  this.b20 = this.rows[4].number;
+} else if (this.trailGroup === 'T4') {
+  this.b21 = this.rows[0].number;
+  this.b22 = this.rows[1].number;
+  this.b23 = this.rows[2].number;
+  this.b24 = this.rows[3].number;
+  this.b25 = this.rows[4].number;
+} else {
+  this.b26 = this.rows[0].number;
+  this.b27 = this.rows[1].number;
+  this.b28 = this.rows[2].number;
+  this.b29 = this.rows[3].number;
+  this.b30 = this.rows[4].number;
+}
+
+      },
+      clearr(){
+        this.trNo='';
+        this.chickCategory='';
+        this.trailGroup='';
+        this.selectedItems=[];
+        this.penBirdCnt='';
+        this.formula='';
+        this.feedPerChick='';
+        this.temp2=[];
+        this.rows=[{ ingredients: '', number: 0, font: '', isEditing: false, id: id++}];
+      },
+      toggleRslt(){
+        this.page=!this.page;
+        // this.clearr();
+      }
+    },
+
   };
   </script>
   
   <style scoped>
+
+table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            /* text-align: center; */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-cell {
+            width: 50px;
+        }
+
 .structax{
     display: grid;
     grid-template-columns:75px 230px 58px 200px;
@@ -1030,6 +1363,9 @@ button[type="button"].cancel-button {
   border-radius: 10px 10px 0 0;
   background: #f2f2f2;
 }
+
+
+
 .checkbox-select__trigger:hover {
   background: #f4f4f4;
 }

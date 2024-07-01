@@ -128,12 +128,12 @@ const routes = [
       },
       {
         path: "prestarter",
-        name: "Prestarter",
+        name: "Corrected Feed Formula",
         component: PreStarter,
       },
       {
         path: "Datascreenentry",
-        name: "Data Screen Entry",
+        name: "BROILER NUTRITION DETAILS",
         component: DataScreenEntry,
       },
       {
