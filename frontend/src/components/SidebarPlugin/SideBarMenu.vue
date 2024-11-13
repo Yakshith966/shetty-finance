@@ -10,67 +10,7 @@
         ><label class="w-100 my-auto"> Dashboard</label></router-link
       >
     </li>
-    <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'Experimentinfo' }"
-      @click.prevent="handleNavigation('Experimentinfo')"
-    >
-      <router-link to="/experimentinfo" class="m-0"
-        ><md-icon>add_circle</md-icon>
-        <label class="w-100 my-auto"> Experiment Info</label></router-link
-      >
-    </li>
-    <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'Prestarter' }"
-      @click.prevent="handleNavigation('Prestarter')"
-    >
-      <router-link to="/prestarter" class="m-0"
-        ><md-icon>calculate</md-icon>
-        <label class="w-100 my-auto">Feed Formula</label></router-link
-      >
-    </li>
-
-    <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'BaseFeedFormula' }"
-      @click.prevent="handleNavigation('BaseFeedFormula')"
-    >
-      <router-link to="/BaseFeedFormula" class="m-0"
-        ><md-icon>functions</md-icon><label class="w-100 my-auto">Base Feed Formula</label></router-link
-      >
-    </li>
-
-    <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'AllocationGroupwiseTare' }"
-      @click.prevent="handleNavigation('AllocationGroupwiseTare')"
-    >
-      <router-link to="/allocationgroupwisetare" class="m-0"
-        ><md-icon>description</md-icon><label class="w-100 my-auto"> Groupwise Tare Allocation</label></router-link
-      >
-    </li>
-
-    <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'Feedformula' }"
-      @click.prevent="handleNavigation('Feedformula')"
-    >
-      <router-link to="/feedformula" class="m-0"
-        ><md-icon>start</md-icon>
-        <label class="w-100 my-auto">Broiler Nutrition Details</label></router-link
-      >
-    </li>
-    <li
-      class="side-bar-item pl-1"
-      :class="{ active: activeItem === 'Datascreenentry' }"
-      @click.prevent="handleNavigation('Datascreenentry')"
-    >
-      <router-link to="/Datascreenentry" class="m-0"
-        ><md-icon>table_view</md-icon>
-        <label class="w-100 my-auto">Day/Weekwise Entry</label></router-link
-      >
-    </li>
+  
 
     <!-- <li
       class="side-bar-item pl-1"
@@ -93,10 +33,10 @@
         data-target="#collapseExample24"
         aria-expanded="false"
         aria-controls="collapseExample24"
-        @click.prevent="handleNavigation('Reports')"
+        @click.prevent="handleNavigation('Asset Management')"
       >
         <i class="md-icon md-icon-font md-theme-default">library_books</i>
-        <label class="my-auto w-100">Reports</label
+        <label class="my-auto w-100">Asset Management</label
         ><i class="mdi mdi-chevron-down nav-arrow my-auto"></i
         ><i class="mdi mdi-chevron-up nav-arrow my-auto"></i>
       </a>
@@ -105,80 +45,77 @@
         <!-- //--- -->
         <li
           class="side-bar-item"
-          :class="{ active: activeItem === 'Bird Ratio' }"
-          @click.prevent="handleNavigation('Bird Ratio')"
+          :class="{ active: activeItem === 'Product Details' }"
+          @click.prevent="handleNavigation('Product Details')"
         >
           <router-link
             class="m-0"
             to="/birdratio"
             style="padding-top: 6px; padding-bottom: 6px"
-            >Bird Ratio</router-link
+            >Product Details</router-link
           >
         </li>
 
         <!-- //// -->
         <li
           class="side-bar-item"
-          :class="{ active: activeItem === 'Groupwise weight' }"
-          @click.prevent="handleNavigation('Groupwise weight')"
+          :class="{ active: activeItem === 'Payment Details' }"
+          @click.prevent="handleNavigation('Payment Details')"
         >
           <router-link
             class="m-0"
             to="/groupwiseweight"
             style="padding-top: 6px; padding-bottom: 6px"
-            >Groupwise Weight</router-link
+            >Payment Details</router-link
           >
         </li>
 
         <li
           class="side-bar-item"
-          :class="{ active: activeItem === 'Mortal Details' }"
-          @click.prevent="handleNavigation('Mortal Details')"
+          :class="{ active: activeItem === 'Customer Details' }"
+          @click.prevent="handleNavigation('Customer Details')"
         >
           <router-link
             class="m-0"
             to="/mortaldetails"
             style="padding-top: 6px; padding-bottom: 6px"
-            >Mortal Details</router-link
+            >Customer Details</router-link
           >
         </li>
+      </ul>
+    </li>
 
+
+
+    <li class="p-0">
+      <a
+        href="javascript:void(0)"
+        class="m-0 side-bar-item"
+        style="padding-top: 6px; padding-bottom: 6px"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseExample28"
+        aria-expanded="false"
+        aria-controls="collapseExample28"
+        @click.prevent="handleNavigation('Reports')"
+      >
+        <i class="md-icon md-icon-font md-theme-default">library_books</i>
+        <label class="my-auto w-100">Reports</label
+        ><i class="mdi mdi-chevron-down nav-arrow my-auto"></i
+        ><i class="mdi mdi-chevron-up nav-arrow my-auto"></i>
+      </a>
+
+      <ul class="collapse side-sub-menu level-2" id="collapseExample28">
         <li
           class="side-bar-item"
-          :class="{ active: activeItem === 'Penwise weight' }"
-          @click.prevent="handleNavigation('Penwise weight')"
+          :class="{ active: activeItem === 'Customer Details' }"
+          @click.prevent="handleNavigation('Customer Details')"
         >
           <router-link
             class="m-0"
-            to="/penwiseweight"
+            to="/mortaldetails"
             style="padding-top: 6px; padding-bottom: 6px"
-            >Penwise Weight</router-link
-          >
-        </li>
-
-        <li
-          class="side-bar-item"
-          :class="{ active: activeItem === 'Weekly report' }"
-          @click.prevent="handleNavigation('Weekly report')"
-        >
-          <router-link
-            class="m-0"
-            to="/weeklyreport"
-            style="padding-top: 6px; padding-bottom: 6px"
-            >Weekly Report</router-link
-          >
-        </li>
-
-        <li
-          class="side-bar-item"
-          :class="{ active: activeItem === 'Weight on 5th week' }"
-          @click.prevent="handleNavigation('Weight on 5th week')"
-        >
-          <router-link
-            class="m-0"
-            to="/weight5thweek"
-            style="padding-top: 6px; padding-bottom: 6px"
-            >Weight 5th Week</router-link
+            >Asset Reports</router-link
           >
         </li>
       </ul>
