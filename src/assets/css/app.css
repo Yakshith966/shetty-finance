@@ -1,0 +1,30 @@
+.custom-table{
+    text-align: center;
+}
+.custom-table td {
+    padding: 1rem;
+    font-size: 14px;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, 0.12);
+}
+.custom-table th {
+    font-size: 16px;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, 0.12);
+}
+input[type="text"]:disabled{
+    
+    background-color:rgba(159, 154, 154, 0.345);
+} 
+.custom-input-width{
+    max-width: 8rem;
+}
+.custom-input-sm{
+   max-width: 5rem;
+}
+.width-10{
+    width: 10rem;
+}
+hr{
+    background-color: silver !important;
+}
