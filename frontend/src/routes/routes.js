@@ -11,6 +11,7 @@ import Usermanagement from "@/pages/Usermanagement.vue";
 import LoginView from "@/pages/Auth/LoginView.vue";
 import FeedFormula from "@/pages/FeedFormula.vue";
 import PreStarter from "@/pages/PreStarter.vue";
+import ProductDetails from "../pages/ProductDetails.vue";
 import Experimentinfo from "@/pages/ExperimentInfo.vue";
 import DataScreenEntry from "@/pages/DataScreenEntry.vue";
 import BodyWeight from "@/pages/BodyWeight.vue";
@@ -131,6 +132,12 @@ const routes = [
         name: "Corrected Feed Formula",
         component: PreStarter,
       },
+      {
+        path: "product-details",
+        name: "Product Details",
+        component: ProductDetails,
+      },
+      
       {
         path: "Datascreenentry",
         name: "Day/Weekwise Entry",
