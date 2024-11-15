@@ -68,235 +68,358 @@
             <table class="styled-tablex">
               <thead>
                 <tr class="first-option">
-                  <th>Sl No</th>
-                  <th>Ingredients</th>
-                  <th>Pre Starter</th>
-                  <th>Starter</th>
-                  <th>Finisher</th>
+                  <th>Customer_Id</th>
+                  <th>Date</th>
+                  <th>Customer_Name</th>
+                  <th>Model</th>
+                  <th>Status</th>
+                  <th>Payment</th>
+                  <th>Payment Status</th>
                   <th>Action</th>
                   <!-- <th>Delete</th> -->
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="item in temp" :key="item.id">
+                  <td>{{ item.cust_id }}</td>
+                  <td>{{ item.date }}</td>
+                  <td>{{ item.cust_name }}</td>
+                  <td>{{ item.Model }}</td>
                   <td>
-                    {{ item.slNo }}
-                  </td>
-                  <td>
-                    <template v-if="!item.isEditing">{{
-                      item.ingredients
-                    }}</template>
-                    <template v-else>
-                      <select v-model="item.ingredients" class="slct2">
-                        <option value="Soya">Soya</option>
-                        <option value="Maize">Maize</option>
-                        <option value="7.5StarterPremix">
-                          7.5 Starter Premix
-                        </option>
-                        <option value="OIL">OIL</option>
-                      </select>
-                    </template>
-                  </td>
+                    <md-menu md-size="medium" md-align-trigger>
+                      <md-button md-menu-trigger>Select One  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16" style="margin-left: 5px;" >
+  <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+</svg></md-button>
 
-                  <td>
-                    <template v-if="!item.isEditing">{{
-                      item.prestarter
-                    }}</template>
-                    <template v-else>
-                      <input v-model="item.prestarter" class="custm" />
-                    </template>
+                      <md-menu-content>
+                        <md-menu-item>Pending</md-menu-item>
+                        <md-menu-item>On Progress</md-menu-item>
+                        <md-menu-item>Repaired</md-menu-item>
+                      </md-menu-content>
+                    </md-menu>
                   </td>
                   <td>
-                    <template v-if="!item.isEditing">{{
-                      item.starter
-                    }}</template>
-                    <template v-else>
-                      <input v-model="item.starter" class="custm" />
-                    </template>
-                  </td>
-                  <td>
-                    <template v-if="!item.isEditing">{{
-                      item.finisher
-                    }}</template>
-                    <template v-else>
-                      <input v-model="item.finisher" class="custm" />
-                    </template>
-                  </td>
+                    <!-- Payment Icon -->
+                    <div>
+                      <md-dialog :md-active.sync="showDialog">
+                        <md-dialog-title>Preferences</md-dialog-title>
 
+                        <!-- <md-tabs md-dynamic-height> -->
+                        <md-tab md-label="General" class="dailog">
+                          <form>
+                            <div class="md-input-container">
+                              <label for="cust">Customer ID</label>
+                              <input
+                                type="text"
+                                id="cust"
+                                v-model="form.cust"
+                              />
+                            </div>
+                            <div class="md-input-container">
+                              <label for="cust_name">Customer Name</label>
+                              <input
+                                type="text"
+                                id="cust_name"
+                                v-model="form.cust_name"
+                              />
+                            </div>
+                            <div class="md-input-container">
+                              <label for="date">Date</label>
+                              <input
+                                type="date"
+                                id="date"
+                                v-model="form.date"
+                              />
+                            </div>
+                            <div class="md-input-container">
+                              <label for="total_amount">Total Amount</label>
+                              <input
+                                type="number"
+                                id="total_amount"
+                                v-model="form.total_amount"
+                              />
+                            </div>
+                          </form>
+                        </md-tab>
+                        <!-- </md-tabs> -->
+
+                        <md-dialog-actions>
+                          <md-button
+                            class="md-primary"
+                            @click="showDialog = false"
+                            >Close</md-button
+                          >
+                          <md-button
+                            class="md-primary"
+                            @click="showDialog = false"
+                            >Save</md-button
+                          >
+                        </md-dialog-actions>
+                      </md-dialog>
+
+                      <md-button
+                        class="md-primary md-raised"
+                        @click="showDialog = true"
+                        ><svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-credit-card"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"
+                          />
+                          <path
+                            d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"
+                          /></svg
+                      >
+                    </md-button>
+                    </div>
+                  </td>
                   <td>
-                    <button v-if="!item.isEditing" @click="toggleEdit(item)">
-                      <md-icon>edit_square</md-icon>
-                    </button>
-                    <button v-else @click="saveChanges(item)">
-                      <md-icon>save</md-icon>
-                    </button>
+                    <md-menu md-size="medium" md-align-trigger>
+                      <md-button md-menu-trigger>Payment Mode    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16" style="margin-left: 5px;" >
+  <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+</svg></md-button>
+
+                      <md-menu-content>
+                        <md-menu-item>Paid</md-menu-item>
+                        <md-menu-item>Pending</md-menu-item>
+                      </md-menu-content>
+                    </md-menu>
+                  </td>
+                  <td>
+                    <div>
+                      <span
+      style="cursor: pointer; margin-right: 10px;"
+      class="material-icons"
+      @click="openDialog"
+    >
+      visibility
+    </span>
+
+    <!-- Dialog to Display Stored Data -->
+    <v-dialog v-model="dialogVisible" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Stored Data</span>
+        </v-card-title>
+        <v-card-text>
+          <p><strong>Customer ID:</strong> {{ storedData.cust }}</p>
+          <p><strong>Customer Name:</strong> {{ storedData.cust_name }}</p>
+          <p><strong>Date:</strong> {{ storedData.date }}</p>
+          <p><strong>Total Amount:</strong> {{ storedData.total_amount }}</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="dialogVisible = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+<span class="material-icons">
+edit
+</span>
+                  </div>
                   </td>
                 </tr>
+               
               </tbody>
             </table>
           </md-card-content>
         </md-card>
       </div>
     </div>
-    <div v-if="activeTab === 'apply'">
-  <form class="form-style">
-    <div style="max-width: 75%">
-
-      <!-- Customer Details Card -->
-      <md-card max-width="60%">
-        <md-card-header data-background-color="blue">
-          <h4 class="title" style="font-weight: bold;">Customer Details</h4>
-        </md-card-header>
-        <md-card-content>
-          <div class="table-layout">
-            <div class="struct" id="struct">
-
-              <!-- Customer Name -->
-              <label class="test1" style="text-align: center;">
-                <span class="md-body-2">Customer Name <span style="color: red;">*</span></span>
-              </label>
-              <div class="test2">
-                <md-field>
-                  <md-input v-model="customerName" placeholder="Enter customer name"></md-input>
-                </md-field>
-              </div>
-
-              <!-- Phone Number -->
-              <label class="test3" style="text-align: center;">
-                <span class="md-body-2">Phone Number <span style="color: red;">*</span></span>
-              </label>
-              <div class="test4">
-                <md-field>
-                  <md-input v-model="contactNumber" type="tel" placeholder="Enter phone number"></md-input>
-                </md-field>
-              </div>
-
-              <!-- Email (Optional) -->
-              <label class="test1" style="text-align: center;">
-                <span class="md-body-2">Email</span>
-              </label>
-              <div class="test2">
-                <md-field>
-                  <md-input v-model="email" type="email" placeholder="Enter email"></md-input>
-                </md-field>
-              </div>
-
-            </div>
-          </div>
-        </md-card-content>
-      </md-card>
-
-      <!-- Product Details Card -->
-      <md-card max-width="60%" style="margin-top: 20px;">
-        <md-card-header data-background-color="green">
-          <h4 class="title" style="font-weight: bold;">Product Details</h4>
-        </md-card-header>
-        <md-card-content>
-          <div class="table-layout">
-            <div class="struct" id="struct">
-
-              <!-- Product Type -->
-              <label class="test1" style="text-align: center;">
-                <span class="md-body-2">Product Type <span style="color: red;">*</span></span>
-              </label>
-              <div class="test2">
-                <md-field>
-                  <md-input v-model="productType" placeholder="Enter product type (e.g., laptop, printer)"></md-input>
-                </md-field>
-              </div>
-
-              <!-- Model -->
-              <label class="test3" style="text-align: center;">
-                <span class="md-body-2">Model <span style="color: red;">*</span></span>
-              </label>
-              <div class="test4">
-                <md-field>
-                  <md-input v-model="model" placeholder="Enter model"></md-input>
-                </md-field>
-              </div>
-
-              <!-- Serial Number -->
-              <label class="test1" style="text-align: center;">
-                <span class="md-body-2">Serial Number <span style="color: red;">*</span></span>
-              </label>
-              <div class="test2">
-                <md-field>
-                  <md-input v-model="serialNumber" placeholder="Enter serial number"></md-input>
-                </md-field>
-              </div>
-
-              <!-- Status -->
-              <label class="test3" style="text-align: center;">
-                <span class="md-body-2">Status <span style="color: red;">*</span></span>
-              </label>
-              <div class="test4">
-                <md-field>
-                  <md-select v-model="status">
-                    <md-option value="" disabled>Select</md-option>
-                    <md-option value="Received">Received</md-option>
-                    <md-option value="In Repair">In Repair</md-option>
-                    <md-option value="Repaired">Repaired</md-option>
-                    <md-option value="Returned">Returned</md-option>
-                  </md-select>
-                </md-field>
-              </div>
-
-              <!-- Issue Description -->
-              <label class="test1" style="text-align: center;">
-                <span class="md-body-2">Issue Description <span style="color: red;">*</span></span>
-              </label>
-              <div class="test2">
-                <md-field>
-                  <md-input v-model="issueDescription" type="text" placeholder="Describe the issue"></md-input>
-                </md-field>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Buttons -->
-          <div class="row-layout2">
-            <div id="buttons">
-              <md-button type="submit" @click="displayAllCategory" class="md-success">Submit</md-button>
-              <md-button type="button" class="md-danger" style="margin-left: 10px;">Cancel</md-button>
-            </div>
-          </div>
-        </md-card-content>
-      </md-card>
-
+    <div v-if="showDialog" class="dialog-overlay" @click="closeDialog">
+      <div class="dialog-content" @click.stop>
+        <h3>Payment Details for {{ selectedItem.customerName }}</h3>
+        <p>Product: {{ selectedItem.productName }}</p>
+        <p>Model: {{ selectedItem.modelDetails }}</p>
+        <button @click="closeDialog">Close</button>
+      </div>
     </div>
-  </form>
-</div>
+    <div v-if="activeTab === 'apply'">
+      <form class="form-style">
+        <div style="max-width: 75%">
+          <!-- Customer Details Card -->
+          <md-card max-width="60%">
+            <md-card-header data-background-color="blue">
+              <h4 class="title" style="font-weight: bold">Customer Details</h4>
+            </md-card-header>
+            <md-card-content>
+              <div class="table-layout">
+                <div class="struct" id="struct">
+                  <!-- Customer Name -->
+                  <label class="test1" style="text-align: center">
+                    <span class="md-body-2"
+                      >Customer Name <span style="color: red">*</span></span
+                    >
+                  </label>
+                  <div class="test2">
+                    <md-field>
+                      <md-input
+                        v-model="customerName"
+                        placeholder="Enter customer name"
+                      ></md-input>
+                    </md-field>
+                  </div>
 
+                  <!-- Phone Number -->
+                  <label class="test3" style="text-align: center">
+                    <span class="md-body-2"
+                      >Phone Number <span style="color: red">*</span></span
+                    >
+                  </label>
+                  <div class="test4">
+                    <md-field>
+                      <md-input
+                        v-model="contactNumber"
+                        type="tel"
+                        placeholder="Enter phone number"
+                      ></md-input>
+                    </md-field>
 
+                    <!-- Email (Optional) -->
+                    <label class="test1" style="text-align: center">
+                      <span class="md-body-2">Email</span>
+                    </label>
+                    <div class="test2">
+                      <md-field>
+                        <md-input
+                          v-model="email"
+                          type="email"
+                          placeholder="Enter email"
+                        ></md-input>
+                      </md-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
 
-    <!-- <div>
-         <div class="md-layout md-gutter">
-           <div class="md-layout-item">
-             <md-field>
-                   <label for="movies">Movies</label>
-                   <md-select v-model="movies" name="movies" id="movies" md-dense multiple>
-                     <md-option value="P1" style="display:contents;">P1</md-option>
-                     <md-option value="P2">P2</md-option>
-                     <md-option value="P3">P3</md-option>
-                     <md-option value="P4">P4</md-option>
-                     <md-option value="P5">P5</md-option>
-                     <md-option value="P6">P6</md-option>
-                     <md-option value="P7">P7</md-option>
-                   </md-select>
-             </md-field>
-           </div>
-         </div>
-       </div> -->
+          <!-- Product Details Card -->
+          <md-card max-width="60%" style="margin-top: 20px">
+            <md-card-header data-background-color="green">
+              <h4 class="title" style="font-weight: bold">Product Details</h4>
+            </md-card-header>
+            <md-card-content>
+              <div class="table-layout">
+                <div class="struct" id="struct">
+                  <!-- Product Type -->
+                  <label class="test1" style="text-align: center">
+                    <span class="md-body-2"
+                      >Product Type <span style="color: red">*</span></span
+                    >
+                  </label>
+                  <div class="test2">
+                    <md-field>
+                      <md-input
+                        v-model="productType"
+                        placeholder="Enter product type (e.g., laptop, printer)"
+                      ></md-input>
+                    </md-field>
+                  </div>
+
+                  <!-- Model -->
+                  <label class="test3" style="text-align: center">
+                    <span class="md-body-2"
+                      >Model <span style="color: red">*</span></span
+                    >
+                  </label>
+                  <div class="test4">
+                    <md-field>
+                      <md-input
+                        v-model="model"
+                        placeholder="Enter model"
+                      ></md-input>
+                    </md-field>
+                  </div>
+
+                  <!-- Serial Number -->
+                  <label class="test1" style="text-align: center">
+                    <span class="md-body-2"
+                      >Serial Number <span style="color: red">*</span></span
+                    >
+                  </label>
+                  <div class="test2">
+                    <md-field>
+                      <md-input
+                        v-model="serialNumber"
+                        placeholder="Enter serial number"
+                      ></md-input>
+                    </md-field>
+                  </div>
+
+                  <!-- Status -->
+                  <label class="test3" style="text-align: center">
+                    <span class="md-body-2"
+                      >Status <span style="color: red">*</span></span
+                    >
+                  </label>
+                  <div class="test4">
+                    <md-field>
+                      <md-select v-model="status">
+                        <md-option value="" disabled>Select</md-option>
+                        <md-option value="Received">Received</md-option>
+                        <md-option value="In Repair">In Repair</md-option>
+                        <md-option value="Repaired">Repaired</md-option>
+                        <md-option value="Returned">Returned</md-option>
+                      </md-select>
+                    </md-field>
+                  </div>
+
+                  <!-- Issue Description -->
+                  <label class="test1" style="text-align: center">
+                    <span class="md-body-2"
+                      >Issue Description <span style="color: red">*</span></span
+                    >
+                  </label>
+                  <div class="test2">
+                    <md-field>
+                      <md-input
+                        v-model="issueDescription"
+                        type="text"
+                        placeholder="Describe the issue"
+                      ></md-input>
+                    </md-field>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Buttons -->
+              <div class="row-layout2">
+                <div id="buttons">
+                  <md-button
+                    type="submit"
+                    @click="displayAllCategory"
+                    class="md-success"
+                    >Submit</md-button
+                  >
+                  <md-button
+                    type="button"
+                    class="md-danger"
+                    style="margin-left: 10px"
+                    >Cancel</md-button
+                  >
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
-   
-   <script>
+
+<script>
 let id = 0;
 
 export default {
+  name: "DialogCustom",
   name: "simple-table",
-
+  showDialog: false,
   props: {
     tableHeaderColor: {
       type: String,
@@ -309,45 +432,33 @@ export default {
       feedCost2: "57",
       temp: [
         {
-          slNo: 1,
-          ingredients: "Soya",
-          prestarter: "560",
-          starter: "120",
-          finisher: "65",
-          isEditing: false,
-          id: Date.now() + Math.random(),
+          cust_id: 1,
+          date: 1 - 12 - 2024,
+          cust_name: "Ram",
+          Model: "HP",
         },
         {
-          slNo: 2,
-          ingredients: "Maize",
-          prestarter: "560",
-          starter: "120",
-          finisher: "65",
-          isEditing: false,
-          id: Date.now() + Math.random(),
+          cust_id: 2,
+          date: 1 - 12 - 2024,
+          cust_name: "Rama",
+          Model: "HP",
         },
         {
-          slNo: 3,
-          ingredients: "Soya",
-          prestarter: "560",
-          starter: "120",
-          finisher: "65",
-          isEditing: false,
-          id: Date.now() + Math.random(),
+          cust_id: 3,
+          date: 1 - 12 - 2024,
+          cust_name: "Sham",
+          Model: "Dell",
         },
         {
-          slNo: 4,
-          ingredients: "7.5StarterPremix",
-          prestarter: "560",
-          starter: "120",
-          finisher: "65",
-          isEditing: false,
-          id: Date.now() + Math.random(),
+          cust_id: 4,
+          date: 1 - 10 - 2024,
+          cust_name: "Sana",
+          Model: "Lenovo",
         },
       ],
       activeTab: "list", // Default active tab
       rows: [
-        { country: "", number: "", font: "", id: id++ }, // Initial row
+        { cust_id: "", date: "", cust_name: "", Model: "" }, // Initial row
       ],
       users: [
         {
@@ -414,6 +525,23 @@ export default {
           city: "Beijing",
         },
       ],
+      form: {
+        cust: "",
+        cust_name: "",
+        date: "",
+        total_amount: null,
+      },
+      storedData: {
+        cust: '12345',
+        cust_name: 'John Doe',
+        date: '2024-11-15',
+        total_amount: 500,
+      },
+      showDialog: false,
+      selectedItem: {},
+      name: "DialogCustom",
+      dialogVisible: false,
+      
     };
   },
   methods: {
@@ -439,11 +567,22 @@ export default {
       item.isEditing = false;
       // Additional logic to save changes if needed
     },
+    openPaymentDialog(item) {
+      this.selectedItem = item;
+      this.showDialog = true;
+    },
+    closeDialog() {
+      this.showDialog = false;
+      this.selectedItem = {};
+    },
+    openDialog() {
+      this.dialogVisible = true;
+    },
   },
 };
 </script>
-   
-   <style scoped>
+
+<style scoped>
 .styled-tablex {
   width: 100%;
   border-collapse: collapse;
@@ -758,5 +897,27 @@ dl {
   flex-direction: column;
   align-items: flex-end;
 }
+::v-deep(.md-dialog-container) {
+  max-width: 1px;
+  margin: 0;
+}
+.md-input-container {
+  margin-bottom: 16px;
+}
+
+.md-input-container label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.md-input-container input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.dialog {
+  width: 900px;
+}
 </style>
-   
