@@ -11,8 +11,17 @@ import { iconsSet as icons } from '@/assets/icons'
 import DocsComponents from '@/components/DocsComponents'
 import DocsExample from '@/components/DocsExample'
 import DocsIcons from '@/components/DocsIcons'
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+     baseURL: import.meta.env.VITE_APP_ROOT_PATH_API, // For Vue 3 with Vite
+     headers: {
+       'Content-Type': 'application/json',
+     },
+   });
 
 const app = createApp(App)
+window.axios = axiosInstance;
 app.use(createPinia())
 app.use(router)
 app.use(vuetify);

@@ -37,6 +37,12 @@ const routes = [
         component: () => import('@/views/base/ServicePageDetails.vue'),
       },
       {
+        path: '/payment/payment-details',
+        name: 'Payment Details',
+        component: () => import('@/views/base/PaymentDetails.vue'),
+      },
+      
+      {
         path: '/theme/typography',
         name: 'Typography',
         component: () => import('@/views/theme/Typography.vue'),

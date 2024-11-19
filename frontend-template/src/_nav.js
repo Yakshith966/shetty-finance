@@ -21,9 +21,9 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Typography',
-    to: '/theme/typography',
-    icon: 'cil-pencil',
+    name: 'Payment Details',
+    to: '/payment/payment-details',
+    icon: 'cil-dollar',
   },
   {
     component: 'CNavTitle',
