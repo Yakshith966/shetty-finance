@@ -53,18 +53,23 @@
 </template>
    
        <template v-slot:item.payment="{ item }">
-         <v-btn icon @click="openPaymentDialog(item)">
+         <v-btn icon :disabled="isPaid(item)" @click="openPaymentDialog(item)">
            <v-icon>mdi-credit-card</v-icon>
          </v-btn>
        </template>
    
        <template v-slot:item.actions="{ item }">
-         <v-icon class="me-2" size="small" @click="openEditDialog(item)">
+         <v-icon class="me-2" size="small" :disabled="isPaid(item)" @click="!isPaid(item) && openEditDialog(item)"
+         >
            mdi-pencil
          </v-icon>
-         <v-icon size="small" @click="openViewDialog(item)">
+         <v-icon size="small" text="Open Dialog" :disabled="isPaid(item)"
+         @click="!isPaid(item) && openViewDialog(item)">
            mdi-eye
          </v-icon>
+       </template>
+       <template>
+        
        </template>
      </v-data-table>
    
@@ -76,12 +81,30 @@
          </v-card-title>
          <v-card-text>
            <v-container>
+            <v-container>
+      <v-checkbox  v-model="isExistingCustomer" label="Already a Customer"></v-checkbox>
+    </v-container>
+    
+    <v-autocomplete
+  v-if="isExistingCustomer"
+  v-model="selectedCustomer"
+  :items="customerNames"
+  item-title="customerName"
+  item-value="customerId"
+  label="Search Customer"
+  prepend-inner-icon="mdi-magnify"
+  outlined
+  hide-details
+  
+></v-autocomplete>
+  
              <v-row>
                <!-- First Card: Customer Details -->
                <v-col cols="12" md="6">
                  <v-card>
                    <v-card-title>Customer Details</v-card-title>
                    <v-card-text>
+
                      <v-text-field v-model="editedItem.customerName" label="Customer Name"></v-text-field>
                      <v-text-field v-model="editedItem.phone" label="Phone"></v-text-field>
                      <v-text-field v-model="editedItem.email" label="Email"></v-text-field>
@@ -132,6 +155,7 @@
              :items="['Paid', 'Pending']"
              label="Payment Status"
              outlined
+             @change="updatePaymentStatus(item)"
            ></v-select>
          </v-card-text>
          <v-card-actions>
@@ -146,9 +170,15 @@
    <script>
    export default {
      data: () => ({
+      isExistingCustomer: false,
+    selectedCustomer: null,
        dialog: false,
        dialogMode: 'new',
        paymentDialog: false,
+       customerNames: [
+  { customerId: 1, customerName: 'John Doe', email: 'john.doe@example.com' },
+  { customerId: 2, customerName: 'Jane Smith', email: 'jane.smith@example.com' },
+],
        headers: [
          { title: 'Customer ID', key: 'customerId' },
          { title: 'Customer Name', key: 'customerName' },
@@ -197,6 +227,10 @@
          status: '',
        },
      }),
+     computed: {
+ 
+},
+
      methods: {
        openNewItemDialog() {
          this.dialogMode = 'new';
@@ -245,6 +279,28 @@
   alert(`Payment Details Saved: ${JSON.stringify(this.paymentDetails)}`);
   this.closePaymentDialog();
 },
+populateCustomerDetails(customerId) {
+    const customer = this.records.find((record) => record.customerId === customerId);
+    if (customer) {
+      this.editedItem = {
+        ...this.editedItem,
+        customerName: customer.customerName,
+        phone: customer.phone,
+        email: customer.email,
+        altPhone: customer.altPhone,
+      };
+    }
+  },
+  updatePaymentStatus(item) {
+  const targetItem = this.records.find(record => record.customerId === item.customerId);
+  if (targetItem) {
+    targetItem.paymentDetails.status = item.paymentDetails.status;
+  }
+},
+
+  isPaid(item) {
+      return item.paymentDetails && item.paymentDetails.status === 'Paid';
+    },
 
      },
    };
@@ -255,4 +311,3 @@
      font-weight: bold;
    }
    </style>
-   
