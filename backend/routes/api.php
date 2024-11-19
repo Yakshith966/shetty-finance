@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CustomerDetailController;
+use App\Http\Controllers\ProductServiceDetailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Route to store customer details
+Route::post('/store-customer-details', [CustomerDetailController::class, 'store']);
+
+//Route to store product service details
+Route::post('/store-product-service-details', [ProductServiceDetailController::class, 'store']);
+
+// Route::get('/get-customer-details', [CustomerDetailController::class, 'store']);
+
