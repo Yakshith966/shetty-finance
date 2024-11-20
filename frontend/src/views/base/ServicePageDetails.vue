@@ -121,7 +121,7 @@
                   <v-textarea v-model="editedItem.issueDescription" label="Issue Description *"></v-textarea>
                   <v-text-field v-model="editedItem.collectedItems" label="Collected Items"></v-text-field>
                   <v-select
-                    v-model="editedItem.status"
+                    v-model="editedItem.statusId"
                     :items="['Received', 'Repairing','Repaired']"
                     label="Status"
                     outlined
