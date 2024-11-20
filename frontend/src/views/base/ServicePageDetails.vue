@@ -70,7 +70,7 @@
   </v-data-table>
   
   <!-- New/Edit Dialog -->
-  <v-dialog v-model="dialog" max-width="800px">
+  <v-dialog v-model="dialog" max-width="800px"   @click:outside="handleOutsideClick">
     <v-card>
       <v-card-title>
         <span class="text-h5">{{ dialogMode === 'new' ? 'New Item' : 'Edit Item' }}</span>
@@ -83,13 +83,15 @@
          <v-autocomplete
        v-if="isExistingCustomer"
        v-model="selectedCustomer"
-       :items="customerNames"
-       item-title="customerName"
-       item-value="customerId"
+       :items="customerDetails"
+       item-title="name"
+       item-value="id"
        label="Search Customer"
        prepend-inner-icon="mdi-magnify"
        outlined
        hide-details
+           @update:model-value="handleCustomerSelection"
+       
      ></v-autocomplete>
           
           <v-row>
@@ -111,12 +113,12 @@
               <v-card>
                 <v-card-title>Product Details</v-card-title>
                 <v-card-text>
-                 <v-text-field v-model="editedItem.productType" label="Product Type"></v-text-field>
-                 <v-text-field v-model="editedItem.productName" label="Product Name"></v-text-field>
+                 <v-text-field v-model="editedItem.productType" label="Product Type *"></v-text-field>
+                 <v-text-field v-model="editedItem.productName" label="Product Name *"></v-text-field>
                   <v-text-field v-model="editedItem.model" label="Model"></v-text-field>
                   <v-text-field v-model="editedItem.serialNumber" label="Serial Number"></v-text-field>
-                  <v-text-field v-model="editedItem.date" label="Date" type="date"></v-text-field>
-                  <v-textarea v-model="editedItem.issueDescription" label="Issue Description"></v-textarea>
+                  <v-text-field v-model="editedItem.date" label="Date" type="date *"></v-text-field>
+                  <v-textarea v-model="editedItem.issueDescription" label="Issue Description *"></v-textarea>
                   <v-text-field v-model="editedItem.collectedItems" label="Collected Items"></v-text-field>
                   <v-select
                     v-model="editedItem.status"
@@ -133,7 +135,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn variant="text" @click="closeDialog">Cancel</v-btn>
-        <v-btn color="primary" @click="saveItem">Save</v-btn>
+        <v-btn color="primary" @click="saveItem()">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -335,8 +337,17 @@
 </template>
 
 <script>
+import Toastify from "toastify-js";
+
 export default {
+  mounted(){
+    console.log('api ' + import.meta.env.VITE_VUE_APP_ROOT_PATH_API);
+    this.fetchProductStatus();
+    this.fetchCustomerDetails();
+  },
   data: () => ({
+    phoneNumberRule: (value) =>
+    /^\d{10}$/.test(value) || "Phone number must be exactly 10 digits.",
    
 viewDialog: false, // New dialog for viewing customer details
    isExistingCustomer: false,
@@ -344,10 +355,7 @@ viewDialog: false, // New dialog for viewing customer details
     dialog: false,
     dialogMode: 'new',
     paymentDialog: false,
-    customerNames: [
-{ customerId: 1, customerName: 'John Doe', email: 'john.doe@example.com' },
-{ customerId: 2, customerName: 'Jane Smith', email: 'jane.smith@example.com' },
-],
+    customerDetails: [],
     headers: [
       { title: 'Customer ID', key: 'customerId' },
       { title: 'Customer Name', key: 'customerName' },
@@ -359,6 +367,8 @@ viewDialog: false, // New dialog for viewing customer details
       { title: 'Payment Status', key: 'paymentStatus' },
       { title: 'Actions', key: 'actions' },
     ],
+    service_status : [],
+    
     records: [], // Data for the table
     editedItem: {
       customerId: '',
@@ -374,6 +384,7 @@ viewDialog: false, // New dialog for viewing customer details
       issueDescription: '',
       collectedItems: '',
       status: '',
+      statusId: '',
       paymentDetails: { // Add paymentDetails property
        amount: '',
        status: '',
@@ -400,15 +411,138 @@ viewDialog: false, // New dialog for viewing customer details
     },
   }),
   computed: {
+    formattedStatusOptions() {
+      // Return the service status directly (items array for v-select)
+      return this.service_status;
+    },
 
 },
+watch: {
+    isExistingCustomer(newVal) {
+      console.log('newVal ',newVal);
+      if (!newVal) {
+        this.resetForm(); // Call resetForm when checkbox is unchecked
+      }
+    },
+  },
 
   methods: {
+    handleOutsideClick() {
+      if (this.dialogMode === 'new') {
+        this.resetForm();
+        this.dialog = false; // Close the dialog
+      }
+    },
     openNewItemDialog() {
       this.dialogMode = 'new';
       this.dialog = true;
       this.editedItem = { ...this.defaultItem };
     },
+    handleCustomerSelection(value) {
+      if (!value) {
+        this.resetForm();
+      } else {
+        this.populateCustomerDetails(value);
+      }
+    },
+   async fetchProductStatus(){
+      try {
+      const response = await axios.get('/fetch-service-status');
+      this.service_status = response.data;
+      // console.log(thi.service_status);
+    } catch (error) {
+      console.error(error);
+      // this.$toast.error('Failed to save data. Please try again.');
+    }
+  },
+  populateCustomerDetails() {
+    console.log('testing')
+      if (this.isExistingCustomer && this.selectedCustomer) {
+        const customer = this.customerDetails.find(
+          (item) => item.id === this.selectedCustomer
+        );
+        console.log('çustomer details '+customer);
+        if (customer) {
+          this.editedItem.customerName = customer.name;
+          this.editedItem.phone = customer.phone_number;
+          this.editedItem.email = customer.email;
+          this.editedItem.altPhone = customer.alternate_phone_number;
+        }
+      }
+    },
+
+    async fetchCustomerDetails(){
+      try {
+      const response = await axios.get('/customers');
+      this.customerDetails = response.data.data;
+      console.log(this.customerDetails);
+    } catch (error) {
+      console.error(error);
+      // this.$toast.error('Failed to save data. Please try again.');
+    }
+
+  },
+    async saveItem() {
+    const payload = {
+      customer_name: this.editedItem.customerName,
+      phone: this.editedItem.phone,
+      email: this.editedItem.email,
+      altPhone: this.editedItem.altPhone,
+      productType: this.editedItem.productType,
+      productName: this.editedItem.productName,
+      model: this.editedItem.model,
+      serialNumber: this.editedItem.serialNumber,
+      issueDescription: this.editedItem.issueDescription,
+      date: this.editedItem.date,
+      collectedItems: this.editedItem.collectedItems,
+      status: this.editedItem.statusId,
+    };
+
+    try {
+      const response = await axios.post('/store-product-service-details', payload);
+      this.$emit('item-saved', response.data.data); // Notify parent component
+      this.closeDialog(); // Close the dialog
+      // this.$toast.success('Data saved successfully.');
+      Toastify({
+      text: "Data saved successfully.",
+      backgroundColor: "green",
+      className: "text-light",
+      duration: 3000, // Toast duration
+      gravity: "top", // Display position
+      position: "right",
+    }).showToast();
+    } catch (error) {
+  if (error.response && error.response.status === 422) {
+    // Laravel validation errors
+    const errors = error.response.data.errors;
+    // Get the first error message
+    const firstErrorKey = Object.keys(errors)[0]; // Get the first field with an error
+    const firstErrorMessage = errors[firstErrorKey][0]; // Get the first error message of that field
+    
+    // Display the first error message
+    Toastify({
+      text: firstErrorMessage,
+      backgroundColor: "red",
+      className: "text-light",
+      duration: 3000,
+      gravity: "top",
+      position: "right",
+    }).showToast();
+  } else {
+    // General errors
+    Toastify({
+      text: "Failed to save data. Please try again.",
+      backgroundColor: "red",
+      className: "text-light",
+      duration: 3000,
+      gravity: "top",
+      position: "right",
+    }).showToast();
+  }
+  console.error(error);
+}
+  },
+
     openEditDialog(item) {
       this.dialogMode = 'edit';
       this.editedItem = { ...item };
@@ -425,19 +559,40 @@ viewDialog: false, // New dialog for viewing customer details
  },
     closeDialog() {
       this.dialog = false;
+      this.resetForm();
     },
+    resetForm() {
+      this.isExistingCustomer = false;
+      this.selectedCustomer = null;
+      this.editedItem = {
+        customerName: '',
+      phone: '',
+      email: '',
+      altPhone: '',
+      productType:'',
+      productName: '',
+      model: '',
+      serialNumber: '',
+      date: '',
+      issueDescription: '',
+      collectedItems: '',
+      status: '',
+      statusId: '',
+      };
+    },
+
     closePaymentDialog() {
       this.paymentDialog = false;
     },
-    saveItem() {
-      if (this.dialogMode === 'new') {
-        this.records.push({ ...this.editedItem });
-      } else {
-        const index = this.records.findIndex((r) => r.customerId === this.editedItem.customerId);
-        if (index !== -1) this.records.splice(index, 1, { ...this.editedItem });
-      }
-      this.closeDialog();
-    },
+    // saveItem() {
+    //   if (this.dialogMode === 'new') {
+    //     this.records.push({ ...this.editedItem });
+    //   } else {
+    //     const index = this.records.findIndex((r) => r.customerId === this.editedItem.customerId);
+    //     if (index !== -1) this.records.splice(index, 1, { ...this.editedItem });
+    //   }
+    //   this.closeDialog();
+    // },
     savePaymentDetails() {
 // Save the payment details in editedItem
 this.editedItem.paymentDetails = { ...this.paymentDetails };
@@ -452,18 +607,18 @@ if (index !== -1) {
 alert(`Payment Details Saved: ${JSON.stringify(this.paymentDetails)}`);
 this.closePaymentDialog();
 },
-populateCustomerDetails(customerId) {
- const customer = this.records.find((record) => record.customerId === customerId);
- if (customer) {
-   this.editedItem = {
-     ...this.editedItem,
-     customerName: customer.customerName,
-     phone: customer.phone,
-     email: customer.email,
-     altPhone: customer.altPhone,
-   };
- }
-},
+// populateCustomerDetails(customerId) {
+//  const customer = this.records.find((record) => record.customerId === customerId);
+//  if (customer) {
+//    this.editedItem = {
+//      ...this.editedItem,
+//      customerName: customer.customerName,
+//      phone: customer.phone,
+//      email: customer.email,
+//      altPhone: customer.altPhone,
+//    };
+//  }
+// },
 updatePaymentStatus(item) {
 const targetItem = this.records.find(record => record.customerId === item.customerId);
 if (targetItem) {
@@ -474,6 +629,7 @@ if (targetItem) {
 isPaid(item) {
    return item.paymentDetails && item.paymentDetails.status === 'Paid';
  },
+
 
   },
 };

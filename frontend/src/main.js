@@ -12,9 +12,10 @@ import DocsComponents from '@/components/DocsComponents'
 import DocsExample from '@/components/DocsExample'
 import DocsIcons from '@/components/DocsIcons'
 import axios from 'axios';
+import "toastify-js/src/toastify.css";
 
 const axiosInstance = axios.create({
-     baseURL: import.meta.env.VITE_APP_ROOT_PATH_API, // For Vue 3 with Vite
+     baseURL: import.meta.env.VITE_VUE_APP_ROOT_PATH_API,
      headers: {
        'Content-Type': 'application/json',
      },

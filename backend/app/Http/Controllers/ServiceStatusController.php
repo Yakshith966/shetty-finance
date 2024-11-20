@@ -14,7 +14,8 @@ class ServiceStatusController extends Controller
      */
     public function index()
     {
-        //
+        $data = ServiceStatus::get();
+        return response()->json($data);
     }
 
     /**
