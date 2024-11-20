@@ -117,7 +117,7 @@
                  <v-text-field v-model="editedItem.productName" label="Product Name *"></v-text-field>
                   <v-text-field v-model="editedItem.model" label="Model"></v-text-field>
                   <v-text-field v-model="editedItem.serialNumber" label="Serial Number"></v-text-field>
-                  <v-text-field v-model="editedItem.date" label="Date" type="date *"></v-text-field>
+                  <v-text-field v-model="editedItem.date" label="Date *" type="date"></v-text-field>
                   <v-textarea v-model="editedItem.issueDescription" label="Issue Description *"></v-textarea>
                   <v-text-field v-model="editedItem.collectedItems" label="Collected Items"></v-text-field>
                   <v-select
