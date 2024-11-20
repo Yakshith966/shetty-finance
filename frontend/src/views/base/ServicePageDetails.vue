@@ -122,8 +122,10 @@
                   <v-text-field v-model="editedItem.collectedItems" label="Collected Items"></v-text-field>
                   <v-select
                     v-model="editedItem.statusId"
-                    :items="['Received', 'Repairing','Repaired']"
+                    :items="formattedStatusOptions"
                     label="Status"
+                    item-value="id"
+                    item-title="status"
                     outlined
                   ></v-select>
                 </v-card-text>
