@@ -23,8 +23,6 @@
         outlined
       ></v-select>
     </template>
-
-   
        <template v-slot:item.paymentStatus="{ item }">
 <div>
  <!-- Check if item.paymentDetails exists and its status is 'Paid' -->
@@ -51,7 +49,7 @@
  <span v-else>-</span>
 </div>
 </template>
-
+    
     <template v-slot:item.payment="{ item }">
       <v-btn icon :disabled="isPaid(item)" @click="openPaymentDialog(item)">
         <v-icon>mdi-credit-card</v-icon>
@@ -70,7 +68,7 @@
     </template>
     
   </v-data-table>
-
+  
   <!-- New/Edit Dialog -->
   <v-dialog v-model="dialog" max-width="800px">
     <v-card>
@@ -80,7 +78,7 @@
       <v-card-text>
         <v-container>
          <v-container>
-   <v-checkbox  v-model="isExistingCustomer" label="Already a Customer"></v-checkbox>
+   <v-checkbox  v-if="dialogMode!='edit'" v-model="isExistingCustomer" label="Already a Customer"></v-checkbox>
  </v-container>
          <v-autocomplete
        v-if="isExistingCustomer"
@@ -92,16 +90,14 @@
        prepend-inner-icon="mdi-magnify"
        outlined
        hide-details
-       
      ></v-autocomplete>
-
+          
           <v-row>
             <!-- First Card: Customer Details -->
             <v-col cols="12" md="6">
               <v-card>
                 <v-card-title>Customer Details</v-card-title>
                 <v-card-text>
-
                   <v-text-field v-model="editedItem.customerName" label="Customer Name"></v-text-field>
                   <v-text-field v-model="editedItem.phone" label="Phone"></v-text-field>
                   <v-text-field v-model="editedItem.email" label="Email"></v-text-field>
@@ -124,7 +120,7 @@
                   <v-text-field v-model="editedItem.collectedItems" label="Collected Items"></v-text-field>
                   <v-select
                     v-model="editedItem.status"
-                    :items="['Received', 'Repairing', 'Repaired']"
+                    :items="['Received', 'Repairing','Repaired']"
                     label="Status"
                     outlined
                   ></v-select>
@@ -203,7 +199,7 @@
          ></v-text-field>
        </v-col>
      </v-row>
-
+     
      <!-- Alternative Information -->
      <v-row dense>
        <v-col cols="4">
@@ -233,7 +229,20 @@
            class="mb-3"
          ></v-text-field>
        </v-col>
-       <v-col cols="4">
+       <!-- <v-col cols="4">
+         <v-text-field
+           v-model="editedItem.model"
+           label="Model"
+           readonly
+           outlined
+           class="mb-3"
+         ></v-text-field>
+       </v-col> -->
+     </v-row>
+
+     <!-- Additional Product Information -->
+     <v-row dense>
+      <v-col cols="4">
          <v-text-field
            v-model="editedItem.model"
            label="Model"
@@ -242,10 +251,6 @@
            class="mb-3"
          ></v-text-field>
        </v-col>
-     </v-row>
-
-     <!-- Additional Product Information -->
-     <v-row dense>
        <v-col cols="4">
          <v-text-field
            v-model="editedItem.serialNumber"
@@ -264,7 +269,20 @@
            class="mb-3"
          ></v-text-field>
        </v-col>
-       <v-col cols="4">
+       <!-- <v-col cols="4">
+         <v-text-field
+           v-model="editedItem.status"
+           label="Status"
+           readonly
+           outlined
+           class="mb-3"
+         ></v-text-field>
+       </v-col> -->
+     </v-row>
+
+     <!-- Description with More Space -->
+     <v-row dense>
+      <v-col cols="4">
          <v-text-field
            v-model="editedItem.status"
            label="Status"
@@ -273,11 +291,7 @@
            class="mb-3"
          ></v-text-field>
        </v-col>
-     </v-row>
-
-     <!-- Description with More Space -->
-     <v-row dense>
-       <v-col cols="12">
+       <v-col cols="8">
          <v-textarea
            v-model="editedItem.issueDescription"
            label="Issue Description"
@@ -494,5 +508,3 @@ background-color: #f9f9f9;
 border-radius: 4px; /* Optional for better design */
 }
 </style>
-
-
