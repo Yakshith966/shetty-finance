@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerDetailController;
+use App\Http\Controllers\PaymentDetailController;
 use App\Http\Controllers\ProductServiceDetailController;
 use App\Http\Controllers\ServiceStatusController;
 use Illuminate\Http\Request;
@@ -32,4 +33,6 @@ Route::get('/fetch-service-status', [ServiceStatusController::class, 'index']);
 
 Route::get('/customers', [CustomerDetailController::class, 'index']);
 
+//Route to get payment details
+Route::get('get-payment-details', [PaymentDetailController::class, 'fetchPaymentDetails']);
 
