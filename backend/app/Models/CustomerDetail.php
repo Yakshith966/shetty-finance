@@ -20,4 +20,8 @@ class CustomerDetail extends Model
     {
         return $this->hasMany(ProductServiceDetail::class, 'customer_id');
     }
+    public function payments()
+    {
+        return $this->hasMany(PaymentDetail::class, 'customer_id');
+    }
 }

@@ -33,6 +33,11 @@ class ProductServiceDetail extends Model
     {
         return $this->belongsTo(CustomerDetail::class, 'customer_id');
     }
+    public function paymentDetails()
+    {
+        return $this->hasMany(PaymentDetail::class, 'product_service_id');
+    }
+
 
     public static function boot()
     {
