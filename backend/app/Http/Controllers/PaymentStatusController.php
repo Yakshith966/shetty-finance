@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentMode;
 use App\Models\PaymentStatus;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,13 @@ class PaymentStatusController extends Controller
      */
     public function index()
     {
-        //
+        $data = PaymentStatus::get();
+        return response()->json($data);
+    }
+    public function fetchPaymentMode()
+    {
+        $data = PaymentMode::get();
+        return response()->json($data);
     }
 
     /**
