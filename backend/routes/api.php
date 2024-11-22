@@ -39,4 +39,6 @@ Route::put('/payment-details/{id}', [PaymentDetailController::class, 'updatePaym
 Route::get('/customers', [CustomerDetailController::class, 'index']);
 Route::get('/service-details', [ProductServiceDetailController::class, 'index']);
 
+//Route to get payment details
+Route::get('get-payment-details', [PaymentDetailController::class, 'fetchPaymentDetails']);
 
