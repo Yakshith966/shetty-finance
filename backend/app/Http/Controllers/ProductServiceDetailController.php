@@ -73,7 +73,7 @@ class ProductServiceDetailController extends Controller
         try {
             $validated = $request->validate([
                 'customer_name' => 'required|string|max:255',
-                'phone' => 'required|string|max:15',
+                'phone' => 'required|string|max:10',
                 'email' => [
                     'nullable',
                     'email',
@@ -85,8 +85,8 @@ class ProductServiceDetailController extends Controller
                 'productName' => 'required|string|max:255',
                 'serialNumber' => 'nullable|string|max:255',
                 'model' => 'nullable|string|max:255',
-                'issueDescription' => 'nullable|string',
                 'date' => 'required|date',
+                'issueDescription' => 'required',
                 'collectedItems' => 'nullable|string',
                 'status' => 'required',
                 'selectedCustomer' => 'nullable|exists:customer_details,id',
@@ -190,7 +190,7 @@ class ProductServiceDetailController extends Controller
                 'product_name' => 'required|string|max:255',
                 'model_number' => 'nullable|string|max:255',
                 'serial_number' => 'nullable|string|max:255',
-                'description' => 'nullable|string',
+                'description' => 'required|string',
                 'product_received_date' => 'required|date',
                 'other_collected_item' => 'nullable|string',
                 'service_status' => 'required|integer',
