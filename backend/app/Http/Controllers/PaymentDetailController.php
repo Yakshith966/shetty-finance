@@ -74,6 +74,8 @@ class PaymentDetailController extends Controller
                 'payment_mode' => 'nullable|integer',
                 'product_service_id' => 'required|exists:product_service_details,id',
                 'customer_id' => 'required|exists:customer_details,id',
+            ], [
+                'payment_date.required_if' => 'The payment date field is required when payment status is paid.',
             ]);
             $paymentDetail = PaymentDetail::create($validatedData);
 
@@ -110,6 +112,8 @@ class PaymentDetailController extends Controller
                 'payment_mode' => 'nullable|integer',
                 'product_service_id' => 'required|exists:product_service_details,id',
                 'customer_id' => 'required|exists:customer_details,id',
+            ], [
+                'payment_date.required_if' => 'The payment date field is required when payment status is paid.',
             ]);
             $paymentDetail = PaymentDetail::findOrFail($id);
             $paymentDetail->update($validatedData);

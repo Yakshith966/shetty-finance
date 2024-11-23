@@ -34,21 +34,7 @@ onMounted(() => {
       
       </CHeaderNav>
       <CHeaderNav class="ms-auto">
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-bell" size="lg" />
-          </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-list" size="lg" />
-          </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-envelope-open" size="lg" />
-          </CNavLink>
-        </CNavItem>
+        
       </CHeaderNav>
       <CHeaderNav>
         <li class="nav-item py-1">
