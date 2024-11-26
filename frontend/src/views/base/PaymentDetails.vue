@@ -50,6 +50,19 @@
             <v-spacer></v-spacer>
           </template>
           <v-spacer></v-spacer>
+          <v-select 
+            v-model="selectedPaymentStatusId" 
+            :items="[{ id: null, payment_status: 'All' }, ...paymentStatusOptions]"
+            label="Payment Status" 
+            item-value="id" 
+            item-title="payment_status" 
+            outlined 
+            density="compact" 
+            variant="solo-filled"
+            flat 
+            hide-details 
+            style="max-width: 200px; margin-right: 1rem;"
+            ></v-select>
           <v-text-field
             v-model="search"
             density="compact"
@@ -75,8 +88,8 @@
           <td>{{ item.product_name }}</td>
           <td>{{ item.customer_name }}</td>
           <td>{{ item.amount }}</td>
-          <td>{{ item.payment_mode }}</td>
-          <td>{{ item.payment_date }}</td>
+          <td>{{ item.payment_mode || 'N/A' }}</td>
+          <td>{{ item.payment_date || 'N/A' }}</td>
           <td>
             <v-chip :color="getColor(item.payment_status)">
               {{ item.payment_status }}
@@ -104,8 +117,11 @@ export default {
       dialogAction: "",
       isLoading: false,
       search: '',
+      selectedPaymentStatusId: null,
+      colorMode: null,
       generateReportHeading: "",
       reportGenerateDialogBox: false,
+      paymentStatusOptions: [],
       paymentDetails: [],
       headers: [
         { title: 'Service ID', key: 'service_id' },
@@ -115,37 +131,49 @@ export default {
         { title: 'Amount', key: 'amount' },
         { title: 'Payment Mode', key: 'payment_mode' },
         { title: 'Payment Date', key: 'payment_date' },
-        { title: 'Status', key: 'payment_status' },
+        { title: 'Payment Status', key: 'payment_status' },
       ],
     }
     },
     mounted(){
-    this.getPaymentDetails();
+      this.getPaymentStatus();
+      this.getPaymentDetails();
+      this.colorMode = localStorage.getItem('coreui-free-vue-admin-template-theme');
     },
     computed: {
       filteredPaymentDetails() {
-        if (this.search) {
-          return this.paymentDetails.filter((item) => {
-            return (
-              item.service_id.toLowerCase().includes(this.search.toLowerCase()) ||
-              item.customer_name.toLowerCase().includes(this.search.toLowerCase()) ||
-              item.product_type.toLowerCase().includes(this.search.toLowerCase()) ||
-              item.product_name.toLowerCase().includes(this.search.toLowerCase()) ||
-              item.payment_mode.toLowerCase().includes(this.search.toLowerCase())
-            );
-          });
-        }
-        return this.paymentDetails;
+        return this.paymentDetails.filter((item) => {
+          const matchesSearch =
+            !this.search || // No search input means all items match
+            item.service_id.toLowerCase().includes(this.search.toLowerCase()) ||
+            item.customer_name.toLowerCase().includes(this.search.toLowerCase()) ||
+            item.product_type.toLowerCase().includes(this.search.toLowerCase()) ||
+            item.product_name.toLowerCase().includes(this.search.toLowerCase()) ||
+            item.payment_mode.toLowerCase().includes(this.search.toLowerCase());
+
+          const matchesPaymentStatus =
+            !this.selectedPaymentStatusId || // No payment status selected means all items match
+            item.payment_status_id === this.selectedPaymentStatusId;
+
+          return matchesSearch && matchesPaymentStatus;
+        });
       },
     },
     methods: {
+      async getPaymentStatus(){
+        try {
+          const response = await axios.get('get-payment-status-details');
+          this.paymentStatusOptions = response.data;
+        } catch (error) {
+          // console.log(error);
+        }
+      },
       async getPaymentDetails(){
         this.isLoading = true;
         try {
           const response = await axios.get('/get-payment-details');
           this.paymentDetails = response.data;
           this.isLoading = false;
-          // console.log(this.paymentDetails);
         } catch (error) {
           this.isLoading = false;
         }
@@ -153,8 +181,50 @@ export default {
       getColor(value) {
         return value == 'Paid' ? 'green' : 'red';
       },
+      formatDataBasedOnDates(fromDate, toDate, ){
+        const fromDateObj = new Date(fromDate);
+        const toDateObj = new Date(toDate);
+        const filteredData = this.filteredPaymentDetails.filter(paymentDetail => {
+            const paymentDate = new Date(paymentDetail.payment_date);
+            return paymentDate >= fromDateObj && paymentDate <= toDateObj;
+        });
+        return filteredData;
+      },
       exportExcel(){
-        // console.log('export excel');
+        const filteredData = this.formatDataBasedOnDates(this.reportFromDate, this.reportToDate);
+        if(filteredData.length > 0){
+          axios
+          .post(
+            "/payment-details-excel-report",
+            {
+              reportData: filteredData,
+            },
+            {
+              responseType: "blob",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            const url = window.URL.createObjectURL(
+              new Blob([response.data], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              })
+            );
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "PaymentDetailsReport.xlsx");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          })
+          .catch((error) => {
+            // console.error("There was an error generating the report:", error);
+          });
+        } else {
+          this.showToastifyMessage();
+        }
       },
       downloadPdf() {
         const doc = new jsPDF('landscape');
@@ -191,22 +261,8 @@ export default {
             'Status'
           ];
 
-        const normalizeDate = (date) => {
-            const d = new Date(date);
-            d.setHours(0, 0, 0, 0); // Set time to 00:00:00
-            return d;
-        };
+        const filteredData = this.formatDataBasedOnDates(this.reportFromDate, this.reportToDate);
 
-        const fromDateObj = normalizeDate(this.reportFromDate);
-        const toDateObj = normalizeDate(this.reportToDate);
-        // console.log(fromDateObj, toDateObj);
-        // Filter paymentDetails based on the selected date range
-        const filteredData = this.paymentDetails.filter(paymentDetail => {
-            const paymentDate = normalizeDate(paymentDetail.payment_date);
-            // console.log(paymentDate);
-            return paymentDate >= fromDateObj && paymentDate <= toDateObj;
-        });
-        // console.log(filteredData);
         const body = filteredData.map(paymentDetail => [
             paymentDetail.service_id,
             paymentDetail.product_type,
@@ -217,8 +273,8 @@ export default {
             paymentDetail.payment_date,
             paymentDetail.payment_status
         ]);
-
-        let totalAmount = this.paymentDetails.reduce((sum, paymentDetail) => {
+        
+        let totalAmount = filteredData.reduce((sum, paymentDetail) => {
             return sum + parseFloat(paymentDetail.amount || 0);
         }, 0);
 
@@ -276,17 +332,19 @@ export default {
         if(filteredData.length > 0){
           doc.save("payment_report.pdf");
         } else {
-          Toastify({
+          this.showToastifyMessage();
+        }
+      },
+      showToastifyMessage(){
+        Toastify({
             text: "No data available for the selected dates",
             backgroundColor: "red",
             className: "text-light",
-            duration: 2000,
+            duration: 3000,
             gravity: "top",
             position: "right"
           }).showToast();
-        }
       },
-
       openDialog(actionType){
         this.reportFromDate = "";
         this.reportToDate = "";

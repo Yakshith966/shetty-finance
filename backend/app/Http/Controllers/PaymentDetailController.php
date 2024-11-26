@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PaymentDetailExport;
 use App\Models\PaymentDetail;
+use App\Models\PaymentStatus;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PaymentDetailController extends Controller
 {
@@ -17,6 +20,11 @@ class PaymentDetailController extends Controller
         //
     }
 
+    public function fetchPaymentStatus(){
+        $paymentStatusData = PaymentStatus::all();
+        return response()->json($paymentStatusData);
+    }
+
     public function fetchPaymentDetails(){
         $paymentDetails = PaymentDetail::join('customer_details', 'payment_details.customer_id', '=', 'customer_details.id')
             ->join('product_service_details', 'payment_details.product_service_id', '=', 'product_service_details.id')
@@ -24,6 +32,7 @@ class PaymentDetailController extends Controller
             ->join('payment_statuses', 'payment_details.payment_status', '=', 'payment_statuses.id')
             ->select(
                 'payment_details.*', 
+                'payment_details.payment_status as payment_status_id',
                 'payment_modes.mode as payment_mode',
                 'payment_statuses.payment_status',
                 'customer_details.name as customer_name', 
@@ -31,6 +40,7 @@ class PaymentDetailController extends Controller
                 'product_service_details.product_type', 
                 'product_service_details.product_name'
             )
+            // ->where('payment_details.payment_status', '=', 2)
             ->orderBy('payment_details.id', 'desc')
             ->get();
         
@@ -42,6 +52,15 @@ class PaymentDetailController extends Controller
         }
         
         return response()->json($paymentDetails);
+    }
+
+    public function paymentDetailExcelExport(Request $request)
+    {
+        $excelData = $request->input('reportData');
+        if (!is_array($excelData)) {
+            return response()->json(['error' => 'Invalid data format'], 400);
+        }
+        return Excel::download(new PaymentDetailExport($excelData), 'PaymentDetailsReport.xlsx');
     }
 
     /**

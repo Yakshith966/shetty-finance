@@ -120,7 +120,7 @@ class ProductServiceDetailController extends Controller
                 'model_number' => $validated['model'],
                 'description' => $validated['issueDescription'],
                 'other_collected_item' => $validated['collectedItems'],
-                'product_recieved_date' => $validated['date'],
+                'product_received_date' => $validated['date'],
                 'service_status' => $validated['status'],
             ]);
             return response()->json([

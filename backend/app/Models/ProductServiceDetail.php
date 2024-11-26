@@ -18,7 +18,7 @@ class ProductServiceDetail extends Model
         'model_number',
         'description',
         'other_collected_item',
-        'product_recieved_date',
+        'product_received_date',
         'service_status',
     ];
 

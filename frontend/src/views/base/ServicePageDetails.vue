@@ -34,7 +34,7 @@
         <td>{{ item.customer.name }}</td>
         <td>{{ item.product_type }}</td>
         <td>{{ item.product_name }}</td>
-        <td>{{ item.product_recieved_date }}</td>
+        <td>{{ item.product_received_date }}</td>
         <!-- <td>{{ item.payment_mode }}</td> -->
         <!-- <td>{{ item.payment_date }}</td> -->
         <td>
@@ -330,7 +330,7 @@ export default {
       { title: 'Customer Name', key: 'customer.name' },
       { title: 'Product Type', key: 'product_type' },
       { title: 'Product Name', key: 'product_name' },
-      { title: 'Date', key: 'product_recieved_date' },
+      { title: 'Date', key: 'product_received_date' },
       { title: 'Status', key: 'status', sortable: false },
       { title: 'Payment', key: 'payment', sortable: false },
       { title: 'Payment Status', key: 'paymentStatus', sortable: false, },
@@ -634,7 +634,7 @@ export default {
         productName: item.product_name,
         model: item.model_number,
         serialNumber: item.serial_number,
-        date: moment(item.product_recieved_date).format('YYYY-MM-DD'),
+        date: moment(item.product_received_date).format('YYYY-MM-DD'),
         issueDescription: item.description,
         collectedItems: item.other_collected_item,
         statusId: item.service_status,
@@ -655,7 +655,7 @@ export default {
         model: item.model_number,
         collectedItems: item.other_collected_item,
         issueDescription: item.description,
-        date: item.product_recieved_date,
+        date: item.product_received_date,
         status: this.formattedServiceStatus(item.service_status),
         paymentDetails: {
           amount: item.payment_details[0]?.amount || '',

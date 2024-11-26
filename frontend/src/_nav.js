@@ -26,6 +26,12 @@ export default [
     icon: 'cil-dollar',
   },
   {
+    component: 'CNavItem',
+    name: 'Customer Details',
+    to: '/customer/customer-details',
+    icon: 'cil-dollar',
+  },
+  {
     component: 'CNavTitle',
     name: 'Components',
   },
