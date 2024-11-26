@@ -32,7 +32,7 @@ class StoreProductServiceDetailRequest extends FormRequest
             'model_number' => 'nullable|string',
             'description' => 'nullable|string',
             'other_collected_item' => 'nullable|string',
-            'product_recieved_date' => 'required|date',
+            'product_received_date' => 'required|date',
             'service_status' => 'required|exists:service_statuses,id',
         ];
     }
@@ -46,8 +46,8 @@ class StoreProductServiceDetailRequest extends FormRequest
             'customer_id.exists' => 'The selected customer ID is invalid.',
             'product_type.required' => 'The product type is required.',
             'product_name.required' => 'The product name is required.',
-            'product_recieved_date.required' => 'The product received date is required.',
-            'product_recieved_date.date' => 'The product received date must be a valid date.',
+            'product_received_date.required' => 'The product received date is required.',
+            'product_received_date.date' => 'The product received date must be a valid date.',
             'service_status.required' => 'The service status is required.',
             'service_status.exists' => 'The selected service status is invalid.',
         ];
