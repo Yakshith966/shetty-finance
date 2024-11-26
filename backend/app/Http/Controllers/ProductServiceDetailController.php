@@ -71,26 +71,35 @@ class ProductServiceDetailController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
-                'customer_name' => 'required|string|max:255',
-                'phone' => 'required|string|max:10',
-                'email' => [
-                    'nullable',
-                    'email',
-                    'max:255',
-                    Rule::unique('customer_details', 'email')->ignore($request->selectedCustomer),
+            $validated = $request->validate(
+                [
+                    'customer_name' => 'required|string|max:255',
+                    'phone' => [
+                        'required',
+                        'string',
+                        'regex:/^\d{10}$/',
+                    ],
+                    'email' => [
+                        'nullable',
+                        'email',
+                        'max:255',
+                        Rule::unique('customer_details', 'email')->ignore($request->selectedCustomer),
+                    ],
+                    'altPhone' => 'nullable|string|max:15',
+                    'productType' => 'required|string|max:255',
+                    'productName' => 'required|string|max:255',
+                    'serialNumber' => 'nullable|string|max:255',
+                    'model' => 'nullable|string|max:255',
+                    'date' => 'required|date',
+                    'issueDescription' => 'required',
+                    'collectedItems' => 'nullable|string',
+                    'status' => 'required',
+                    'selectedCustomer' => 'nullable|exists:customer_details,id',
                 ],
-                'altPhone' => 'nullable|string|max:15',
-                'productType' => 'required|string|max:255',
-                'productName' => 'required|string|max:255',
-                'serialNumber' => 'nullable|string|max:255',
-                'model' => 'nullable|string|max:255',
-                'date' => 'required|date',
-                'issueDescription' => 'required',
-                'collectedItems' => 'nullable|string',
-                'status' => 'required',
-                'selectedCustomer' => 'nullable|exists:customer_details,id',
-            ]);
+                [
+                    'phone.regex' => 'The phone number must be exactly 10 digits.',
+                ]
+            );
             if (!is_null($request->selectedCustomer)) {
 
                 $customer = CustomerDetail::find($request->selectedCustomer);
