@@ -1,282 +1,387 @@
 <template>
-     <v-data-table
-       :headers="headers"
-       :items="vegetables"
-     >
-     <template v-slot:top>
-         <v-toolbar flat>
-           <v-toolbar-title>Payment Details</v-toolbar-title>
+  <div>
+    <v-dialog max-width="500" v-model="reportGenerateDialogBox">
+      <v-card :title="generateReportHeading">
+        <v-card-text>
+          <div class="mb-4">
+            <v-text-field
+              label="Start Date"
+              v-model="reportFromDate"
+              type="date"
+              outlined
+            ></v-text-field>
+          </div>
+          <div>
+            <v-text-field
+              label="End Date"
+              v-model="reportToDate"
+              type="date"
+              outlined
+            ></v-text-field>
+          </div>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="closeDialog()">Cancel</v-btn>
+          <v-btn text @click="generateReport()" :disabled="this.reportFromDate == '' || this.reportToDate == ''">Generate</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-data-table
+      :headers="headers"
+      v-model:search="search"
+      :items="filteredPaymentDetails"
+    >
+    <!-- disable-pagination -->
+    
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>Payment Details</v-toolbar-title>
+        </v-toolbar>
+        <v-card-title class="d-flex align-center pe-2" v-if="!isLoading">
+          <template v-if="!isLoading && filteredPaymentDetails.length > 0">
+            <CButton color="info" style="color: white" @click="openDialog('exportExcel')">Export Excel</CButton>
+            <v-spacer></v-spacer>
+            <CButton color="warning" variant="outline" @click="openDialog('downloadPdf')">Download PDF</CButton>
+          </template>
+          <template v-if="!isLoading && !filteredPaymentDetails.length > 0">
+            <v-spacer></v-spacer>
+            <v-spacer></v-spacer>
+          </template>
+          <v-spacer></v-spacer>
+          <v-select 
+            v-model="selectedPaymentStatusId" 
+            :items="[{ id: null, payment_status: 'All' }, ...paymentStatusOptions]"
+            label="Payment Status" 
+            item-value="id" 
+            item-title="payment_status" 
+            outlined 
+            density="compact" 
+            variant="solo-filled"
+            flat 
+            hide-details 
+            style="max-width: 200px; margin-right: 1rem;"
+            ></v-select>
+          <v-text-field
+            v-model="search"
+            density="compact"
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            variant="solo-filled"
+            flat
+            hide-details
+            single-line
+          ></v-text-field>
+        </v-card-title>
+      </template>
+      <!-- Custom row for loading state -->
+      <template v-slot:body="{ items }">
+        <tr v-if="isLoading">
+          <td :colspan="headers.length" class="text-center">
+            <CSpinner color="primary" />
+          </td>
+        </tr>
+        <tr v-else-if="items.length > 0" v-for="(item, index) in items" :key="index">
+          <td>{{ item.service_id }}</td>
+          <td>{{ item.product_type }}</td>
+          <td>{{ item.product_name }}</td>
+          <td>{{ item.customer_name }}</td>
+          <td>{{ item.amount }}</td>
+          <td>{{ item.payment_mode || 'N/A' }}</td>
+          <td>{{ item.payment_date || 'N/A' }}</td>
+          <td>
+            <v-chip :color="getColor(item.payment_status)">
+              {{ item.payment_status }}
+            </v-chip>
+          </td>
+        </tr>
+        <tr v-else>
+          <td :colspan="headers.length" class="text-center">
+            No data available
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
+  </div>
+</template>
+<script>
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import Toastify from "toastify-js";
+export default {
+  data() {
+    return {
+      reportFromDate: "",
+      reportToDate: "",
+      dialogAction: "",
+      isLoading: false,
+      search: '',
+      selectedPaymentStatusId: null,
+      colorMode: null,
+      generateReportHeading: "",
+      reportGenerateDialogBox: false,
+      paymentStatusOptions: [],
+      paymentDetails: [],
+      headers: [
+        { title: 'Service ID', key: 'service_id' },
+        { title: 'Product Type', key: 'product_type' },
+        { title: 'Product Name', key: 'product_name' },
+        { title: 'Customer Name', key: 'customer_name' },
+        { title: 'Amount', key: 'amount' },
+        { title: 'Payment Mode', key: 'payment_mode' },
+        { title: 'Payment Date', key: 'payment_date' },
+        { title: 'Payment Status', key: 'payment_status' },
+      ],
+    }
+    },
+    mounted(){
+      this.getPaymentStatus();
+      this.getPaymentDetails();
+      this.colorMode = localStorage.getItem('coreui-free-vue-admin-template-theme');
+    },
+    computed: {
+      filteredPaymentDetails() {
+        return this.paymentDetails.filter((item) => {
+          const matchesSearch =
+            !this.search || // No search input means all items match
+            item.service_id.toLowerCase().includes(this.search.toLowerCase()) ||
+            item.customer_name.toLowerCase().includes(this.search.toLowerCase()) ||
+            item.product_type.toLowerCase().includes(this.search.toLowerCase()) ||
+            item.product_name.toLowerCase().includes(this.search.toLowerCase()) ||
+            item.payment_mode.toLowerCase().includes(this.search.toLowerCase());
+
+          const matchesPaymentStatus =
+            !this.selectedPaymentStatusId || // No payment status selected means all items match
+            item.payment_status_id === this.selectedPaymentStatusId;
+
+          return matchesSearch && matchesPaymentStatus;
+        });
+      },
+    },
+    methods: {
+      async getPaymentStatus(){
+        try {
+          const response = await axios.get('get-payment-status-details');
+          this.paymentStatusOptions = response.data;
+        } catch (error) {
+          // console.log(error);
+        }
+      },
+      async getPaymentDetails(){
+        this.isLoading = true;
+        try {
+          const response = await axios.get('/get-payment-details');
+          this.paymentDetails = response.data;
+          this.isLoading = false;
+        } catch (error) {
+          this.isLoading = false;
+        }
+      },
+      getColor(value) {
+        return value == 'Paid' ? 'green' : 'red';
+      },
+      formatDataBasedOnDates(fromDate, toDate, ){
+        const fromDateObj = new Date(fromDate);
+        const toDateObj = new Date(toDate);
+        const filteredData = this.filteredPaymentDetails.filter(paymentDetail => {
+            const paymentDate = new Date(paymentDetail.payment_date);
+            return paymentDate >= fromDateObj && paymentDate <= toDateObj;
+        });
+        return filteredData;
+      },
+      exportExcel(){
+        const filteredData = this.formatDataBasedOnDates(this.reportFromDate, this.reportToDate);
+        if(filteredData.length > 0){
+          axios
+          .post(
+            "/payment-details-excel-report",
+            {
+              reportData: filteredData,
+            },
+            {
+              responseType: "blob",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            const url = window.URL.createObjectURL(
+              new Blob([response.data], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              })
+            );
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "PaymentDetailsReport.xlsx");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          })
+          .catch((error) => {
+            // console.error("There was an error generating the report:", error);
+          });
+        } else {
+          this.showToastifyMessage();
+        }
+      },
+      downloadPdf() {
+        const doc = new jsPDF('landscape');
+        doc.setFontSize(20);
+        doc.setTextColor(40);
+
+        const title = "Payment Details - Report";
+        const pageWidth = doc.internal.pageSize.width;
+        const textWidth = doc.getTextWidth(title);
+        const xPosition = (pageWidth - textWidth) / 2;
+        doc.text(title, xPosition, 13);
+
+        const formatDate = (date) => {
+            const [year, month, day] = date.split('-');
+            return `${day}-${month}-${year}`;
+        };
+        const fromDate = `From Date: ${formatDate(this.reportFromDate)}`;
+        const toDate = `To Date: ${formatDate(this.reportToDate)}`;
+
+        doc.setFontSize(10);
+        doc.setFont("Helvetica", "bold");
+        doc.text(fromDate, 15, 25);
+        doc.text(toDate, pageWidth-55, 25);
+
+        doc.setFont("Helvetica", "normal");
+        const headers = [
+            'Service ID',
+            'Product Type',
+            'Product Name',
+            'Customer Name',
+            'Amount',
+            'Payment Mode',
+            'Payment Date',
+            'Status'
+          ];
+
+        const filteredData = this.formatDataBasedOnDates(this.reportFromDate, this.reportToDate);
+
+        const body = filteredData.map(paymentDetail => [
+            paymentDetail.service_id,
+            paymentDetail.product_type,
+            paymentDetail.product_name,
+            paymentDetail.customer_name,
+            paymentDetail.amount,
+            paymentDetail.payment_mode,
+            paymentDetail.payment_date,
+            paymentDetail.payment_status
+        ]);
+        
+        let totalAmount = filteredData.reduce((sum, paymentDetail) => {
+            return sum + parseFloat(paymentDetail.amount || 0);
+        }, 0);
+
+        body.push([
+            "",
+            "",
+            "",
+            "Total",
+            totalAmount.toFixed(2),
+            "",
+            "",
+            ""  
+          ]);
+        const totalRowIndex = body.length - 1;
           
-         </v-toolbar>
-       </template>
-       <template v-slot:item.calories="{ value }">
-         <v-chip :color="getColor(value)">
-           {{ value }}
-         </v-chip>
-       </template>
-     </v-data-table>
-   </template>
-   <script>
-   export default {
-     data: () => ({
-       headers: [
-         { title: 'Vegetable (100g serving)', key: 'name' },
-         { title: 'Calories', key: 'calories' },
-         { title: 'Fat (g)', key: 'fat' },
-         { title: 'Carbs (g)', key: 'carbs' },
-         { title: 'Protein (g)', key: 'protein' },
-         { title: 'Iron (%)', key: 'iron' },
-       ],
-       vegetables: [
-         {
-           name: 'Spinach',
-           calories: 23,
-           fat: 0.4,
-           carbs: 3.6,
-           protein: 2.9,
-           iron: '15%',
-         },
-         {
-           name: 'Kael',
-           calories: 49,
-           fat: 0.9,
-           carbs: 8.8,
-           protein: 4.3,
-           iron: '16%',
-         },
-         {
-           name: 'Broccoli',
-           calories: 34,
-           fat: 0.4,
-           carbs: 6.6,
-           protein: 2.8,
-           iron: '6%',
-         },
-         {
-           name: 'Brussels Sprouts',
-           calories: 43,
-           fat: 0.3,
-           carbs: 8.9,
-           protein: 3.4,
-           iron: '9%',
-         },
-         {
-           name: 'Avocado',
-           calories: 160,
-           fat: 15,
-           carbs: 9,
-           protein: 2,
-           iron: '3%',
-         },
-         {
-           name: 'Sweet Potato',
-           calories: 86,
-           fat: 0.1,
-           carbs: 20.1,
-           protein: 1.6,
-           iron: '3%',
-         },
-         {
-           name: 'Corn',
-           calories: 96,
-           fat: 1.5,
-           carbs: 21,
-           protein: 3.4,
-           iron: '2%',
-         },
-         {
-           name: 'Potato',
-           calories: 77,
-           fat: 0.1,
-           carbs: 17.5,
-           protein: 2,
-           iron: '8%',
-         },
-         {
-           name: 'Butternut Squash',
-           calories: 45,
-           fat: 0.1,
-           carbs: 11.7,
-           protein: 1,
-           iron: '4%',
-         },
-         {
-           name: 'Beetroot',
-           calories: 43,
-           fat: 0.2,
-           carbs: 10,
-           protein: 1.6,
-           iron: '6%',
-         },
-         {
-           name: 'Parsnip',
-           calories: 75,
-           fat: 0.3,
-           carbs: 18,
-           protein: 1.2,
-           iron: '4%',
-         },
-         {
-           name: 'Yam',
-           calories: 118,
-           fat: 0.2,
-           carbs: 27.9,
-           protein: 1.5,
-           iron: '4%',
-         },
-         {
-           name: 'Acorn Squash',
-           calories: 40,
-           fat: 0.1,
-           carbs: 10,
-           protein: 1,
-           iron: '5%',
-         },
-         {
-           name: 'Artichoke',
-           calories: 47,
-           fat: 0.2,
-           carbs: 10.5,
-           protein: 3.3,
-           iron: '7%',
-         },
-         {
-           name: 'Peas',
-           calories: 81,
-           fat: 0.4,
-           carbs: 14.5,
-           protein: 5.4,
-           iron: '25%',
-         },
-         {
-           name: 'Green Beans',
-           calories: 31,
-           fat: 0.1,
-           carbs: 6.9,
-           protein: 1.8,
-           iron: '8%',
-         },
-         {
-           name: 'Red Bell Pepper',
-           calories: 26,
-           fat: 0.2,
-           carbs: 6.0,
-           protein: 1.0,
-           iron: '3%',
-         },
-         {
-           name: 'Cauliflower',
-           calories: 25,
-           fat: 0.1,
-           carbs: 5.0,
-           protein: 1.9,
-           iron: '4%',
-         },
-         {
-           name: 'Zucchini',
-           calories: 17,
-           fat: 0.3,
-           carbs: 3.1,
-           protein: 1.2,
-           iron: '3%',
-         },
-         {
-           name: 'Asparagus',
-           calories: 20,
-           fat: 0.1,
-           carbs: 3.9,
-           protein: 2.2,
-           iron: '16%',
-         },
-         {
-           name: 'Eggplant',
-           calories: 25,
-           fat: 0.2,
-           carbs: 6,
-           protein: 1,
-           iron: '1%',
-         },
-         {
-           name: 'Pumpkin',
-           calories: 26,
-           fat: 0.1,
-           carbs: 6.5,
-           protein: 1,
-           iron: '4%',
-         },
-         {
-           name: 'Celery',
-           calories: 16,
-           fat: 0.2,
-           carbs: 3,
-           protein: 0.7,
-           iron: '1%',
-         },
-         {
-           name: 'Cucumber',
-           calories: 15,
-           fat: 0.1,
-           carbs: 3.6,
-           protein: 0.7,
-           iron: '2%',
-         },
-         {
-           name: 'Leek',
-           calories: 61,
-           fat: 0.3,
-           carbs: 14.2,
-           protein: 1.5,
-           iron: '12%',
-         },
-         {
-           name: 'Fennel',
-           calories: 31,
-           fat: 0.2,
-           carbs: 7,
-           protein: 1.2,
-           iron: '6%',
-         },
-         {
-           name: 'Green Peas',
-           calories: 81,
-           fat: 0.4,
-           carbs: 14.5,
-           protein: 5.4,
-           iron: '25%',
-         },
-         {
-           name: 'Okra',
-           calories: 33,
-           fat: 0.2,
-           carbs: 7.5,
-           protein: 1.9,
-           iron: '3%',
-         },
-         {
-           name: 'Chard',
-           calories: 19,
-           fat: 0.2,
-           carbs: 3.7,
-           protein: 1.8,
-           iron: '22%',
-         },
-         {
-           name: 'Collard Greens',
-           calories: 32,
-           fat: 0.6,
-           carbs: 5.4,
-           protein: 3,
-           iron: '2%',
-         },
-       ],
-     }),
- 
-     methods: {
-       getColor (calories) {
-         if (calories > 100) return 'red'
-         else if (calories > 50) return 'orange'
-         else return 'green'
-       },
-     },
-   }
- </script>
+        doc.autoTable({
+          startY: 30,
+          margin: { top: 10, left: 10, right: 10 },
+          head: [headers],
+          headStyles: {
+            fillColor: [0, 57, 107],
+            halign: "center",
+            overflow: "linebreak",
+            fontSize: 11,
+            textColor: [255, 255, 255],
+            lineColor: [0, 0, 0],
+          },
+          body: body,
+          styles: {
+            fontSize: 9,
+            textColor: [0, 0, 0],
+            cellPadding: 2.2,
+            lineHeight: 1.6,
+          },
+          columnStyles: {
+            0: { cellWidth: 'auto' },
+            1: { cellWidth: 'auto' },
+            2: { cellWidth: 'auto' },
+            3: { cellWidth: 'auto' },
+            4: { cellWidth: 'auto' },
+            5: { cellWidth: 'auto' },
+            6: { cellWidth: 'auto' },
+            7: { cellWidth: 'auto' },
+          },
+
+          didParseCell: function (data) {
+              if (data.row.index === totalRowIndex) {
+                  // Apply bold styling for the total row
+                  data.cell.styles.fontStyle = "bold";
+                  data.cell.styles.fillColor = [240, 240, 240]; // Light gray background
+              }
+          },
+
+        });
+        if(filteredData.length > 0){
+          doc.save("payment_report.pdf");
+        } else {
+          this.showToastifyMessage();
+        }
+      },
+      showToastifyMessage(){
+        Toastify({
+            text: "No data available for the selected dates",
+            backgroundColor: "red",
+            className: "text-light",
+            duration: 3000,
+            gravity: "top",
+            position: "right"
+          }).showToast();
+      },
+      openDialog(actionType){
+        this.reportFromDate = "";
+        this.reportToDate = "";
+        if(actionType === 'exportExcel'){
+          this.generateReportHeading = 'Export Excel';
+        }else{
+          this.generateReportHeading = 'Download PDF';
+        }
+        this.dialogAction = actionType;
+        this.reportGenerateDialogBox = true;
+      },
+      closeDialog(){
+        this.reportGenerateDialogBox = false;
+        // this.reportFromDate = "";
+        // this.reportToDate = "";
+        this.dialogAction = "";
+      },
+      generateReport(){
+        if (this.dialogAction === 'exportExcel') {
+          if(this.reportFromDate != "" && this.reportToDate != ""){
+            this.exportExcel();
+          }
+        } else if (this.dialogAction === 'downloadPdf') {
+          if(this.reportFromDate != "" && this.reportToDate != ""){
+            this.downloadPdf();
+          }
+        }
+        this.closeDialog();
+      }
+    },
+  }
+</script>
+
+<style scoped>
+  .spinner-container {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+  }
+ </style>

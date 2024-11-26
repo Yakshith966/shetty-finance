@@ -27,10 +27,10 @@ class CreatePaymentDetailsTable extends Migration
             $table->unsignedBigInteger('payment_status'); // Status of the payment (e.g., "Completed", "Pending")
             $table->foreign('payment_status')->references('id')->on('payment_statuses')->onDelete('cascade');
 
-            $table->unsignedBigInteger('payment_mode'); // Mode of payment (e.g., "Cash", "Credit Card")
+            $table->unsignedBigInteger('payment_mode')->nullable(); // Mode of payment (e.g., "Cash", "Credit Card")
             $table->foreign('payment_mode')->references('id')->on('payment_modes')->onDelete('cascade');
 
-            $table->timestamp('payment_date'); // Date and time of payment
+            $table->date('payment_date')->nullable(); // Date and time of payment
 
             $table->timestamps(); // Created at and updated at timestamps
         });

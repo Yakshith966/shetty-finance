@@ -18,7 +18,7 @@ class ProductServiceDetail extends Model
         'model_number',
         'description',
         'other_collected_item',
-        'product_recieved_date',
+        'product_received_date',
         'service_status',
     ];
 
@@ -33,6 +33,11 @@ class ProductServiceDetail extends Model
     {
         return $this->belongsTo(CustomerDetail::class, 'customer_id');
     }
+    public function paymentDetails()
+    {
+        return $this->hasMany(PaymentDetail::class, 'product_service_id');
+    }
+
 
     public static function boot()
     {

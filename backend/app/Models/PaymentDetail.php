@@ -18,16 +18,14 @@ class PaymentDetail extends Model
         'payment_date',
     ];
 
-    // Define the relationship with ServiceStatus
-    public function serviceStatus()
-    {
-        return $this->belongsTo(ServiceStatus::class, 'service_status');
-    }
-
     // Define the relationship with CustomerDetail
     public function customer()
     {
         return $this->belongsTo(CustomerDetail::class, 'customer_id');
+    }
+
+    public function productService(){
+        return $this->belongsTo(ProductServiceDetail::class, 'product_service_id');
     }
 
     public function paymentMode()

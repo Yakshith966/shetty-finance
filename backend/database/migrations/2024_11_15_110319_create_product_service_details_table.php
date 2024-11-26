@@ -26,7 +26,7 @@ class CreateProductServiceDetailsTable extends Migration
             $table->string('model_number')->nullable();
             $table->text('description')->nullable();
             $table->text('other_collected_item')->nullable();
-            $table->date('product_recieved_date');
+            $table->date('product_received_date');
 
             $table->unsignedBigInteger('service_status');
             $table->foreign('service_status')->references('id')->on('service_statuses')->onDelete('cascade');
