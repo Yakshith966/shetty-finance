@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerDetailController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentDetailController;
 use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ProductServiceDetailController;
@@ -42,3 +43,14 @@ Route::get('/service-details', [ProductServiceDetailController::class, 'index'])
 //Route to get payment details
 Route::get('get-payment-details', [PaymentDetailController::class, 'fetchPaymentDetails']);
 
+//Route to get payment status from master
+Route::get('get-payment-status-details', [PaymentDetailController::class, 'fetchPaymentStatus']);
+
+//Route to download excel report
+Route::post('payment-details-excel-report', [PaymentDetailController::class, 'paymentDetailExcelExport']);
+
+//Dashboard Routes
+Route::get('get-customer-count', [DashboardController::class, 'getCustomerCount']);
+Route::get('get-monthly-income', [DashboardController::class, 'getYearlyIncome']);
+Route::get('get-service-details-dashboard', [DashboardController::class, 'getServiceDetails']);
+Route::get('get-monthly-service-details', [DashboardController::class, 'getMonthlyServiceDetails']);

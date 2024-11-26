@@ -17,6 +17,6 @@ class ServiceStatusSeeder extends Seeder
         // Insert default service statuses into the 'service_status' table
         ServiceStatus::create(['status' => 'Recieved']);
         ServiceStatus::create(['status' => 'In Repair']);
-        ServiceStatus::create(['status' => 'Rapaired']);
+        ServiceStatus::create(['status' => 'Repaired']);
     }
 }
