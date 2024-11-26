@@ -37,6 +37,11 @@ const routes = [
         component: () => import('@/views/base/ServicePageDetails.vue'),
       },
       {
+        path: '/user/user-profile',
+        name: 'User Profile',
+        component: () => import('@/views/base/UserProfile.vue'),
+      },
+      {
         path: '/payment/payment-details',
         name: 'Payment Details',
         component: () => import('@/views/base/PaymentDetails.vue'),

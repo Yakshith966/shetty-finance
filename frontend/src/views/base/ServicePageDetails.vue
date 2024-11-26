@@ -82,36 +82,26 @@
   <!-- New/Edit Dialog -->
   <v-dialog v-model="dialog" :max-width="dialogMode === 'edit' ? '500px' : '800px'" @click:outside="handleOutsideClick">
     <v-card>
-      <!-- Title with smaller font -->
-      <v-card-title class="text-body-2 font-weight-bold">
-        <span>{{ dialogMode === 'new' ? 'New Item' : 'Edit Item' }}</span>
+      <v-card-title class="d-flex justify-space-between align-center py-2">
+        <span class="text-h6">
+          {{ dialogMode === 'new' ? 'New Item' : 'Edit Item' }}
+        </span>
+        <v-btn icon="mdi-close" variant="text" @click="closeDialog"></v-btn>
       </v-card-title>
 
       <v-card-text>
         <v-container>
           <!-- Existing Customer Checkbox -->
           <v-container>
-            <v-checkbox 
-              v-if="dialogMode != 'edit'" 
-              v-model="isExistingCustomer"
-              class="text-caption" 
+            <v-checkbox v-if="dialogMode != 'edit'" v-model="isExistingCustomer" class="text-caption"
               label="Already a Customer">
             </v-checkbox>
           </v-container>
 
           <!-- Autocomplete for Existing Customers -->
-          <v-autocomplete 
-            v-if="isExistingCustomer" 
-            v-model="selectedCustomer" 
-            :items="customerDetails"
-            item-title="name" 
-            item-value="id" 
-            label="Search Customer" 
-            prepend-inner-icon="mdi-magnify" 
-            outlined 
-            hide-details 
-            class="text-caption"
-            @update:model-value="handleCustomerSelection">
+          <v-autocomplete v-if="isExistingCustomer" v-model="selectedCustomer" :items="customerDetails"
+            item-title="name" item-value="id" label="Search Customer" prepend-inner-icon="mdi-magnify" outlined
+            hide-details class="text-caption" @update:model-value="handleCustomerSelection">
           </v-autocomplete>
 
           <v-row>
@@ -120,28 +110,16 @@
               <v-card>
                 <v-card-title class="text-body-2">Customer Details</v-card-title>
                 <v-card-text>
-                  <v-text-field 
-                    v-model="editedItem.customerName"
-                    :readonly="isExistingCustomer" 
-                    label="Customer Name*" 
+                  <v-text-field v-model="editedItem.customerName" :readonly="isExistingCustomer" label="Customer Name*"
                     class="text-body-2">
                   </v-text-field>
-                  <v-text-field 
-                    v-model="editedItem.phone" 
-                    label="Phone*" 
-                    :readonly="isExistingCustomer" 
+                  <v-text-field v-model="editedItem.phone" label="Phone*" :readonly="isExistingCustomer"
                     class="text-body-2">
                   </v-text-field>
-                  <v-text-field 
-                    v-model="editedItem.email" 
-                    :readonly="isExistingCustomer" 
-                    label="Email" 
+                  <v-text-field v-model="editedItem.email" :readonly="isExistingCustomer" label="Email"
                     class="text-body-2">
                   </v-text-field>
-                  <v-text-field 
-                    v-model="editedItem.altPhone" 
-                    :readonly="isExistingCustomer" 
-                    label="Alternative Mobile" 
+                  <v-text-field v-model="editedItem.altPhone" :readonly="isExistingCustomer" label="Alternative Mobile"
                     class="text-body-2">
                   </v-text-field>
                 </v-card-text>
@@ -149,56 +127,27 @@
             </v-col>
 
             <!-- Second Card: Product Details -->
-            <v-col :cols="dialogMode === 'edit' ? 12 : 12" 
-                   :md="dialogMode === 'edit' ? 20 : 6" 
-                   class="d-flex justify-center">
+            <v-col :cols="dialogMode === 'edit' ? 12 : 12" :md="dialogMode === 'edit' ? 20 : 6"
+              class="d-flex justify-center">
               <v-card class="w-100" outlined>
                 <v-card-title class="text-body-2">Product Details</v-card-title>
                 <v-card-text>
-                  <v-text-field 
-                    v-model="editedItem.productType" 
-                    label="Product Type *" 
-                    class="text-body-2">
+                  <v-text-field v-model="editedItem.productType" label="Product Type *" class="text-body-2">
                   </v-text-field>
-                  <v-text-field 
-                    v-model="editedItem.productName" 
-                    label="Product Name *" 
-                    class="text-body-2">
+                  <v-text-field v-model="editedItem.productName" label="Product Name *" class="text-body-2">
                   </v-text-field>
-                  <v-text-field 
-                    v-model="editedItem.model" 
-                    label="Model" 
-                    class="text-body-2">
+                  <v-text-field v-model="editedItem.model" label="Model" class="text-body-2">
                   </v-text-field>
-                  <v-text-field 
-                    v-model="editedItem.serialNumber" 
-                    label="Serial Number" 
-                    class="text-body-2">
+                  <v-text-field v-model="editedItem.serialNumber" label="Serial Number" class="text-body-2">
                   </v-text-field>
-                  <v-text-field 
-                    v-model="editedItem.date" 
-                    label="Date *" 
-                    type="date" 
-                    class="text-body-2">
+                  <v-text-field v-model="editedItem.date" label="Date *" type="date" class="text-body-2">
                   </v-text-field>
-                  <v-textarea 
-                    v-model="editedItem.issueDescription" 
-                    label="Issue Description *" 
-                    class="text-body-2">
+                  <v-textarea v-model="editedItem.issueDescription" label="Issue Description *" class="text-body-2">
                   </v-textarea>
-                  <v-text-field 
-                    v-model="editedItem.collectedItems" 
-                    label="Collected Items" 
-                    class="text-body-2">
+                  <v-text-field v-model="editedItem.collectedItems" label="Other Collected Items" class="text-body-2">
                   </v-text-field>
-                  <v-select 
-                    v-model="editedItem.statusId" 
-                    :items="formattedStatusOptions" 
-                    label="Status*" 
-                    item-value="id"
-                    item-title="status" 
-                    outlined 
-                    class="text-body-2">
+                  <v-select v-model="editedItem.statusId" :items="formattedStatusOptions" label="Status*"
+                    item-value="id" item-title="status" outlined class="text-body-2">
                   </v-select>
                 </v-card-text>
               </v-card>
@@ -209,8 +158,10 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn variant="text" @click="closeDialog" :disabled="isDisable" class="text-body-2">Cancel</v-btn>
-        <v-btn color="primary" v-if="dialogMode === 'new'" :disabled="isDisable" @click="saveItem()" class="text-body-2">Save</v-btn>
-        <v-btn color="primary" v-if="dialogMode === 'edit'" :disabled="isDisable" @click="updateItem()" class="text-body-2">Update</v-btn>
+        <v-btn color="primary" v-if="dialogMode === 'new'" :disabled="isDisable" @click="saveItem()"
+          class="text-body-2">Save</v-btn>
+        <v-btn color="primary" v-if="dialogMode === 'edit'" :disabled="isDisable" @click="updateItem()"
+          class="text-body-2">Update</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -218,7 +169,12 @@
   <!-- Payment Dialog -->
   <v-dialog v-model="paymentDialog" max-width="500px">
     <v-card>
-      <v-card-title>Payment Details</v-card-title>
+      <v-card-title class="d-flex justify-space-between align-center">
+        <div class="text-h5 text-medium-emphasis ps-2">
+          Payment Details
+        </div>
+        <v-btn icon="mdi-close" variant="text" @click="closePaymentDialog"></v-btn>
+      </v-card-title>
       <v-card-text>
         <v-text-field v-model="paymentDetails.amount" label="Amount" :readonly="isPaymentReadOnly"></v-text-field>
         <v-select v-model="paymentDetails.status" :items="paymentStatus" item-title="payment_status" item-value="id"
@@ -249,8 +205,14 @@
   <!-- View Dialog -->
   <v-dialog v-model="viewDialog" max-width="900px">
     <v-card>
-      <v-card-title class="headline font-weight-bold justify-center">
+      <!-- <v-card-title class="headline font-weight-bold justify-center">
         Customer Details
+      </v-card-title> -->
+      <v-card-title class="d-flex justify-space-between align-center">
+        <div class="text-h5 text-medium-emphasis ps-2">
+          Customer Details
+        </div>
+        <v-btn icon="mdi-close" variant="text" @click="viewDialog = false"></v-btn>
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text>
@@ -484,6 +446,7 @@ export default {
           close: true,
         }).showToast();
       } catch (error) {
+        this.fetchServiceProductDetails();
       }
 
     },
@@ -580,6 +543,7 @@ export default {
           position: "right",
         }).showToast();
         this.fetchServiceProductDetails();
+        this.fetchCustomerDetails();
       } catch (error) {
         this.isDisable = false;
         if (error.response && error.response.status === 422) {
