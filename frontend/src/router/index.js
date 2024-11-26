@@ -3,12 +3,13 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 import DefaultLayout from '@/layouts/DefaultLayout'
 
+
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: DefaultLayout,
-    redirect: '/dashboard',
+    // redirect: '/login',
     children: [
       {
         path: '/dashboard',
@@ -20,6 +21,9 @@ const routes = [
           import(
             /* webpackChunkName: "dashboard" */ '@/views/dashboard/Dashboard.vue'
           ),
+          meta: {
+            requiresAuth: true, 
+          },
       },
       {
         path: '/theme',
@@ -35,11 +39,25 @@ const routes = [
         path: '/service/service-details',
         name: 'Service Details',
         component: () => import('@/views/base/ServicePageDetails.vue'),
+        meta: {
+          requiresAuth: true, 
+        },
       },
       {
         path: '/payment/payment-details',
         name: 'Payment Details',
         component: () => import('@/views/base/PaymentDetails.vue'),
+        meta: {
+          requiresAuth: true, 
+        },
+      },
+      {
+        path: '/customer/customer-details',
+        name: 'Customer Details',
+        component: () => import('@/views/base/CustomerDetails.vue'),
+        meta: {
+          requiresAuth: true, 
+        },
       },
       
       {
@@ -287,13 +305,18 @@ const routes = [
   {
     path: '/pages',
     redirect: '/pages/404',
-    name: 'Pages',
+    name:'Pages',
     component: {
       render() {
         return h(resolveComponent('router-view'))
       },
     },
     children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: () => import('@/views/pages/Login'),
+      },
       {
         path: '404',
         name: 'Page404',
@@ -304,11 +327,7 @@ const routes = [
         name: 'Page500',
         component: () => import('@/views/pages/Page500'),
       },
-      {
-        path: 'login',
-        name: 'Login',
-        component: () => import('@/views/pages/Login'),
-      },
+     
       {
         path: 'register',
         name: 'Register',
