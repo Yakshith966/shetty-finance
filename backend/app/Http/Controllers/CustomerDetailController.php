@@ -100,54 +100,53 @@ class CustomerDetailController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-{
-    try {
-        // Validate incoming request data
-        $validated = $request->validate([
-            'name' => 'required|string|max:255', // Name is required
-            'phone_number' => [
-                'required',
-                'integer',
-                'regex:/^\d{10}$/',
-            ], // Phone number is required
-            'email' => 'nullable|email|max:255', // Email is optional
-            'alternate_phone_number' => [
-                'integer',
-                'regex:/^\d{10}$/',
-            ], 
+    {
+        try {
+            // Validate incoming request data
+            $validated = $request->validate(
+                [
+                    'name' => 'required|string|max:255', // Name is required
+                    'phone_number' => [
+                        'required',
+                        'integer',
+                        'regex:/^\d{10}$/',
+                    ], // Phone number is required
+                    'email' => 'nullable|email|max:255', // Email is optional
+                    'alternate_phone_number' => [
+                        'integer',
+                        'regex:/^\d{10}$/',
+                    ],
 
-        ] ,[
-            'phone_number.regex' => 'The phone number must be exactly 10 digits.',
-        ],
-        [
-            'alternate_phone_number.regex' => 'The Alternate phone number must be exactly 10 digits.',
-        ]
-    );
+                ],
+                [
+                    'phone_number.regex' => 'The phone number must be exactly 10 digits.',
+                    'alternate_phone_number.regex' => 'The Alternate phone number must be exactly 10 digits.',
+                ],
+            );
 
-        // Find the customer by ID
-        $customer = CustomerDetail::findOrFail($id);
+            // Find the customer by ID
+            $customer = CustomerDetail::findOrFail($id);
 
-        // Update customer details
-        $customer->update($validated);
+            // Update customer details
+            $customer->update($validated);
 
-        // Return success response
-        return response()->json([
-            'message' => 'Customer updated successfully',
-            'data' => $customer,
-        ], 200);
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'message' => 'Validation failed.',
-            'errors' => $e->errors(),
-        ], 422);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'An error occurred while updating the customer.',
-            'error' => $e->getMessage(),
-        ], 500);
+            // Return success response
+            return response()->json([
+                'message' => 'Customer updated successfully',
+                'data' => $customer,
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while updating the customer.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
-}
 
     /**
      * Remove the specified resource from storage.

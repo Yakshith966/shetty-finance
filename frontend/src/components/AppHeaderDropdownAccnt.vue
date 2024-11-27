@@ -32,15 +32,17 @@ export default {
       <CAvatar :src="avatar" size="md" />
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
-      <CDropdownHeader
-        component="h6"
-        class="bg-body-secondary text-body-secondary fw-semibold mb-2 rounded-top"
-      >
+      <CDropdownHeader component="h6" class="bg-body-secondary text-body-secondary fw-semibold mb-2 rounded-top">
         Account
       </CDropdownHeader>
-      <CDropdownItem> <CIcon icon="cil-user" /> Profile </CDropdownItem>
+      <CDropdownItem>
+        <CIcon icon="cil-user" />
+        <span @click="$router.push('/user/user-profile')" style="cursor: pointer; margin-left: 8px;">Profile</span>
+      </CDropdownItem>
       <CDropdownDivider />
-      <CDropdownItem @click="logout"> <CIcon icon="cil-lock-locked" /> Logout </CDropdownItem>
+      <CDropdownItem @click="logout" style="cursor: pointer;">
+        <CIcon icon="cil-lock-locked" /> Logout
+      </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
 </template>

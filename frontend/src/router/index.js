@@ -9,6 +9,9 @@ const routes = [
     path: '/',
     name: 'Home',
     component: DefaultLayout,
+    meta: {
+      requiresAuth: true, 
+    },
     redirect: '/dashboard',
     children: [
       {
