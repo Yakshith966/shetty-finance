@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductServiceDetailRequest;
+use App\Jobs\SendServiceStatusJob;
 use App\Models\CustomerDetail;
 use App\Models\ProductServiceDetail;
+use App\Models\ServiceStatus;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 
 class ProductServiceDetailController extends Controller
@@ -76,7 +79,7 @@ class ProductServiceDetailController extends Controller
                     'customer_name' => 'required|string|max:255',
                     'phone' => [
                         'required',
-                        'string',
+                        'integer',
                         'regex:/^\d{10}$/',
                     ],
                     'email' => [
@@ -85,7 +88,11 @@ class ProductServiceDetailController extends Controller
                         'max:255',
                         Rule::unique('customer_details', 'email')->ignore($request->selectedCustomer),
                     ],
-                    'altPhone' => 'nullable|string|max:15',
+                    'altPhone' => [
+                        'nullable',
+                        'integer',
+                        'regex:/^\d{10}$/',
+                    ],
                     'productType' => 'required|string|max:255',
                     'productName' => 'required|string|max:255',
                     'serialNumber' => 'nullable|string|max:255',
@@ -98,7 +105,8 @@ class ProductServiceDetailController extends Controller
                 ],
                 [
                     'phone.regex' => 'The phone number must be exactly 10 digits.',
-                ]
+                    'altPhone.regex' => 'The Alternative number must be exactly 10 digits.',
+                ], 
             );
             if (!is_null($request->selectedCustomer)) {
 
@@ -123,6 +131,22 @@ class ProductServiceDetailController extends Controller
                 'product_received_date' => $validated['date'],
                 'service_status' => $validated['status'],
             ]);
+            if ($validated['status'] == 1 || $validated['status'] == 3) {
+                $phoneNumber = '91' . $productServiceDetail->customer->phone_number;
+                $status = ServiceStatus::find($validated['status'])->status;
+            
+                // Determine the message based on the status
+                if ($validated['status'] == 1) {
+                    $message = "Your product '{$productServiceDetail->product_name}' has been $status. The Service ID is {$productServiceDetail->service_id}. Please contact us for further queries. Thank you for choosing our service! 😊";
+
+                } elseif ($validated['status'] == 3) {
+                    $message = "The service for your '{$productServiceDetail->product_name}' has been successfully $status. We kindly collect it at your convenience. Thank you for choosing our services! 😊";
+                }
+            
+                // Send the message
+                SendServiceStatusJob::dispatch($phoneNumber, $message);
+            }
+            
             return response()->json([
                 'message' => 'Product Service Detail saved successfully.',
                 'data' => $productServiceDetail,
@@ -148,6 +172,17 @@ class ProductServiceDetailController extends Controller
             $service = ProductServiceDetail::findOrFail($id);
             $service->service_status = $request->status_id;
             $service->save();
+            if ($request->status_id == 1 || $request->status_id == 3) {
+                $phoneNumber = '91' . $service->customer->phone_number;
+                $status = ServiceStatus::find($request->status_id)->status;
+        
+                if ($request->status_id == 1) {
+                    $message = "Your product '{$service->product_name}' has been $status. The Service ID is {$service->service_id}. Please contact us for further queries. Thank you for choosing our service! 😊";
+                } elseif ($request->status_id == 3) {
+                    $message = "The service for your '{$service->product_name}' has been successfully $status. We kindly collect it at your convenience. Thank you for choosing our services! 😊";
+                }
+                SendServiceStatusJob::dispatch($phoneNumber, $message);
+            }
             return response()->json([
                 'message' => 'Service status updated successfully.',
                 'data' => $service,
@@ -160,7 +195,6 @@ class ProductServiceDetailController extends Controller
         }
     }
 
-     
 
     /**
      * Display the specified resource.
@@ -207,6 +241,20 @@ class ProductServiceDetailController extends Controller
 
             $product = ProductServiceDetail::findOrFail($id);
             $product->update($validated);
+
+            if ($validated['service_status'] == 1 || $validated['service_status'] == 3) {
+                $phoneNumber = '91' . $product->customer->phone_number;
+                $status = ServiceStatus::find($validated['service_status'])->status;
+            
+                
+                if ($validated['service_status'] == 1) {
+                    $message = "Your product '{$product->product_name}' has been $status. The Service ID is {$product->service_id}. Please contact us for further queries. Thank you for choosing our service! 😊";
+                } elseif ($validated['service_status'] == 3) {
+                    $message = "The service for your '{$product->product_name}' has been successfully $status. Please feel free to collect it at your convenience. Thank you for choosing our services! 😊";
+                }
+            
+                SendServiceStatusJob::dispatch($phoneNumber, $message);
+            }
 
             return response()->json([
                 'message' => 'Product updated successfully',

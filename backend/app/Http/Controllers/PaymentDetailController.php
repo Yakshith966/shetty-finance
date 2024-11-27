@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PaymentDetailExport;
+use App\Jobs\SendServiceStatusJob;
+use App\Models\CustomerDetail;
 use App\Models\PaymentDetail;
 use App\Models\PaymentStatus;
+use App\Models\ProductServiceDetail;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -28,7 +31,7 @@ class PaymentDetailController extends Controller
     public function fetchPaymentDetails(){
         $paymentDetails = PaymentDetail::join('customer_details', 'payment_details.customer_id', '=', 'customer_details.id')
             ->join('product_service_details', 'payment_details.product_service_id', '=', 'product_service_details.id')
-            ->join('payment_modes', 'payment_details.payment_mode', '=', 'payment_modes.id')
+            ->leftJoin('payment_modes', 'payment_details.payment_mode', '=', 'payment_modes.id')
             ->join('payment_statuses', 'payment_details.payment_status', '=', 'payment_statuses.id')
             ->select(
                 'payment_details.*', 
@@ -98,6 +101,17 @@ class PaymentDetailController extends Controller
             ]);
             $paymentDetail = PaymentDetail::create($validatedData);
 
+            if ($validatedData['payment_status'] == 2) {
+                $productService = ProductServiceDetail::findOrFail($validatedData['product_service_id']);
+                $customer = CustomerDetail::findOrFail($validatedData['customer_id']);
+    
+                $phoneNumber = '91' . $customer->phone_number;
+                $message = "Your payment of ₹{$validatedData['amount']} has been received for Service ID: {$productService->service_id}. Thank you for your payment!";
+    
+                SendServiceStatusJob::dispatch($phoneNumber, $message);
+            }
+    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Payment details stored successfully.',
@@ -136,6 +150,16 @@ class PaymentDetailController extends Controller
             ]);
             $paymentDetail = PaymentDetail::findOrFail($id);
             $paymentDetail->update($validatedData);
+            if ($validatedData['payment_status'] == 2) {
+                $productService = ProductServiceDetail::findOrFail($validatedData['product_service_id']);
+                $customer = CustomerDetail::findOrFail($validatedData['customer_id']);
+    
+                $phoneNumber = '91' . $customer->phone_number;
+                $message = "Your payment of ₹{$validatedData['amount']} has been received for Service ID: {$productService->service_id}. Thank you for your payment!";
+    
+                SendServiceStatusJob::dispatch($phoneNumber, $message);
+            }
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Payment details updated successfully.',
