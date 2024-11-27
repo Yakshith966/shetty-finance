@@ -19,8 +19,8 @@ const sidebar = useSidebarStore()
     @visible-change="(value) => sidebar.toggleVisible(value)"
   >
     <CSidebarHeader class="border-bottom">
-      <RouterLink custom to="/" v-slot="{ href, navigate }">
-        <CSidebarBrand v-bind="$attrs" as="a" :href="href" @click="navigate">
+      <RouterLink custom to="/dashboard" v-slot="{ href, navigate }">
+        <CSidebarBrand v-bind="$attrs" as="a" :href="href" @click="navigate" style="text-decoration: none !important;">
           <h4>Asset Management</h4>
           <CIcon custom-class-name="sidebar-brand-narrow" :icon="sygnet" :height="32" />
         </CSidebarBrand>

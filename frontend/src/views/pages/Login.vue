@@ -30,8 +30,11 @@
                     <CFormInput :type="showPassword ? 'text' : 'password'" placeholder="Password"
                       autocomplete="current-password" v-model="loginDetails.passWord" required />
                     <!-- <CInputGroupText @click="togglePasswordVisibility" style="cursor: pointer;">
-                      <CIcon :icon="showPassword ? 'cil-apple' : 'cil-apple'" size /> -->
-                    <!-- </CInputGroupText>  -->
+                      <CIcon :icon="showPassword ? 'cil-apple' : 'cil-apple'" size /> 
+                    </CInputGroupText>  -->
+                    <CInputGroupText @click="togglePasswordVisibility" style="cursor: pointer;">
+                      <i :class="showPassword ? 'mdi mdi-eye' : 'mdi mdi-eye-off'" style="font-size: 1.25rem;"></i>
+                    </CInputGroupText>
                   </CInputGroup>
                   <CRow>
                     <CCol :xs="3">
@@ -86,7 +89,9 @@ export default{
   },
  
 methods: {
-  
+  togglePasswordVisibility(){
+    this.showPassword = !this.showPassword; 
+  },
   login() {
   this.requestLoad = true;
   this.errorMsg = ''; // Clear any previous error messages
