@@ -18,6 +18,7 @@ class AuthController extends Controller
     }
 
     $user = Auth::user();
+    $user->load('roles');
     $token = $user->createToken('auth_token')->plainTextToken;
     // dd($token);
 

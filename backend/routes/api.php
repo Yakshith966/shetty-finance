@@ -7,6 +7,7 @@ use App\Http\Controllers\PaymentDetailController;
 use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ProductServiceDetailController;
 use App\Http\Controllers\ServiceStatusController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerExportController;
@@ -62,6 +63,10 @@ Route::get('get-customer-count', [DashboardController::class, 'getCustomerCount'
 Route::get('get-monthly-income', [DashboardController::class, 'getYearlyIncome']);
 Route::get('get-service-details-dashboard', [DashboardController::class, 'getServiceDetails']);
 Route::get('get-monthly-service-details', [DashboardController::class, 'getMonthlyServiceDetails']);
+
+// User profile Routes
+Route::put('/update-user-data/{id}', [UserProfileController::class, 'update']);
+Route::put('/update-user-password/{id}', [UserProfileController::class, 'updatePassword']);
 
 });
 
