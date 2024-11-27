@@ -4,10 +4,10 @@ export default [
     name: 'Dashboard',
     to: '/dashboard',
     icon: 'cil-speedometer',
-    badge: {
-      color: 'primary',
-      text: 'NEW',
-    },
+    // badge: {
+    //   color: 'primary',
+    //   text: 'NEW',
+    // },
   },
   {
     component: 'CNavTitle',
@@ -29,7 +29,7 @@ export default [
     component: 'CNavItem',
     name: 'Customer Details',
     to: '/customer/customer-details',
-    icon: 'cil-dollar',
+    icon: 'cil-user',
   },
   {
     component: 'CNavTitle',
