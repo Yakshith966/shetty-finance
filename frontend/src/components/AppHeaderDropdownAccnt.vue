@@ -17,10 +17,8 @@ export default {
         .then((response) => {
           this.$store.commit('clearAuth') // Clear authentication data from Vuex
           this.$router.push('/pages/login') // Redirect to login page
-          console.log('Redirected to login page')
         })
         .catch((error) => {
-          console.error('Error during redirection:', error)
         })
     },
   },

@@ -104,7 +104,6 @@
     </div>
 </template>
 <script>
-import * as XLSX from 'xlsx';
 import Toastify from 'toastify-js';
 import "toastify-js/src/toastify.css"; 
 
@@ -144,7 +143,6 @@ mounted() {
       this.isLoading = true;
       setTimeout(() => {
     if (this.isLoading) {
-      console.warn('Timeout: Resetting loading state due to prolonged fetch.');
       this.isLoading = false;
     }
   }, 1000);
@@ -153,13 +151,10 @@ mounted() {
         const response = await axios.get('/customers'); 
         this.storedrecords = response.data.data;
       } catch (error) {
-        console.error('Error fetching customer data:', error);
         this.isLoading = false;
       }
     },
     editCustomer(item) {
-
-      console.log('Edit customer:',item);
       this.editItem = { ...item };
       this.dialog = true;
       // Here, you can navigate to an edit page or open a dialog box
@@ -266,7 +261,6 @@ mounted() {
     })
     .catch((error) => {
       alert("There was an error generating the report. Please try again later.");
-      console.error("There was an error generating the report:", error);
     });
 
 },

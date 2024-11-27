@@ -107,12 +107,12 @@ class CustomerDetailController extends Controller
             'name' => 'required|string|max:255', // Name is required
             'phone_number' => [
                 'required',
-                'string',
+                'integer',
                 'regex:/^\d{10}$/',
             ], // Phone number is required
             'email' => 'nullable|email|max:255', // Email is optional
             'alternate_phone_number' => [
-                'string',
+                'integer',
                 'regex:/^\d{10}$/',
             ], 
 
