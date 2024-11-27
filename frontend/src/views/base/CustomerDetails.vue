@@ -11,43 +11,56 @@
   <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Customer Details</v-toolbar-title>
+        
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-         
-        <v-text-field
-            v-model="searchQuery"
-            label="Search Customer"
-            clearable
-            solo
-             prepend-inner-icon="mdi-magnify"
-            hide-details
-            class="ml-2 mr-2 w-5"
-            dense
-          
-          />
-
-          <v-btn color="primary"  @click="exportCustomerDetails">
-  Export to Excel
-  <v-icon right>mdi-download</v-icon>
-</v-btn>
-
+       
       </v-toolbar>
-    </template>
-    
-
-    <template v-slot:item.actions="{ item }">
-      <v-icon class="me-2" size="small" @click="editCustomer(item)"
-      >
-        mdi-pencil
-      </v-icon>
-     
+      <v-card-title class="d-flex align-center pe-2" v-if="!isLoading">
+          <v-btn color="primary"  @click="exportCustomerDetails">
+           Export to Excel
+          <v-icon right>mdi-download</v-icon>
+       </v-btn>
+       <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+       <v-text-field
+            v-model="searchQuery"
+            label="Search" prepend-inner-icon="mdi-magnify" outlined density="compact"
+          variant="solo-filled" flat hide-details single-line
+          ></v-text-field>
+        </v-card-title>
     </template>
    
-    <template v-slot:no-data>
-                <v-alert >No customer data available.</v-alert>
-            </template>
+     <!-- Loading State -->
+     <template v-slot:body="{ items }">
+        <tr v-if="isLoading">
+          <td :colspan="headers.length" class="text-center">
+            <v-progress-circular indeterminate color="primary" />
+          </td>
+        </tr>
+        <tr v-else-if="items.length > 0" v-for="(item, index) in items" :key="index">
+          <td>{{ index+1}}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.phone_number }}</td>
+          <td>{{ item.email }}</td>
+          <td>{{ item.alternate_phone_number }}</td>
+          <td>
+            <v-icon small @click="editCustomer(item)">mdi-pencil</v-icon>
+          </td>
+        </tr>
+        <tr v-else>
+          <td :colspan="headers.length" class="text-center">
+            No data available
+          </td>
+        </tr>
+      </template>
 
-</v-data-table>
+      <!-- No Data Alert -->
+      <template v-slot:no-data>
+        <v-alert>No customer data available.</v-alert>
+      </template>
+    </v-data-table>
+
  <!-- Edit Customer Dialog -->
  <v-dialog v-model="dialog" max-width="700px">
       <v-card>
@@ -88,12 +101,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    
     </div>
-
 </template>
 <script>
-import * as XLSX from 'xlsx';
 import Toastify from 'toastify-js';
 import "toastify-js/src/toastify.css"; 
 
@@ -101,6 +111,7 @@ export default{
     
 data: () => ({
   isDisable: false,
+  isLoading: false,
     headers: [
       { title: 'Customer ID', value: 'id' },
       { title: 'Customer Name', value: 'name',sortable: true },
@@ -125,19 +136,25 @@ computed: {
   },
 mounted() {
     this.fetchCustomers();
+  
   },
   methods: {
     async fetchCustomers() {
+      this.isLoading = true;
+      setTimeout(() => {
+    if (this.isLoading) {
+      this.isLoading = false;
+    }
+  }, 1000);
       try {
+        
         const response = await axios.get('/customers'); 
         this.storedrecords = response.data.data;
       } catch (error) {
-        console.error('Error fetching customer data:', error);
+        this.isLoading = false;
       }
     },
     editCustomer(item) {
-
-      console.log('Edit customer:',item);
       this.editItem = { ...item };
       this.dialog = true;
       // Here, you can navigate to an edit page or open a dialog box
@@ -150,6 +167,7 @@ mounted() {
     },
 
     async saveCustomer() {
+      
   this.isDisable = true; // Disable buttons to prevent multiple submissions
   const payload = {
     name: this.editItem.name,
@@ -169,7 +187,6 @@ mounted() {
     if (index !== -1) {
       this.storedrecords[index] = { ...response.data.data };
     }
-
     // Display success message
     Toastify({
       text: response.data.message || "Customer updated successfully!",
@@ -182,6 +199,7 @@ mounted() {
 
     // Close the dialog and reset state
     this.closeDialog();
+    
   } catch (error) {
     // Handle validation errors
     if (error.response && error.response.status === 422) {
@@ -243,7 +261,6 @@ mounted() {
     })
     .catch((error) => {
       alert("There was an error generating the report. Please try again later.");
-      console.error("There was an error generating the report:", error);
     });
 
 },

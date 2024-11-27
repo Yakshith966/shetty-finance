@@ -105,10 +105,24 @@ class CustomerDetailController extends Controller
         // Validate incoming request data
         $validated = $request->validate([
             'name' => 'required|string|max:255', // Name is required
-            'phone_number' => 'required|integer|max:10', // Phone number is required
+            'phone_number' => [
+                'required',
+                'integer',
+                'regex:/^\d{10}$/',
+            ], // Phone number is required
             'email' => 'nullable|email|max:255', // Email is optional
-            'alternate_phone_number' => 'nullable|string|max:10', // Alternate phone is optional
-        ]);
+            'alternate_phone_number' => [
+                'integer',
+                'regex:/^\d{10}$/',
+            ], 
+
+        ] ,[
+            'phone_number.regex' => 'The phone number must be exactly 10 digits.',
+        ],
+        [
+            'alternate_phone_number.regex' => 'The Alternate phone number must be exactly 10 digits.',
+        ]
+    );
 
         // Find the customer by ID
         $customer = CustomerDetail::findOrFail($id);
