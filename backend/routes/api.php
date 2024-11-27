@@ -27,6 +27,7 @@ use App\Http\Controllers\AuthController;
 // });
 
 // Route to store customer details
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
      Route::get('/fetch-service-status', [ServiceStatusController::class, 'index']);
@@ -65,7 +66,7 @@ Route::get('get-monthly-service-details', [DashboardController::class, 'getMonth
 });
 
 
-Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
+
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 // Route::middleware('throttle:login')->post('/login', [AuthController::class, 'login']);
 //Route to download excel report

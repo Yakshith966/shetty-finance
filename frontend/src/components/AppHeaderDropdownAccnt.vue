@@ -1,8 +1,32 @@
-<script setup>
+<script>
+import { useRouter } from 'vue-router'
 import avatar from '@/assets/images/avatars/10.png'
+import Login from '../views/pages/Login.vue'
 
-const itemsCount = 42
+
+export default {
+  data() {
+    return {
+      avatar, // Import avatar image
+    }
+  },
+  methods: {
+    logout() {
+      axios
+        .post('/logout')
+        .then((response) => {
+          this.$store.commit('clearAuth') // Clear authentication data from Vuex
+          this.$router.push('/pages/login') // Redirect to login page
+          console.log('Redirected to login page')
+        })
+        .catch((error) => {
+          console.error('Error during redirection:', error)
+        })
+    },
+  },
+}
 </script>
+
 
 <template>
   <CDropdown placement="bottom-end" variant="nav-item">
@@ -18,7 +42,7 @@ const itemsCount = 42
       </CDropdownHeader>
       <CDropdownItem> <CIcon icon="cil-user" /> Profile </CDropdownItem>
       <CDropdownDivider />
-      <CDropdownItem> <CIcon icon="cil-lock-locked" /> Logout </CDropdownItem>
+      <CDropdownItem @click="logout"> <CIcon icon="cil-lock-locked" /> Logout </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
 </template>
