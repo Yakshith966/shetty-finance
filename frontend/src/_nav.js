@@ -33,6 +33,16 @@ export default [
   },
   {
     component: 'CNavTitle',
+    name: 'Masters',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Dealers',
+    to: '/master/dealers',
+    icon: 'cil-contact',
+  },
+  {
+    component: 'CNavTitle',
     name: 'Settings',
   },
   {
