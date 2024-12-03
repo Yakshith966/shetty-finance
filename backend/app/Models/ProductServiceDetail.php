@@ -37,6 +37,10 @@ class ProductServiceDetail extends Model
     {
         return $this->hasMany(PaymentDetail::class, 'product_service_id');
     }
+    public function latestDealerDetail()
+    {
+        return $this->hasOne(DealerDetails::class, 'service_id','id')->latest('id');
+    }
 
 
     public static function boot()

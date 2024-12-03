@@ -33,7 +33,7 @@ class DashboardController extends Controller
         $endOfYear = now()->endOfYear();     // End of the current year
 
         // Query to get the total payment amount for each month of the current year
-        $yearlyIncome = PaymentDetail::selectRaw('DATE_FORMAT(payment_date, "%Y-%m") as month, SUM(amount) as total_income')
+        $yearlyIncome = PaymentDetail::selectRaw('DATE_FORMAT(payment_date, "%Y-%m") as month, SUM(paid_amount) as total_income')
             ->whereBetween('payment_date', [$startOfYear, $endOfYear])
             ->where('payment_status', '=', 2)
             ->groupByRaw('DATE_FORMAT(payment_date, "%Y-%m")')

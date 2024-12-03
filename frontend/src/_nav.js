@@ -27,6 +27,12 @@ export default [
   },
   {
     component: 'CNavItem',
+    name: 'Dealers Payment Details',
+    to: '/payment/dealers-payment-details',
+    icon: 'cil-dollar',
+  },
+  {
+    component: 'CNavItem',
     name: 'Customer Details',
     to: '/customer/customer-details',
     icon: 'cil-people',
@@ -39,6 +45,12 @@ export default [
     component: 'CNavItem',
     name: 'Dealers',
     to: '/master/dealers',
+    icon: 'cil-contact',
+  },
+  {
+    component: 'CNavItem',
+    name: 'User Management',
+    to: '/user/user-management',
     icon: 'cil-contact',
   },
   {

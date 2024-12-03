@@ -3,6 +3,8 @@
 use App\Exports\CustomerExport;
 use App\Http\Controllers\CustomerDetailController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DealerController;
+use App\Http\Controllers\DealerDetailsController;
 use App\Http\Controllers\PaymentDetailController;
 use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ProductServiceDetailController;
@@ -43,6 +45,7 @@ Route::get('/fetch-payment-status', [PaymentStatusController::class, 'index']);
 Route::get('/fetch-payment-modes', [PaymentStatusController::class, 'fetchPaymentMode']);
 Route::post('/payment-details', [PaymentDetailController::class, 'store']);
 Route::get('/payment-details', [PaymentDetailController::class, 'getPaymentDetails']);
+Route::get('/dealers-details', [DealerDetailsController::class, 'getDealersData']);
 Route::put('/payment-details/{id}', [PaymentDetailController::class, 'updatePaymentDetails']);
 Route::get('/customers', [CustomerDetailController::class, 'index']);
 Route::put('/customers/{id}', [CustomerDetailController::class, 'update']);
@@ -57,6 +60,7 @@ Route::get('get-payment-details', [PaymentDetailController::class, 'fetchPayment
 Route::get('get-payment-status-details', [PaymentDetailController::class, 'fetchPaymentStatus']);
 
 Route::post('payment-details-excel-report', [PaymentDetailController::class, 'paymentDetailExcelExport']);
+Route::post('dealers-details-excel-report', [DealerDetailsController::class, 'dealersDetailExcelExport']);
 
 //Dashboard Routes
 Route::get('get-customer-count', [DashboardController::class, 'getCustomerCount']);
@@ -68,9 +72,22 @@ Route::get('get-monthly-service-details', [DashboardController::class, 'getMonth
 Route::put('/update-user-data/{id}', [UserProfileController::class, 'update']);
 Route::put('/update-user-password/{id}', [UserProfileController::class, 'updatePassword']);
 
+
+Route::get('/dealers', [DealerController::class, 'index']);
+Route::post('/dealers', [DealerController::class, 'store']); 
+Route::get('/dealers/{id}', [DealerController::class, 'show']); 
+Route::put('/dealers/{id}', [DealerController::class, 'update']); 
+Route::delete('/dealers/{id}', [DealerController::class, 'destroy']); 
+
+Route::get('/fetch-dealers-status', [DealerController::class, 'fetchdDealersStatus']);
+Route::post('/dealers-details', [DealerDetailsController::class, 'store']);
+Route::put('/dealers-details/{id}', [DealerDetailsController::class, 'update']);
+
+Route::get('/fetch-dealers-details-report', [DealerDetailsController::class, 'fetchDealersDetails']);
+Route::get('/fetch-roles', [AuthController::class, 'fetchRoles']);
+Route::get('/fetch-users', [AuthController::class, 'fetchUsers']);
+
 });
-
-
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 // Route::middleware('throttle:login')->post('/login', [AuthController::class, 'login']);

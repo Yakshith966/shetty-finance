@@ -13,4 +13,8 @@ class PaymentMode extends Model
     {
         return $this->hasMany(PaymentDetail::class, 'payment_mode');
     }
+    public function dealerDetails()
+    {
+        return $this->hasMany(DealerDetails::class, 'payment_mode');
+    }
 }

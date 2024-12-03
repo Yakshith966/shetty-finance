@@ -18,5 +18,6 @@ class PaymentStatusSeeder extends Seeder
         // Insert default payment statuses into the 'payment_status' table
         PaymentStatus::create(['payment_status' => 'Pending']);
         PaymentStatus::create(['payment_status' => 'Paid']);
+        PaymentStatus::create(['payment_status' => 'Partially paid']);
     }
 }
