@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerExportController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\RolePermissionMapController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -67,6 +70,8 @@ Route::get('get-monthly-service-details', [DashboardController::class, 'getMonth
 // User profile Routes
 Route::put('/update-user-data/{id}', [UserProfileController::class, 'update']);
 Route::put('/update-user-password/{id}', [UserProfileController::class, 'updatePassword']);
+Route::get('/role-permission/permission-list', [RolePermissionMapController::class, 'getSubMenuWithPermission']);
+Route::apiResource('/get-sidebar-menu', MenuController::class);
 
 });
 
@@ -75,3 +80,4 @@ Route::put('/update-user-password/{id}', [UserProfileController::class, 'updateP
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 // Route::middleware('throttle:login')->post('/login', [AuthController::class, 'login']);
 //Route to download excel report
+

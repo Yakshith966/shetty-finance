@@ -69,6 +69,45 @@ export default{
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
     },
+    async getNavItems() {
+      try {
+        // Call your API here
+        const response = await axios.get('/get-sidebar-menu');
+        const navData = response.data.sidebarMenuList;
+
+        navData.forEach((item) => {
+          if(item.slug == 'dashboard') {
+            this.$store.commit("setsubmenuPermissions", item.permissions);
+          }
+        });
+
+        // Transform the data into the required format
+        const transformedNavData = navData.map(item => ({
+          component: item.component || 'CNavItem',
+          name: item.name,
+          to: item.slug,
+          icon: item.icon || '',
+          permissions: item.permissions,
+          // items: item.items || [], // Include sub-items if any
+        }));
+
+        this.$store.commit("setSubMenus", transformedNavData);
+
+        this.$router.push('/dashboard');
+
+      } catch (error) {
+        // console.error('Error fetching navigation data:', error);
+        // Return a default set of navigation items in case of an error
+        // return [
+        //   {
+        //     component: 'CNavItem',
+        //     name: 'Dashboard',
+        //     to: '/dashboard',
+        //     icon: 'cil-speedometer',
+        //   },
+        // ];
+      }
+    },
     login() {
       this.requestLoad = true;
       this.errorMsg = ''; // Clear any previous error messages
@@ -80,7 +119,7 @@ export default{
           this.requestLoad = false;
           this.$store.commit('setToken', response.data.token);
           this.$store.commit('setUser', response.data.user);
-          this.$router.push('/dashboard');
+          this.getNavItems();
         })
         .catch((err) => {
           this.requestLoad = false;

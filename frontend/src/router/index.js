@@ -1,5 +1,6 @@
 import { h, resolveComponent } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import store  from '../stores/store'
 
 import DefaultLayout from '@/layouts/DefaultLayout'
 
@@ -39,7 +40,7 @@ const routes = [
         component: () => import('@/views/theme/Colors.vue'),
       },
       {
-        path: '/service/service-details',
+        path: '/service-details',
         name: 'Service Details',
         component: () => import('@/views/base/ServicePageDetails.vue'),
         meta: {
@@ -47,12 +48,15 @@ const routes = [
         },
       },
       {
-        path: '/user/user-profile',
+        path: '/user-profile',
         name: 'User Profile',
         component: () => import('@/views/base/UserProfile.vue'),
+        meta: {
+          requiresAuth: true, 
+        },
       },
       {
-        path: '/payment/payment-details',
+        path: '/payment-details',
         name: 'Payment Details',
         component: () => import('@/views/base/PaymentDetails.vue'),
         meta: {
@@ -60,7 +64,7 @@ const routes = [
         },
       },
       {
-        path: '/customer/customer-details',
+        path: '/customer-details',
         name: 'Customer Details',
         component: () => import('@/views/base/CustomerDetails.vue'),
         meta: {
@@ -353,5 +357,24 @@ const router = createRouter({
     return { top: 0 }
   },
 })
+
+// Add the navigation guard here
+router.beforeEach((to, from, next) => {
+  // console.log('to:-', to, ' from:-', from, ' next:-', next);
+  // Fetch submenu data from Vuex or localStorage
+  const submenu = store.getters.getSubMenus || JSON.parse(localStorage.getItem('subMenus'));
+  // console.log('submenu', submenu);
+  // Check if the route exists in the submenu and if the user has view permissions
+  const hasPermission = submenu.some(
+    (menu) => ('/' + menu.to ) == to.path && menu.permissions.view === 1
+  );
+
+  if (!hasPermission && to.meta.requiresAuth) {
+    // Redirect to 404 page if the user lacks permission
+    next({ name: 'Page404' });
+  } else {
+    next(); // Allow access
+  }
+});
 
 export default router

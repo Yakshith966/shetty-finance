@@ -3,10 +3,45 @@ import { RouterLink, useRoute } from 'vue-router'
 
 import { cilExternalLink } from '@coreui/icons'
 import { CBadge, CSidebarNav, CNavItem, CNavGroup, CNavTitle } from '@coreui/vue'
-import nav from '@/_nav.js'
+import store  from '../stores/store'
+// import nav from '@/_nav.js'
 
 import simplebar from 'simplebar-vue'
 import 'simplebar-vue/dist/simplebar.min.css'
+
+async function getNavItems() {
+  try {
+    // Call your API here
+    const response = await axios.get('/get-sidebar-menu');
+    const navData = response.data.sidebarMenuList;
+
+    // console.log('API Response:', navData);
+
+    // Transform the data into the required format
+    const transformedNavData = navData.map(item => ({
+      component: item.component || 'CNavItem',
+      name: item.name,
+      to: item.slug,
+      icon: item.icon || '',
+      permissions: item.permissions[0],
+      // items: item.items || [], // Include sub-items if any
+    }));
+    store.commit("setSubMenus", transformedNavData )
+
+    return transformedNavData;
+  } catch (error) {
+    // console.error('Error fetching navigation data:', error);
+    // Return a default set of navigation items in case of an error
+    return [
+      {
+        component: 'CNavItem',
+        name: 'Dashboard',
+        to: '/dashboard',
+        icon: 'cil-speedometer',
+      },
+    ];
+  }
+}
 
 const normalizePath = (path) =>
   decodeURI(path)
@@ -50,10 +85,20 @@ const AppSidebarNav = defineComponent({
   setup() {
     const route = useRoute()
     const firstRender = ref(true)
+    const navItems = ref([]) // Reactive variable for navigation items
 
-    onMounted(() => {
+    onMounted(async () => {
       firstRender.value = false
+      navItems.value =  store.getters.getSubMenus;
+      // await getNavItems();
+      navItems.value = await getNavItems()
     })
+
+    const handleSubMenuClick = (permissions) => {
+      if (permissions) {
+        store.commit("setsubmenuPermissions", permissions)
+      }
+    };
 
     const renderItem = (item) => {
       if (item.items) {
@@ -86,6 +131,7 @@ const AppSidebarNav = defineComponent({
             href: item.href,
             target: '_blank',
             rel: 'noopener noreferrer',
+            onClick: () => handleSubMenuClick(item.permissions),
           },
           {
             default: () => [
@@ -124,6 +170,7 @@ const AppSidebarNav = defineComponent({
             {
               to: item.to,
               custom: true,
+              onClick: () => handleSubMenuClick(item.permissions),
             },
             {
               default: (props) =>
@@ -133,7 +180,10 @@ const AppSidebarNav = defineComponent({
                     active: props.isActive,
                     as: 'div',
                     href: props.href,
-                    onClick: () => props.navigate(),
+                    onClick: () => {
+                      props.navigate();
+                      handleSubMenuClick(item.permissions); // Handle submenu click
+                    },
                   },
                   {
                     default: () => [
@@ -165,6 +215,7 @@ const AppSidebarNav = defineComponent({
             resolveComponent(item.component),
             {
               as: 'div',
+              onClick: () => handleSubMenuClick(item.permissions),
             },
             {
               default: () => item.name,
@@ -179,7 +230,10 @@ const AppSidebarNav = defineComponent({
           as: simplebar,
         },
         {
-          default: () => nav.map((item) => renderItem(item)),
+          default: () =>
+            navItems.value && navItems.value.length > 0
+              ? navItems.value.map((item) => renderItem(item))
+              : '' // Fallback content
         },
       )
   },

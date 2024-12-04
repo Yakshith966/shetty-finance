@@ -6,7 +6,8 @@ const store = createStore({
         return {
             token:null,
             user:null,
-            
+            subMenus: null,
+            submenuPermissions: null,
         };
     },
     actions: {
@@ -29,10 +30,20 @@ const store = createStore({
         {
             state.user = user
         },
+        setSubMenus:(state, submenus) =>
+        {
+            state.subMenus = submenus;
+        },
+        setsubmenuPermissions:(state, submenuPermissions) =>
+        {
+            state.submenuPermissions = submenuPermissions;
+        },
         clearAuth:(state)=>
         {
            state.user = null;
            state.token = null;
+           state.subMenus = null;
+           state.submenuPermissions = null;
         }
     
     },
@@ -51,6 +62,9 @@ const store = createStore({
         },
         getSubMenus(state) {
             return state.subMenus;
+        },
+        getSubmenuPermissions(state) {
+            return state.submenuPermissions;
         },
         getActiveSideBar(state) {
             return state.activeSideBar;
