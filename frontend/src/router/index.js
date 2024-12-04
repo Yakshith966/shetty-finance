@@ -13,7 +13,7 @@ const routes = [
     meta: {
       requiresAuth: true, 
     },
-    redirect: '/dashboard',
+    redirect: '/pages/login',
     children: [
       {
         path: '/dashboard',
@@ -71,14 +71,14 @@ const routes = [
           requiresAuth: true, 
         },
       },
-      {
-        path: '/user-management',
-        name: 'User Management',
-        component: () => import('@/views/base/UserManagement.vue'),
-        meta: {
-          requiresAuth: true, 
-        },
-      },
+      // {
+      //   path: '/user-management',
+      //   name: 'User Management',
+      //   component: () => import('@/views/base/UserManagement.vue'),
+      //   meta: {
+      //     requiresAuth: true, 
+      //   },
+      // },
       
       {
         path: '/dealers',
@@ -193,17 +193,17 @@ const routes = [
         path: '/buttons',
         name: 'Buttons',
         component: {
-          render() {
-            return h(resolveComponent('router-view'))
-          },
+          // render() {
+          //   return h(resolveComponent('router-view'))
+          // },
         },
         redirect: '/buttons/standard-buttons',
         children: [
-          {
-            path: '/buttons/standard-buttons',
-            name: 'Buttons',
-            component: () => import('@/views/buttons/Buttons.vue'),
-          },
+          // {
+          //   path: '/buttons/standard-buttons',
+          //   name: 'Buttons',
+          //   component: () => import('@/views/buttons/Buttons.vue'),
+          // },
           {
             path: '/buttons/dropdowns',
             name: 'Dropdowns',
@@ -387,13 +387,20 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // console.log('to:-', to, ' from:-', from, ' next:-', next);
   // Fetch submenu data from Vuex or localStorage
-  const submenu = store.getters.getSubMenus || JSON.parse(localStorage.getItem('subMenus'));
+  const submenu = store.getters.getSubMenus || JSON.parse(localStorage.getItem('subMenus')) || [];
   // console.log('submenu', submenu);
   // Check if the route exists in the submenu and if the user has view permissions
-  const hasPermission = submenu.some(
-    (menu) => ('/' + menu.to ) == to.path && menu.permissions.view === 1
-  );
+  
+  let hasPermission = submenu?.some((menu) => {
+    const permissions = menu.permissions;
+    return (
+      ('/' + menu.to) === to.path &&
+      ((Array.isArray(permissions) && permissions[0]?.view === 1) ||
+       (permissions?.view === 1))
+    );
+  });
 
+  if(to.path =='/page/login') hasPermission = true
   if (!hasPermission && to.meta.requiresAuth) {
     // Redirect to 404 page if the user lacks permission
     next({ name: 'Page404' });
