@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,5 +37,14 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logged out successfully']);
+    }
+    public function fetchRoles(){
+        $roles = role::all();
+        return response()->json($roles);
+    }
+    public function fetchUsers(){
+        $users = User::with('roles')->get();
+        return response()->json($users);
+        
     }
 }

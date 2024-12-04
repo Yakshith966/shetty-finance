@@ -38,9 +38,14 @@
         <!-- <td>{{ item.payment_mode }}</td> -->
         <!-- <td>{{ item.payment_date }}</td> -->
         <td>
+          <v-btn icon @click="openDealersDialog(item)">
+            <v-icon>mdi-account</v-icon>
+          </v-btn>
+        </td>
+        <td>
           <v-select :readonly="isPaid(item)" v-model="item.service_status" :items="formattedStatusOptions"
             label="Status" item-value="id" item-title="status" class="mt-3" outlined
-            @update:model-value="updateServiceStatus(item)">
+            @update:model-value="checkServiceStatusChange(item)">
           </v-select>
         </td>
         <td>
@@ -50,9 +55,10 @@
         </td>
         <td>
           <!-- Payment Status with Conditional Color -->
-          <v-chip v-if="item.payment_details && item.payment_details[0]?.payment_status"
-            :color="item.payment_details[0]?.payment_status.payment_status === 'Paid' ? 'green' : 'red'" outlined small>
-            {{ item.payment_details[0].payment_status.payment_status }}
+          <v-chip v-if="item.payment_details && item.payment_details[0]?.payment_status" :color="item.payment_details[0]?.payment_status.id === 2 ? 'green' :
+            item.payment_details[0]?.payment_status.id === 3 ? 'orange' : 'red'" outlined
+            small>
+            {{ item.payment_details[0]?.payment_status.payment_status }}
           </v-chip>
           <span v-else style="font-size: 1.2em; font-weight: bold; color: #555;">
             N/A
@@ -146,7 +152,7 @@
                   </v-textarea>
                   <v-text-field v-model="editedItem.collectedItems" label="Other Collected Items" class="text-body-2">
                   </v-text-field>
-                  <v-select v-model="editedItem.statusId" :items="formattedStatusOptions" label="Status*"
+                  <v-select v-if="dialogMode !== 'edit'" model="editedItem.statusId" :items="formattedStatusOptions" label="Status*"
                     item-value="id" item-title="status" outlined class="text-body-2">
                   </v-select>
                 </v-card-text>
@@ -170,25 +176,35 @@
   <v-dialog v-model="paymentDialog" max-width="500px">
     <v-card>
       <v-card-title class="d-flex justify-space-between align-center">
-        <div class="text-h5 text-medium-emphasis ps-2">
-          Payment Details
-        </div>
+        <div class="text-h5 text-medium-emphasis ps-2">Payment Details</div>
         <v-btn icon="mdi-close" variant="text" @click="closePaymentDialog"></v-btn>
       </v-card-title>
+
       <v-card-text>
-        <v-text-field v-model="paymentDetails.amount" label="Amount" :readonly="isPaymentReadOnly"></v-text-field>
+        <!-- Total Amount -->
+        <v-text-field v-model="paymentDetails.repair_cost" label="Repair Amount" outlined></v-text-field>
+
+        <!-- Payment Status -->
         <v-select v-model="paymentDetails.status" :items="paymentStatus" item-title="payment_status" item-value="id"
           label="Payment Status" outlined :readonly="isPaymentReadOnly"></v-select>
-        <div v-if="paymentDetails.status === 2">
-          <!-- Payment Date Field -->
+
+        <!-- Advance/Partial Payments -->
+        <div v-if="paymentDetails.status === 3 || paymentDetails.status === 4">
+          <v-text-field v-model="paymentDetails.advance_amount" label="Advance Payment" type="number" outlined
+            :readonly="isPaymentReadOnly" @input="calculateRemainingAmount"></v-text-field>
+          <v-text-field v-model="paymentDetails.remaining_amount" label="Remaining Amount" readonly
+            outlined></v-text-field>
+        </div>
+
+        <!-- Full Payment -->
+        <div v-if="paymentDetails.status === 2 || paymentDetails.status === 3">
           <v-text-field v-model="paymentDetails.payment_date" label="Payment Date" type="date" outlined
             :readonly="isPaymentReadOnly"></v-text-field>
-
-          <!-- Payment Mode Dropdown -->
           <v-select v-model="paymentDetails.payment_mode" :items="paymentModes" label="Payment Mode" item-title="mode"
             item-value="id" outlined :readonly="isPaymentReadOnly"></v-select>
         </div>
       </v-card-text>
+
       <v-card-actions>
         <v-spacer></v-spacer>
         <template v-if="!isPaymentReadOnly">
@@ -202,12 +218,66 @@
     </v-card>
   </v-dialog>
 
+  <!-- view Dealers Dialog -->
+
+  <v-dialog v-model="dealersDialog" max-width="500px">
+    <v-card>
+      <v-card-title class="d-flex justify-space-between align-center">
+        <div class="text-h5 text-medium-emphasis ps-2">
+          Dealers Details
+        </div>
+        <v-btn icon="mdi-close" variant="text" @click="closeDealersDialog"></v-btn>
+      </v-card-title>
+
+      <v-card-text>
+        <!-- Dealer Selection -->
+        <v-select v-model="dealersData.dealer_id" :items="dealers" item-title="name" item-value="id"
+          label="Select Dealer" outlined density="compact" :clearable="!disableDealer"
+          :readonly="disableDealer"></v-select>
+
+        <!-- Product Description -->
+        <v-textarea v-model="dealersData.product_description" :readonly="isDealersReadOnly" label="Product Description"
+          outlined density="compact"></v-textarea>
+
+        <!-- Product Status -->
+        <v-select v-model="dealersData.status_id" :items="dealersStatus" label="Product Status" item-title="status"
+          item-value="id" outlined density="compact" :readonly="isDealersReadOnly"></v-select>
+
+        <!-- Payment Status -->
+        <v-select v-model="dealersData.payment_status_id" :items="filteredPaymentStatus" label="Payment Status"
+          item-title="payment_status" item-value="id" outlined density="compact"
+          :readonly="isDealersReadOnly"></v-select>
+
+        <!-- Amount (Only if payment status is 'Paid') -->
+        <v-text-field v-if="dealersData.payment_status_id === 2" v-model="dealersData.amount" label="Amount"
+          type="number" outlined density="compact" :readonly="isDealersReadOnly"></v-text-field>
+
+        <!-- Payment Date (Only if payment status is 'Paid') -->
+        <v-text-field v-if="dealersData.payment_status_id === 2" v-model="dealersData.amount_received_date"
+          label="Payment Date" type="date" :readonly="isDealersReadOnly" outlined density="compact"></v-text-field>
+
+        <v-select v-if="dealersData.payment_status_id === 2" v-model="dealersData.payment_mode" :items="paymentModes" label="Payment Mode" item-title="mode"
+          item-value="id" outlined :readonly="isPaymentReadOnly"></v-select>
+
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <template v-if="!isDealersReadOnly">
+          <v-btn variant="text" @click="closeDealersDialog" :disabled="disableDealerButton">Cancel</v-btn>
+          <v-btn color="primary" @click="saveDealersDetails" :disabled="disableDealerButton">Save</v-btn>
+        </template>
+        <template v-else-if="isDealersReadOnly">
+          <v-btn variant="text" @click="closeDealersDialog">Cancel</v-btn>
+        </template>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+
   <!-- View Dialog -->
   <v-dialog v-model="viewDialog" max-width="900px">
     <v-card>
-      <!-- <v-card-title class="headline font-weight-bold justify-center">
-        Customer Details
-      </v-card-title> -->
       <v-card-title class="d-flex justify-space-between align-center">
         <div class="text-h5 text-medium-emphasis ps-2">
           Customer Details
@@ -218,72 +288,76 @@
       <v-card-text>
         <v-container>
           <!-- Customer Information -->
-          <v-row dense>
-            <v-col cols="4">
+          <v-row dense class="mb-4">
+            <v-col cols="12" md="4">
               <strong>Customer Name:</strong>
               <div class="mt-1">{{ editedItem.customerName || 'N/A' }}</div>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="12" md="4">
               <strong>Phone:</strong>
               <div class="mt-1">{{ editedItem.phone || 'N/A' }}</div>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="12" md="4">
               <strong>Email:</strong>
               <div class="mt-1">{{ editedItem.email || 'N/A' }}</div>
             </v-col>
           </v-row>
 
           <!-- Alternative Information -->
-          <v-row dense>
-            <v-col cols="4">
+          <v-row dense class="mb-4">
+            <v-col cols="12" md="4">
               <strong>Alternative Phone:</strong>
               <div class="mt-1">{{ editedItem.altPhone || 'N/A' }}</div>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="12" md="4">
               <strong>Product Type:</strong>
               <div class="mt-1">{{ editedItem.productType || 'N/A' }}</div>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="12" md="4">
               <strong>Product Name:</strong>
               <div class="mt-1">{{ editedItem.productName || 'N/A' }}</div>
             </v-col>
           </v-row>
 
           <!-- Additional Product Information -->
-          <v-row dense>
-            <v-col cols="4">
+          <v-row dense class="mb-4">
+            <v-col cols="12" md="4">
               <strong>Model:</strong>
               <div class="mt-1">{{ editedItem.model || 'N/A' }}</div>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="12" md="4">
               <strong>Serial Number:</strong>
               <div class="mt-1">{{ editedItem.serialNumber || 'N/A' }}</div>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="12" md="4">
               <strong>Date:</strong>
               <div class="mt-1">{{ editedItem.date || 'N/A' }}</div>
             </v-col>
           </v-row>
 
-          <!-- Description with More Space -->
-          <v-row dense>
-            <v-col cols="4">
+          <!-- Status and Issue Description -->
+          <v-row dense class="mb-4">
+            <v-col cols="12" md="4">
               <strong>Status:</strong>
               <div class="mt-1">{{ editedItem.status || 'N/A' }}</div>
             </v-col>
-            <v-col cols="8">
+            <v-col cols="12" md="8">
               <strong>Issue Description:</strong>
               <div class="mt-1">{{ editedItem.issueDescription || 'N/A' }}</div>
             </v-col>
           </v-row>
 
           <!-- Payment Information -->
-          <v-row dense v-if="editedItem.paymentDetails">
-            <v-col cols="4">
-              <strong>Amount:</strong>
-              <div class="mt-1">{{ editedItem.paymentDetails.amount || 'N/A' }}</div>
+          <v-row dense v-if="editedItem.paymentDetails" class="mb-4">
+            <v-col cols="12" md="4">
+              <strong>Repair Amount:</strong>
+              <div class="mt-1">{{ editedItem.paymentDetails.repair_cost || 'N/A' }}</div>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="12" md="4">
+              <strong>Paid Amount:</strong>
+              <div class="mt-1">{{ editedItem.paymentDetails.paid_amount || 'N/A' }}</div>
+            </v-col>
+            <v-col cols="12" md="4">
               <strong>Payment Status:</strong>
               <div class="mt-1">{{ editedItem.paymentDetails.status || 'N/A' }}</div>
             </v-col>
@@ -297,6 +371,7 @@
     </v-card>
   </v-dialog>
 
+
 </template>
 
 <script>
@@ -309,13 +384,18 @@ export default {
     this.fetchPaymentStatus();
     this.fetchPaymentModes();
     this.fetchCustomerDetails();
+    this.fetchDealers();
+    this.fetchDealersStatus();
     this.fetchServiceProductDetails();
+    
   },
   data: () => ({
     phoneNumberRule: (value) =>
       /^\d{10}$/.test(value) || "Phone number must be exactly 10 digits.",
 
     viewDialog: false,
+    isDealersReadOnly: false,
+    disableDealer : false,
     isDisable: false,
     isExistingCustomer: false,
     search: '',
@@ -331,6 +411,7 @@ export default {
       { title: 'Product Type', key: 'product_type' },
       { title: 'Product Name', key: 'product_name' },
       { title: 'Date', key: 'product_received_date' },
+      { title: 'Dealers', key: 'payment', sortable: false },
       { title: 'Status', key: 'status', sortable: false },
       { title: 'Payment', key: 'payment', sortable: false },
       { title: 'Payment Status', key: 'paymentStatus', sortable: false, },
@@ -339,6 +420,7 @@ export default {
     service_status: [],
     selectedStatus: null,
     isPaymentReadOnly: false,
+    disableDealerButton: false,
     paymentStatus: [],
     records: [],
     editedItem: {
@@ -358,8 +440,9 @@ export default {
       status: '',
       statusId: '',
       paymentDetails: {
-        amount: '',
-        status: '',
+        repair_cost: '',
+        advance_amount: '',
+        remaining_amount: '',
         date: '',
         mode: '',
 
@@ -382,7 +465,10 @@ export default {
       statusId: '',
     },
     paymentDetails: {
-      amount: '',
+      repair_cost: '',
+      advance_amount: '',
+      remaining_amount: '',
+      paid_amount: '',
       status: '',
       payment_date: '',
       payment_mode: '',
@@ -390,10 +476,29 @@ export default {
       service_id: '',
     },
     paymentModes: [],
+    dealers: [],
+    dealersDialog: false,
+    dealersData: {
+        dealer_id: null,
+        service_id : null,
+        product_description: '',
+        status_id: null,
+        payment_mode : '',
+        payment_status_id : null,
+        amount : '',
+        amount_received_date : '', 
+    },
+    dealersStatus: [],
   }),
   computed: {
     formattedStatusOptions() {
       return this.service_status;
+    },
+    filteredPaymentStatus() {
+      const hasId3 = this.paymentStatus.some((status) => status.id === 3);
+      return hasId3
+        ? this.paymentStatus.filter((status) => status.id !== 3)
+        : this.paymentStatus;
     },
     filteredRecords() {
       return this.records.filter((record) => {
@@ -414,6 +519,14 @@ export default {
         this.resetForm();
       }
     },
+    'paymentDetails.repair_cost'(newValue) {
+      if (!newValue) {
+        this.paymentDetails.advance_amount = null;
+        this.paymentDetails.remaining_amount = null;
+      } else {
+        this.calculateRemainingAmount();
+      }
+    },
   },
 
   methods: {
@@ -423,6 +536,24 @@ export default {
         this.dialog = false;
       }
     },
+    calculateRemainingAmount() {
+      const total = parseFloat(this.paymentDetails.repair_cost || 0);
+      const advance = parseFloat(this.paymentDetails.advance_amount || 0);
+      this.paymentDetails.remaining_amount = total > advance ? total - advance : 0;
+
+      if (advance > total) {
+        Toastify({
+          text: "Advance payment cannot exceed total amount.",
+          backgroundColor: "red",
+          className: "text-light",
+          duration: 3000,
+          gravity: "top",
+          position: "right",
+          close: true,
+        }).showToast();
+        this.paymentDetails.advance_amount = 0;
+      }
+    },
     isPaid(item) {
       return item.payment_details && item.payment_details[0]?.payment_status.payment_status === 'Paid' && item.service_status === 3;
     },
@@ -430,26 +561,57 @@ export default {
       const filteredStatus = this.service_status.find((item) => item.id === id);
       return filteredStatus ? filteredStatus.status : null;
     },
-    async updateServiceStatus(item) {
-      try {
-        const response = await axios.put(`/service-status/${item.id}`, {
-          status_id: item.service_status,
-        });
-        this.fetchServiceProductDetails();
-        Toastify({
-          text: "status updated successfully.",
-          backgroundColor: "green",
-          className: "text-light",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-          close: true,
-        }).showToast();
-      } catch (error) {
-        this.fetchServiceProductDetails();
-      }
+    checkServiceStatusChange(item) {
+      
+    if (
+      item.latest_dealer_detail?.status_id === 1 &&
+      (item.service_status === 3 || item.service_status === 4)
+    ) {
+      // Reset the dropdown to the previous value
+      item.service_status = item.previousServiceStatus || item.service_status;
 
-    },
+      // Show error message
+      Toastify({
+        text: "Status cannot be changed because the dealer status is pending.",
+        backgroundColor: "red",
+        className: "text-light",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        close: true,
+      }).showToast();
+      this.fetchServiceProductDetails();
+      return;
+    }
+
+    // Save the current value for future rollback if needed
+    item.previousServiceStatus = item.service_status;
+
+    // Proceed with the status update
+    this.updateServiceStatus(item);
+  },
+
+  async updateServiceStatus(item) {
+    try {
+      const response = await axios.put(`/service-status/${item.id}`, {
+        status_id: item.service_status,
+      });
+      this.fetchServiceProductDetails();
+      Toastify({
+        text: "Status updated successfully.",
+        backgroundColor: "green",
+        className: "text-light",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        close: true,
+      }).showToast();
+    } catch (error) {
+      this.fetchServiceProductDetails();
+    }
+  },
+
+
     openNewItemDialog() {
       this.dialogMode = 'new';
       this.dialog = true;
@@ -466,6 +628,20 @@ export default {
       try {
         const response = await axios.get('/fetch-service-status');
         this.service_status = response.data;
+      } catch (error) {
+      }
+    },
+    async fetchDealersStatus() {
+      try {
+        const response = await axios.get('/fetch-dealers-status');
+        this.dealersStatus = response.data;
+      } catch (error) {
+      }
+    },
+    async fetchDealers() {
+      try {
+        const response = await axios.get("/dealers");
+        this.dealers = response.data;
       } catch (error) {
       }
     },
@@ -658,7 +834,8 @@ export default {
         date: item.product_received_date,
         status: this.formattedServiceStatus(item.service_status),
         paymentDetails: {
-          amount: item.payment_details[0]?.amount || '',
+          repair_cost: item.payment_details[0]?.repair_cost || '',
+          paid_amount: item.payment_details[0]?.paid_amount || '',
           date: item.payment_details[0]?.payment_date || '',
           status: item.payment_details[0]?.payment_status.payment_status || '',
         }
@@ -689,7 +866,10 @@ export default {
     },
     openPaymentDialog(item) {
       this.paymentDetails = {
-        amount: item.payment_details[0]?.amount || '',
+        repair_cost: item.payment_details[0]?.repair_cost || '',
+        remaining_amount: item.payment_details[0]?.remaining_amount || '',
+        advance_amount: item.payment_details[0]?.advance_amount || '',
+        paid_amount: item.payment_details[0]?.paid_amount || '',
         status: item.payment_details[0]?.payment_status.id || '',
         payment_date: item.payment_details[0]?.payment_date
           ? moment(item.payment_details[0].payment_date).format('YYYY-MM-DD')
@@ -700,6 +880,24 @@ export default {
       };
       this.isPaymentReadOnly = item.payment_details[0]?.payment_status?.id === 2;
       this.paymentDialog = true;
+    },
+    openDealersDialog(item) {
+      this.dealersData = {
+        dealer_id: item.latest_dealer_detail?.dealer_id || null,
+        product_description: item.latest_dealer_detail?.product_description || '',
+        status_id: item.latest_dealer_detail?.status_id || null,
+        amount: item.latest_dealer_detail?.amount || '',
+        amount_received_date: item.latest_dealer_detail?.amount_received_date || '',
+        payment_status_id: item.latest_dealer_detail?.payment_status_id || null,
+        payment_mode: item.latest_dealer_detail?.payment_mode || null,
+        service_id: item.id || null,
+      };
+      this.dealersDialog = true;
+      this.disableDealer = item.latest_dealer_detail?.dealer_id ? true : false;
+      this.isDealersReadOnly= item.payment_details && item.service_status === 3;
+    },
+    closeDealersDialog(){
+      this.dealersDialog =false;
     },
     closeDialog() {
       this.dialog = false;
@@ -728,8 +926,26 @@ export default {
       this.paymentDialog = false;
     },
     async savePaymentDetails() {
+      if (this.paymentDetails.status === 2) {
+      // Full payment
+      this.paymentDetails.paid_amount = this.paymentDetails.repair_cost;
+      this.paymentDetails.remaining_amount = 0; // No remaining amount
+    } else if (this.paymentDetails.status === 1) {
+      // Payment not started
+      this.paymentDetails.paid_amount = null;
+      this.paymentDetails.remaining_amount = this.paymentDetails.repair_cost; // Entire amount remaining
+    } else if (this.paymentDetails.status === 3 || this.paymentDetails.status === 4) {
+      // Partial or advance payment
+      if (!this.paymentDetails.advance_amount) {
+        this.paymentDetails.advance_amount = 0; // Default to 0 if not set
+      }
+      this.paymentDetails.paid_amount = this.paymentDetails.advance_amount;
+    }
       const payload = {
-        amount: this.paymentDetails.amount,
+        repair_cost: this.paymentDetails.repair_cost,
+        paid_amount: this.paymentDetails.paid_amount,
+        advance_amount: this.paymentDetails.advance_amount,
+        remaining_amount: this.paymentDetails.remaining_amount,
         payment_status: this.paymentDetails.status,
         payment_date: this.paymentDetails.payment_date,
         payment_mode: this.paymentDetails.payment_mode,
@@ -841,6 +1057,184 @@ export default {
         }).showToast();
       }
     },
+    async saveDealersDetails() {
+      this.disableDealerButton = true;
+      try {
+        // Check if the dealer details already exist
+        const response = await axios.get('/dealers-details', {
+          params: {
+            service_id: this.dealersData.service_id,
+            dealer_id: this.dealersData.dealer_id,
+          },
+        });
+
+        // If the dealer exists, update the record
+        if (response.data.exists && response.data.data) {
+          // Set the ID of the existing dealer to update
+          this.dealersData.id = response.data.data.id;
+
+          // Proceed to update
+          await this.updateDealersDetails();
+        } else {
+          // Dealer does not exist, create a new record
+          await this.createDealersDetails();
+        }
+        this.disableDealerButton = false;
+      } catch (error) {
+        Toastify({
+          text: "Something went wrong.",
+          backgroundColor: "red",
+          className: "text-light",
+          duration: 3000,
+          gravity: "top",
+          position: "right",
+        }).showToast();
+      }
+    },
+
+    // Create dealer details method
+    async createDealersDetails() {
+      // this.disableDealerButton = true;
+      try {
+        const createResponse = await axios.post('/dealers-details', this.dealersData);
+
+        // Show success message
+        Toastify({
+          text: "Dealer details saved successfully!",
+          backgroundColor: "green",
+          className: "text-light",
+          duration: 3000,
+          gravity: "top",
+          position: "right",
+        }).showToast();
+
+        this.closeDealersDialog();
+        this.fetchServiceProductDetails();
+      } catch (error) {
+        if (error.response && error.response.data) {
+                         const responseError = error.response.data;
+                         // If validation errors exist, display the first error message
+                         if (responseError.errors) {
+                              const firstErrorKey = Object.keys(responseError.errors)[0];
+                              Toastify({
+                                   text: responseError.errors[firstErrorKey][0],
+                                   backgroundColor: "red",
+                                   className: "text-light",
+                                   duration: 3000,
+                                   gravity: "top",
+                                   position: "right",
+                                   close: true,
+                              }).showToast();
+                         } else if (responseError.message) {
+                              // General error message
+                              Toastify({
+                                   text: responseError.message,
+                                   backgroundColor: "red",
+                                   className: "text-light",
+                                   duration: 3000,
+                                   gravity: "top",
+                                   position: "right",
+                                   close: true,
+                              }).showToast();
+                         } else {
+                              // Fallback for unexpected errors
+                              Toastify({
+                                   text: "An unexpected error occurred!",
+                                   backgroundColor: "red",
+                                   className: "text-light",
+                                   duration: 3000,
+                                   gravity: "top",
+                                   position: "right",
+                                   close: true,
+                              }).showToast();
+                         }
+                    } else {
+                         // Fallback for network or server errors
+                         Toastify({
+                              text: "Unable to connect to the server.",
+                              backgroundColor: "red",
+                              className: "text-light",
+                              duration: 3000,
+                              gravity: "top",
+                              position: "right",
+                              close: true,
+                         }).showToast();
+                    }
+      }
+    },
+
+    // Update dealer details method
+    async updateDealersDetails() {
+      try {
+        const updateResponse = await axios.put(`/dealers-details/${this.dealersData.id}`, this.dealersData);
+
+        // Show success message
+        Toastify({
+          text: "Dealer details updated successfully!",
+          backgroundColor: "green",
+          className: "text-light",
+          duration: 3000,
+          gravity: "top",
+          position: "right",
+        }).showToast();
+
+        this.closeDealersDialog();
+        this.fetchServiceProductDetails();
+      } catch (error) {
+        if (error.response && error.response.data) {
+                         const responseError = error.response.data;
+
+                         // If validation errors exist, display the first error message
+                         if (responseError.errors) {
+                              const firstErrorKey = Object.keys(responseError.errors)[0];
+                              Toastify({
+                                   text: responseError.errors[firstErrorKey][0],
+                                   backgroundColor: "red",
+                                   className: "text-light",
+                                   duration: 3000,
+                                   gravity: "top",
+                                   position: "right",
+                                   close: true,
+                              }).showToast();
+                         } else if (responseError.message) {
+                              // General error message
+                              Toastify({
+                                   text: responseError.message,
+                                   backgroundColor: "red",
+                                   className: "text-light",
+                                   duration: 3000,
+                                   gravity: "top",
+                                   position: "right",
+                                   close: true,
+                              }).showToast();
+                         } else {
+                              // Fallback for unexpected errors
+                              Toastify({
+                                   text: "An unexpected error occurred!",
+                                   backgroundColor: "red",
+                                   className: "text-light",
+                                   duration: 3000,
+                                   gravity: "top",
+                                   position: "right",
+                                   close: true,
+                              }).showToast();
+                         }
+                    } else {
+                         // Fallback for network or server errors
+                         Toastify({
+                              text: "Unable to connect to the server.",
+                              backgroundColor: "red",
+                              className: "text-light",
+                              duration: 3000,
+                              gravity: "top",
+                              position: "right",
+                              close: true,
+                         }).showToast();
+                    }
+      }
+    },
+    
+
   },
 };
 </script>
@@ -849,15 +1243,19 @@ export default {
 .text-danger {
   color: red;
 }
+
 .v-card-title {
   font-weight: bold;
 }
+
 .text-body-2 {
-  font-size: 12px; /* Smaller font size */
+  font-size: 12px;
+  /* Smaller font size */
 }
 
 .text-caption {
-  font-size: 10px; /* Extra small font size for less prominent text */
+  font-size: 10px;
+  /* Extra small font size for less prominent text */
 }
 
 .read-only-column {
@@ -900,5 +1298,14 @@ export default {
   font-size: 16px;
   margin-left: 10px;
   cursor: pointer;
+}
+.full-width {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .full-width {
+    width: calc(100% - 16px); /* Adjust padding if needed */
+  }
 }
 </style>

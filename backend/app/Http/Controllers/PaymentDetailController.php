@@ -86,10 +86,28 @@ class PaymentDetailController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'amount' => 'required|numeric|min:0',
-                'payment_status' => 'required|integer',
+                'repair_cost' => 'required|numeric|min:0',
+                'paid_amount' => [
+                    'required_if:payment_status,2|required_if:payment_status,3',
+                    'nullable',
+                    'numeric',
+                    'min:0',
+                ],
+                'advance_amount' => [
+                    'required_if:payment_status,3',
+                    'nullable',
+                    'numeric',
+                    'min:0',
+                ],
+                'remaining_amount' => [
+                    'required_if:payment_status,3',
+                    'nullable',
+                    'numeric',
+                    'min:0',
+                ],
+                'payment_status' => 'required|integer|in:1,2,3,4',
                 'payment_date' => [
-                    'required_if:payment_status,2',
+                    'required_if:payment_status,2|required_if:payment_status,3',
                     'nullable',
                     'date',
                 ],
@@ -97,20 +115,44 @@ class PaymentDetailController extends Controller
                 'product_service_id' => 'required|exists:product_service_details,id',
                 'customer_id' => 'required|exists:customer_details,id',
             ], [
-                'payment_date.required_if' => 'The payment date field is required when payment status is paid.',
+                'repair_cost.required' => 'The repair cost field is required.',
+                'paid_amount.required_if' => 'The paid amount field is required for the selected payment status.',
+                'advance_amount.required_if' => 'The advance amount field is required for the selected payment status.',
+                'remaining_amount.required_if' => 'The remaining amount field is required for the selected payment status.',
+                'payment_date.required_if' => 'The payment date field is required for the selected payment status.',
             ]);
+            if ($validatedData['payment_status'] == 3 && $validatedData['remaining_amount'] == 0) {
+                $validatedData['payment_status'] = 2;
+                $validatedData['remaining_amount'] = null;
+                $validatedData['advance_amount'] = null;
+            }
+
+            // Ensure amounts align with the logic
+            if ($validatedData['payment_status'] == 3) {
+                $totalPaid = $validatedData['advance_amount'] + $validatedData['remaining_amount'];
+                if ($totalPaid != $validatedData['repair_cost']) {
+                    return response()->json([
+                        'message' => 'The sum of advance amount and paid amount must equal the repair cost.',
+                    ], 422);
+                }
+            }
+            // dd($validatedData);
+
+
+            // return response()->json([$validatedData]);
+
             $paymentDetail = PaymentDetail::create($validatedData);
 
+            // Send a notification if the status is paid
             if ($validatedData['payment_status'] == 2) {
                 $productService = ProductServiceDetail::findOrFail($validatedData['product_service_id']);
                 $customer = CustomerDetail::findOrFail($validatedData['customer_id']);
-    
+
                 $phoneNumber = '91' . $customer->phone_number;
-                $message = "Your payment of ₹{$validatedData['amount']} has been received for Service ID: {$productService->service_id}. Thank you for your payment!";
-    
+                $message = "Your payment of ₹{$validatedData['repair_cost']} has been received for Service ID: {$productService->service_id}. Thank you for your payment!";
+
                 SendServiceStatusJob::dispatch($phoneNumber, $message);
             }
-    
 
             return response()->json([
                 'success' => true,
@@ -118,27 +160,44 @@ class PaymentDetailController extends Controller
                 'data' => $paymentDetail,
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
-
             return response()->json([
                 'message' => 'Validation failed.',
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
-
             return response()->json([
                 'message' => 'An error occurred while updating the data.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+
     public function updatePaymentDetails(Request $request, $id)
     {
         try {
             $validatedData = $request->validate([
-                'amount' => 'required|numeric|min:0',
-                'payment_status' => 'required|integer',
+                'repair_cost' => 'required|numeric|min:0',
+                'paid_amount' => [
+                    'required_if:payment_status,2|required_if:payment_status,3',
+                    'nullable',
+                    'numeric',
+                    'min:0',
+                ],
+                'advance_amount' => [
+                    'required_if:payment_status,3',
+                    'nullable',
+                    'numeric',
+                    'min:0',
+                ],
+                'remaining_amount' => [
+                    'required_if:payment_status,3',
+                    'nullable',
+                    'numeric',
+                    'min:0',
+                ],
+                'payment_status' => 'required|integer|in:1,2,3,4',
                 'payment_date' => [
-                    'required_if:payment_status,2',
+                    'required_if:payment_status,2|required_if:payment_status,3',
                     'nullable',
                     'date',
                 ],
@@ -146,20 +205,50 @@ class PaymentDetailController extends Controller
                 'product_service_id' => 'required|exists:product_service_details,id',
                 'customer_id' => 'required|exists:customer_details,id',
             ], [
-                'payment_date.required_if' => 'The payment date field is required when payment status is paid.',
+                'repair_cost.required' => 'The repair cost field is required.',
+                'paid_amount.required_if' => 'The paid amount field is required for the selected payment status.',
+                'advance_amount.required_if' => 'The advance amount field is required for the selected payment status.',
+                'remaining_amount.required_if' => 'The remaining amount field is required for the selected payment status.',
+                'payment_date.required_if' => 'The payment date field is required for the selected payment status.',
             ]);
+
             $paymentDetail = PaymentDetail::findOrFail($id);
+
+            // Handle payment status logic
+            if ($validatedData['payment_status'] == 3 && $validatedData['remaining_amount'] == 0) {
+                $validatedData['payment_status'] = 2;
+                $validatedData['remaining_amount'] = null;
+                $validatedData['advance_amount'] = null;
+            }
+
+            if ($validatedData['payment_status'] == 3) {
+                // Ensure amounts align with the logic for partial payments
+                $totalPaid = $validatedData['advance_amount'] + $validatedData['remaining_amount'];
+                if ($totalPaid != $validatedData['repair_cost']) {
+                    return response()->json([
+                        'message' => 'The sum of advance amount and remaining amount must equal the repair cost.',
+                    ], 422);
+                }
+            } elseif ($validatedData['payment_status'] == 2) {
+                // If payment status is "Paid" (2), clear remaining and advance amounts
+                $validatedData['remaining_amount'] = null;
+                $validatedData['advance_amount'] = null;
+            }
+
+            // Update payment details
             $paymentDetail->update($validatedData);
+
+            // Send a notification if the status is paid
             if ($validatedData['payment_status'] == 2) {
                 $productService = ProductServiceDetail::findOrFail($validatedData['product_service_id']);
                 $customer = CustomerDetail::findOrFail($validatedData['customer_id']);
-    
+
                 $phoneNumber = '91' . $customer->phone_number;
-                $message = "Your payment of ₹{$validatedData['amount']} has been received for Service ID: {$productService->service_id}. Thank you for your payment!";
-    
+                $message = "Your payment of ₹{$validatedData['repair_cost']} has been received for Service ID: {$productService->service_id}. Thank you for your payment!";
+
                 SendServiceStatusJob::dispatch($phoneNumber, $message);
             }
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Payment details updated successfully.',
@@ -177,6 +266,7 @@ class PaymentDetailController extends Controller
             ], 500);
         }
     }
+
     public function getPaymentDetails(Request $request)
     {
         try {

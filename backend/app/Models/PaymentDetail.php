@@ -12,7 +12,10 @@ class PaymentDetail extends Model
     protected $fillable = [
         'customer_id',
         'product_service_id',
-        'amount',
+        'repair_cost',
+        'advance_amount',
+        'paid_amount',
+        'remaining_amount',
         'payment_status',
         'payment_mode',
         'payment_date',

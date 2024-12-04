@@ -64,6 +64,31 @@ const routes = [
         },
       },
       {
+        path: '/dealers-payment-details',
+        name: 'Dealers Payment Details',
+        component: () => import('@/views/base/DealersPayment.vue'),
+        meta: {
+          requiresAuth: true, 
+        },
+      },
+      {
+        path: '/user-management',
+        name: 'User Management',
+        component: () => import('@/views/base/UserManagement.vue'),
+        meta: {
+          requiresAuth: true, 
+        },
+      },
+      
+      {
+        path: '/dealers',
+        name: 'Dealers',
+        component: () => import('@/views/base/Dealers.vue'),
+        meta: {
+          requiresAuth: true, 
+        },
+      },
+      {
         path: '/customer-details',
         name: 'Customer Details',
         component: () => import('@/views/base/CustomerDetails.vue'),

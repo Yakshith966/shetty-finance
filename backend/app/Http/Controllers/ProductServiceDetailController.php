@@ -25,6 +25,7 @@ class ProductServiceDetailController extends Controller
             $query = ProductServiceDetail::with([
                 'customer',
                 'paymentDetails.paymentStatus',
+                'latestDealerDetail'
             ]);
             if ($request->has('service_status')) {
                 $query->where('service_status', $request->service_status);
@@ -140,7 +141,7 @@ class ProductServiceDetailController extends Controller
                     $message = "Your product '{$productServiceDetail->product_name}' has been $status. The Service ID is {$productServiceDetail->service_id}. Please contact us for further queries. Thank you for choosing our service! 😊";
 
                 } elseif ($validated['status'] == 3) {
-                    $message = "The service for your '{$productServiceDetail->product_name}' has been successfully $status. We kindly collect it at your convenience. Thank you for choosing our services! 😊";
+                    $message = "The service for your '{$productServiceDetail->product_name}' has been successfully {$status}. We kindly request that you collect it at your convenience. Thank you for choosing our services! 😊";
                 }
             
                 // Send the message
@@ -241,20 +242,21 @@ class ProductServiceDetailController extends Controller
 
             $product = ProductServiceDetail::findOrFail($id);
             $product->update($validated);
+            // if ($product->service_status != $validated['service_status']) {
+            //     if ($validated['service_status'] == 1 || $validated['service_status'] == 3) {
+            //         $phoneNumber = '91' . $product->customer->phone_number;
+            //         $status = ServiceStatus::find($validated['service_status'])->status;
 
-            if ($validated['service_status'] == 1 || $validated['service_status'] == 3) {
-                $phoneNumber = '91' . $product->customer->phone_number;
-                $status = ServiceStatus::find($validated['service_status'])->status;
-            
-                
-                if ($validated['service_status'] == 1) {
-                    $message = "Your product '{$product->product_name}' has been $status. The Service ID is {$product->service_id}. Please contact us for further queries. Thank you for choosing our service! 😊";
-                } elseif ($validated['service_status'] == 3) {
-                    $message = "The service for your '{$product->product_name}' has been successfully $status. Please feel free to collect it at your convenience. Thank you for choosing our services! 😊";
-                }
-            
-                SendServiceStatusJob::dispatch($phoneNumber, $message);
-            }
+
+            //         if ($validated['service_status'] == 1) {
+            //             $message = "Your product '{$product->product_name}' has been $status. The Service ID is {$product->service_id}. Please contact us for further queries. Thank you for choosing our service! 😊";
+            //         } elseif ($validated['service_status'] == 3) {
+            //             $message = "The service for your '{$product->product_name}' has been successfully {$status}. We kindly request that you collect it at your convenience. Thank you for choosing our services! 😊";
+            //         }
+
+            //         SendServiceStatusJob::dispatch($phoneNumber, $message);
+            //     }
+            // }
 
             return response()->json([
                 'message' => 'Product updated successfully',

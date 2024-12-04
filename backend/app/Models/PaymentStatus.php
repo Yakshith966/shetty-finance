@@ -18,4 +18,9 @@ class PaymentStatus extends Model
     {
         return $this->hasMany(PaymentDetail::class, 'payment_status');
     }
+
+    public function dealerDetails()
+    {
+        return $this->hasMany(DealerDetails::class, 'payment_status_id');
+    }
 }
