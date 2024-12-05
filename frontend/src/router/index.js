@@ -71,14 +71,14 @@ const routes = [
           requiresAuth: true, 
         },
       },
-      // {
-      //   path: '/user-management',
-      //   name: 'User Management',
-      //   component: () => import('@/views/base/UserManagement.vue'),
-      //   meta: {
-      //     requiresAuth: true, 
-      //   },
-      // },
+      {
+        path: '/user-management',
+        name: 'User Management',
+        component: () => import('@/views/base/UserManagement.vue'),
+        meta: {
+          requiresAuth: true, 
+        },
+      },
       
       {
         path: '/dealers',
