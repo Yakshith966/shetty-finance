@@ -152,7 +152,7 @@
                   </v-textarea>
                   <v-text-field v-model="editedItem.collectedItems" label="Other Collected Items" class="text-body-2">
                   </v-text-field>
-                  <v-select v-if="dialogMode !== 'edit'" model="editedItem.statusId" :items="formattedStatusOptions" label="Status*"
+                  <v-select v-if="dialogMode !== 'edit'" v-model="editedItem.statusId" :items="formattedStatusOptions" label="Status*"
                     item-value="id" item-title="status" outlined class="text-body-2">
                   </v-select>
                 </v-card-text>

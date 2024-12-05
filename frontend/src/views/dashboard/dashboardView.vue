@@ -21,6 +21,8 @@ export default {
       monthLabelForServiceDetails: [],
       monthlyServiceData: [],
       totalServiceData: 0,
+      sidebarData: null,
+      dashBoardPermission: null,
     };
   },
   created(){
@@ -30,6 +32,9 @@ export default {
     this.getServiceDetails();
   },
   mounted() {
+    this.sidebarData = this.$store.getters.getSubMenus;
+    // console.log("sidebarData", this.sidebarData);
+    this.dashBoardPermission = this.$store.getters.getSubmenuPermissions;
     document.documentElement.addEventListener('ColorSchemeChange', () => {
       if (this.widgetChartRef1) {
         this.widgetChartRef1.chart.data.datasets[0].pointBackgroundColor = getStyle('--cui-primary');
@@ -48,7 +53,7 @@ export default {
             const response = await axios.get('get-customer-count');
             this.customerCountData = response.data.customerCount;
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     },
     async getMonthlyIncome(){
@@ -57,7 +62,7 @@ export default {
             this.monthlyIncomeData = response.data;
             this.filterMonthlyIncome();
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     },
     async getServiceDetails(){
@@ -65,14 +70,14 @@ export default {
         const response = await axios.get('get-service-details-dashboard');
         this.serviceDetails = response.data;
         this.serviceDetails.forEach((data) => {
-          if(data.service_status == 3){
-            this.servicesCompleted += data.count;
-          } else {
+          if(data.service_status == 1 || data.service_status == 2){
             this.servicesPending += data.count;
+          } else {
+            this.servicesCompleted = data.count
           }
         })
       } catch (error) {
-          console.log(error);
+          // console.log(error);
       }
     },
     async getMonthlyServiceDetails(){
@@ -83,7 +88,7 @@ export default {
         this.monthlyServiceData = this.monthlyServiceDetails.map((data) => parseFloat(data.count));
         this.totalServiceData = this.monthlyServiceDetails.reduce((sum, data)=> sum + parseFloat(data.count), 0);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     },
     filterMonthlyIncome(){
@@ -96,7 +101,7 @@ export default {
 </script>
 
 <template>
-  <CRow :xs="{ gutter: 4 }">
+  <CRow :xs="{ gutter: 4 }" v-if="dashBoardPermission">
     <CCol :sm="6" :xl="4" :xxl="3">
       <CWidgetStatsA color="primary">
         <template #value
@@ -114,7 +119,7 @@ export default {
       </CWidgetStatsA>
     </CCol>
 
-    <CCol :sm="6" :xl="4" :xxl="3">
+    <CCol :sm="6" :xl="4" :xxl="3" v-if="dashBoardPermission.add != 0 && dashBoardPermission.edit != 0 && dashBoardPermission.delete != 0">
       <CWidgetStatsA color="danger">
         <template #value
           >₹ {{ totalIncome }}
