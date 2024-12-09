@@ -12,6 +12,7 @@ class DealerDetails extends Model
     protected $fillable = [
         'service_id',
         'dealer_id',
+        'payment_mode',
         'product_description',
         'status_id',
         'payment_status_id',

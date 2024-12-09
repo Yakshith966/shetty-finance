@@ -92,6 +92,11 @@ Route::get('/fetch-dealers-details-report', [DealerDetailsController::class, 'fe
 Route::get('/fetch-roles', [AuthController::class, 'fetchRoles']);
 Route::get('/fetch-users', [AuthController::class, 'fetchUsers']);
 
+Route::post('/save-user', [AuthController::class, 'saveUser']);
+Route::put('/update-user/{id}', [AuthController::class, 'updateUser']);
+Route::put('/reset-password', [AuthController::class, 'resetPassword']);
+
+
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
