@@ -34,7 +34,9 @@ export default {
   mounted() {
     this.sidebarData = this.$store.getters.getSubMenus;
     // console.log("sidebarData", this.sidebarData);
-    this.dashBoardPermission = this.$store.getters.getSubmenuPermissions[0];
+    this.dashBoardPermission = this.$store.getters.getSubmenuPermissions;
+    console.log('dhcbhdbchdbfche');
+    
     document.documentElement.addEventListener('ColorSchemeChange', () => {
       if (this.widgetChartRef1) {
         this.widgetChartRef1.chart.data.datasets[0].pointBackgroundColor = getStyle('--cui-primary');
