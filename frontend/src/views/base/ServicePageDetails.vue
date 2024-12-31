@@ -1,1311 +1,681 @@
-<template>
-  <v-data-table :headers="headers" :items="filteredRecords" item-value="id" :search="search">
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>Service Details</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn class="mb-2" color="primary" @click="openNewItemDialog">
-          New Item
-        </v-btn>
-      </v-toolbar>
-      <v-card-title class="d-flex align-center pe-2">
-        <v-spacer></v-spacer>
-        <v-spacer></v-spacer>
-        <v-spacer></v-spacer>
-        <v-select v-model="selectedStatus" :items="[{ id: null, status: 'All' }, ...formattedStatusOptions]"
-          label="Filter by Status" item-value="id" item-title="status" outlined density="compact" variant="solo-filled"
-          flat hide-details single-line style="max-width: 200px; margin-right: 1rem;"></v-select>
-        <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" outlined density="compact"
-          variant="solo-filled" flat hide-details single-line></v-text-field>
-      </v-card-title>
-    </template>
+  <template>
+    <div>
+      <v-dialog max-width="500" v-model="reportGenerateDialogBox">
+        <v-card :title="generateReportHeading">
+          <v-card-text>
+            <div class="mb-4">
+              <v-text-field label="Start Date" v-model="reportFromDate" type="date" outlined></v-text-field>
+            </div>
+            <div>
+              <v-text-field label="End Date" v-model="reportToDate" type="date" outlined></v-text-field>
+            </div>
+          </v-card-text>
 
-    <template v-slot:body="{ items }">
-      <!-- Show Spinner when Loading -->
-      <tr v-if="isLoading">
-        <td :colspan="headers.length" class="text-center">
-          <CSpinner color="primary" />
-        </td>
-      </tr>
-
-      <!-- Display Items if Available -->
-      <tr v-else-if="items.length > 0" v-for="(item, index) in items" :key="index">
-        <td>{{ item.service_id }}</td>
-        <td>{{ item.customer.name }}</td>
-        <td>{{ item.product_type }}</td>
-        <td>{{ item.product_name }}</td>
-        <td>{{ item.product_received_date }}</td>
-        <!-- <td>{{ item.payment_mode }}</td> -->
-        <!-- <td>{{ item.payment_date }}</td> -->
-        <td>
-          <v-btn icon @click="openDealersDialog(item)">
-            <v-icon>mdi-account</v-icon>
-          </v-btn>
-        </td>
-        <td>
-          <v-select :readonly="isPaid(item)" v-model="item.service_status" :items="formattedStatusOptions"
-            label="Status" item-value="id" item-title="status" class="mt-3" outlined
-            @update:model-value="checkServiceStatusChange(item)">
-          </v-select>
-        </td>
-        <td>
-          <v-btn icon @click="openPaymentDialog(item)">
-            <v-icon>mdi-credit-card</v-icon>
-          </v-btn>
-        </td>
-        <td>
-          <!-- Payment Status with Conditional Color -->
-          <v-chip v-if="item.payment_details && item.payment_details[0]?.payment_status" :color="item.payment_details[0]?.payment_status.id === 2 ? 'green' :
-            item.payment_details[0]?.payment_status.id === 3 ? 'orange' : 'red'" outlined
-            small>
-            {{ item.payment_details[0]?.payment_status.payment_status }}
-          </v-chip>
-          <span v-else style="font-size: 1.2em; font-weight: bold; color: #555;">
-            N/A
-          </span>
-        </td>
-
-
-        <td>
-          <v-icon class="me-2" size="small" v-if="!isPaid(item)" @click="openEditDialog(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon size="small" @click="openViewDialog(item)">
-            mdi-eye
-          </v-icon>
-        </td>
-      </tr>
-
-      <!-- Display Message if No Data Available -->
-      <tr v-else>
-        <td :colspan="headers.length" class="text-center">
-          No data available
-        </td>
-      </tr>
-    </template>
-  </v-data-table>
-
-  <!-- New/Edit Dialog -->
-  <v-dialog v-model="dialog" :max-width="dialogMode === 'edit' ? '500px' : '800px'" @click:outside="handleOutsideClick">
-    <v-card>
-      <v-card-title class="d-flex justify-space-between align-center py-2">
-        <span class="text-h6">
-          {{ dialogMode === 'new' ? 'New Item' : 'Edit Item' }}
-        </span>
-        <v-btn icon="mdi-close" variant="text" @click="closeDialog"></v-btn>
-      </v-card-title>
-
-      <v-card-text>
-        <v-container>
-          <!-- Existing Customer Checkbox -->
-          <v-container>
-            <v-checkbox v-if="dialogMode != 'edit'" v-model="isExistingCustomer" class="text-caption"
-              label="Already a Customer">
-            </v-checkbox>
-          </v-container>
-
-          <!-- Autocomplete for Existing Customers -->
-          <v-autocomplete v-if="isExistingCustomer" v-model="selectedCustomer" :items="customerDetails"
-            item-title="name" item-value="id" label="Search Customer" prepend-inner-icon="mdi-magnify" outlined
-            hide-details class="text-caption" @update:model-value="handleCustomerSelection">
-          </v-autocomplete>
-
-          <v-row>
-            <!-- First Card: Customer Details -->
-            <v-col cols="12" md="6" v-if="dialogMode !== 'edit'">
-              <v-card>
-                <v-card-title class="text-body-2">Customer Details</v-card-title>
-                <v-card-text>
-                  <v-text-field v-model="editedItem.customerName" :readonly="isExistingCustomer" label="Customer Name*"
-                    class="text-body-2">
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="closeDialog()">Cancel</v-btn>
+            <v-btn text @click="generateReport()"
+              :disabled="this.reportFromDate == '' || this.reportToDate == ''">Generate</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <template>
+        <v-toolbar flat>
+          <v-toolbar-title>Customer Details</v-toolbar-title>
+          <v-btn color="primary" @click="openAddCustomerDialog">Add Customer</v-btn>
+          <v-dialog v-model="addCustomerDialog" max-width="600px">
+            <v-card>
+              <v-card-title class="d-flex justify-space-between align-center">
+                <span class="headline">Add New Customer</span>
+                <v-btn icon="mdi-close" variant="text" @click="closeAddCustomerDialog"></v-btn>
+              </v-card-title>
+              <v-card-text>
+                <v-form ref="form" v-model="formValid">
+                  <v-text-field label="Payment Given Date" v-model="newCustomer.payment_given_date" outlined type="date"
+                    :value="newCustomer.payment_given_date"></v-text-field>
+                  <v-text-field label="Customer Name" v-model="newCustomer.customer_name" outlined>
                   </v-text-field>
-                  <v-text-field v-model="editedItem.phone" label="Phone*" :readonly="isExistingCustomer"
-                    class="text-body-2">
+                  <v-text-field label="Contact Number" v-model="newCustomer.contact_no" outlined
+                    :rules="[contactNumberRule]" @input="validateContactNumber" maxlength="10" type="tel">
                   </v-text-field>
-                  <v-text-field v-model="editedItem.email" :readonly="isExistingCustomer" label="Email"
-                    class="text-body-2">
+                  <v-text-field label="Alt Contact Number" v-model="newCustomer.alt_contact_no" outlined
+                    :rules="[contactNumberRule]" @input="validateContactNumber" maxlength="10" type="tel">
                   </v-text-field>
-                  <v-text-field v-model="editedItem.altPhone" :readonly="isExistingCustomer" label="Alternative Mobile"
-                    class="text-body-2">
-                  </v-text-field>
-                </v-card-text>
-              </v-card>
-            </v-col>
-
-            <!-- Second Card: Product Details -->
-            <v-col :cols="dialogMode === 'edit' ? 12 : 12" :md="dialogMode === 'edit' ? 20 : 6"
-              class="d-flex justify-center">
-              <v-card class="w-100" outlined>
-                <v-card-title class="text-body-2">Product Details</v-card-title>
-                <v-card-text>
-                  <v-text-field v-model="editedItem.productType" label="Product Type *" class="text-body-2">
-                  </v-text-field>
-                  <v-text-field v-model="editedItem.productName" label="Product Name *" class="text-body-2">
-                  </v-text-field>
-                  <v-text-field v-model="editedItem.model" label="Model" class="text-body-2">
-                  </v-text-field>
-                  <v-text-field v-model="editedItem.serialNumber" label="Serial Number" class="text-body-2">
-                  </v-text-field>
-                  <v-text-field v-model="editedItem.date" label="Date *" type="date" class="text-body-2">
-                  </v-text-field>
-                  <v-textarea v-model="editedItem.issueDescription" label="Issue Description *" class="text-body-2">
+                  <v-textarea label="Address" v-model="newCustomer.address" outlined rows="3" Auto-grow>
                   </v-textarea>
-                  <v-text-field v-model="editedItem.collectedItems" label="Other Collected Items" class="text-body-2">
-                  </v-text-field>
-                  <v-select v-if="dialogMode !== 'edit'" v-model="editedItem.statusId" :items="formattedStatusOptions" label="Status*"
-                    item-value="id" item-title="status" outlined class="text-body-2">
-                  </v-select>
+                  <v-text-field label="Agreement From" v-model="newCustomer.agreement_from" outlined
+                    type="date"></v-text-field>
+                  <v-text-field label="Agreement To" v-model="newCustomer.agreement_to" outlined
+                    type="date"></v-text-field>
+                  <v-textarea label="Document" v-model="newCustomer.document" outlined rows="3" Auto-grow></v-textarea>
+                  <v-text-field label="Paid Amount" type="number" v-model="newCustomer.paid_amount"
+                    outlined></v-text-field>
+                  <v-text-field label="Monthly Return" type="number" v-model="newCustomer.monthly_return"
+                    outlined></v-text-field>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn text @click="closeAddCustomerDialog">Cancel</v-btn>
+                <v-btn @click="saveCustomer()" :disabled="!formValid">Save</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <v-data-table :headers="headers" v-model:search="search" :items="customers">
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Customer Details</v-toolbar-title>
+            <v-btn color="primary" @click="openAddCustomerDialog">Add Customer</v-btn>
+            <v-dialog v-model="addCustomerDialog" max-width="600px">
+              <v-card>
+                <v-card-title class="d-flex justify-space-between align-center">
+                  <span class="headline">Add New Customer</span>
+                  <v-btn icon="mdi-close" variant="text" @click="closeAddCustomerDialog"></v-btn>
+                </v-card-title>
+                <v-card-text>
+                  <v-form ref="form" v-model="formValid">
+                    <v-text-field label="Payment Given Date" v-model="newCustomer.payment_given_date" outlined
+                      type="date" :value="newCustomer.payment_given_date"></v-text-field>
+                    <v-text-field label="Customer Name" v-model="newCustomer.customer_name" outlined>
+                    </v-text-field>
+                    <v-text-field label="Contact Number" v-model="newCustomer.contact_no" outlined
+                      :rules="[contactNumberRule]" @input="validateContactNumber" maxlength="10" type="tel">
+                    </v-text-field>
+                    <v-text-field label="Alt Contact Number" v-model="newCustomer.alt_contact_no" outlined
+                      :rules="[contactNumberRule]" @input="validateContactNumber" maxlength="10" type="tel">
+                    </v-text-field>
+                    <v-textarea label="Address" v-model="newCustomer.address" outlined rows="3" Auto-grow>
+                    </v-textarea>
+                    <v-text-field label="Agreement From" v-model="newCustomer.agreement_from" outlined
+                      type="date"></v-text-field>
+                    <v-text-field label="Agreement To" v-model="newCustomer.agreement_to" outlined
+                      type="date"></v-text-field>
+                    <v-textarea label="Document" v-model="newCustomer.document" outlined rows="3"
+                      Auto-grow></v-textarea>
+                    <v-text-field label="Paid Amount" type="number" v-model="newCustomer.paid_amount"
+                      outlined></v-text-field>
+                    <v-text-field label="Monthly Return" type="number" v-model="newCustomer.monthly_return"
+                      outlined></v-text-field>
+                  </v-form>
                 </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn text @click="closeAddCustomerDialog">Cancel</v-btn>
+                  <v-btn @click="saveCustomer()" :disabled="!formValid">Save</v-btn>
+                </v-card-actions>
               </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn variant="text" @click="closeDialog" :disabled="isDisable" class="text-body-2">Cancel</v-btn>
-        <v-btn color="primary" v-if="dialogMode === 'new'" :disabled="isDisable" @click="saveItem()"
-          class="text-body-2">Save</v-btn>
-        <v-btn color="primary" v-if="dialogMode === 'edit'" :disabled="isDisable" @click="updateItem()"
-          class="text-body-2">Update</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
-  <!-- Payment Dialog -->
-  <v-dialog v-model="paymentDialog" max-width="500px">
-    <v-card>
-      <v-card-title class="d-flex justify-space-between align-center">
-        <div class="text-h5 text-medium-emphasis ps-2">Payment Details</div>
-        <v-btn icon="mdi-close" variant="text" @click="closePaymentDialog"></v-btn>
-      </v-card-title>
-
-      <v-card-text>
-        <!-- Total Amount -->
-        <v-text-field v-model="paymentDetails.repair_cost" label="Repair Amount" outlined></v-text-field>
-
-        <!-- Payment Status -->
-        <v-select v-model="paymentDetails.status" :items="paymentStatus" item-title="payment_status" item-value="id"
-          label="Payment Status" outlined :readonly="isPaymentReadOnly"></v-select>
-
-        <!-- Advance/Partial Payments -->
-        <div v-if="paymentDetails.status === 3 || paymentDetails.status === 4">
-          <v-text-field v-model="paymentDetails.advance_amount" label="Advance Payment" type="number" outlined
-            :readonly="isPaymentReadOnly" @input="calculateRemainingAmount"></v-text-field>
-          <v-text-field v-model="paymentDetails.remaining_amount" label="Remaining Amount" readonly
-            outlined></v-text-field>
-        </div>
-
-        <!-- Full Payment -->
-        <div v-if="paymentDetails.status === 2 || paymentDetails.status === 3">
-          <v-text-field v-model="paymentDetails.payment_date" label="Payment Date" type="date" outlined
-            :readonly="isPaymentReadOnly"></v-text-field>
-          <v-select v-model="paymentDetails.payment_mode" :items="paymentModes" label="Payment Mode" item-title="mode"
-            item-value="id" outlined :readonly="isPaymentReadOnly"></v-select>
-        </div>
-      </v-card-text>
-
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <template v-if="!isPaymentReadOnly">
-          <v-btn variant="text" :disabled="isDisable" @click="closePaymentDialog">Cancel</v-btn>
-          <v-btn color="primary" :disabled="isDisable" @click="savePaymentDetails">Save</v-btn>
+            </v-dialog>
+          </v-toolbar>
+          <v-card-title class="d-flex align-center pe-2" v-if="!isLoading">
+            <template v-if="!isLoading && filteredPaymentDetails.length > 0">
+              <CButton color="info" style="color: white" @click="openDialog('exportExcel')">Export Excel</CButton>
+              <v-spacer></v-spacer>
+              <CButton color="warning" variant="outline" @click="openDialog('downloadPdf')">Download PDF</CButton>
+            </template>
+            <template v-if="!isLoading && !filteredPaymentDetails.length > 0">
+              <v-spacer></v-spacer>
+              <v-spacer></v-spacer>
+            </template>
+            <v-spacer></v-spacer>
+            <v-select v-model="selectedPaymentStatusId"
+              :items="[{ id: null, payment_status: 'All' }, ...paymentStatusOptions]" label="Payment Status"
+              item-value="id" item-title="payment_status" outlined density="compact" variant="solo-filled" flat
+              hide-details style="max-width: 200px; margin-right: 1rem;"></v-select>
+            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
+              variant="solo-filled" flat hide-details single-line></v-text-field>
+          </v-card-title>
         </template>
-        <template v-if="isPaymentReadOnly">
-          <v-btn variant="text" @click="closePaymentDialog">Close</v-btn>
+        <!-- Custom row for loading state -->
+        <template v-slot:body="{ items }">
+          <tr v-if="isLoading">
+            <td :colspan="headers.length" class="text-center">
+              <CSpinner color="primary" />
+            </td>
+          </tr>
+          <tr v-else-if="items.length > 0" v-for="(item, index) in customers" :key="index">
+            <td>{{ item.customer_id }}</td>
+            <td>{{ item.payment_given_date || '-' }}</td>
+            <td>{{ item.customer_name || '-' }}</td>
+            <td>{{ item.contact_no || '-' }}</td>
+            <!-- <td>{{ item.alt_contact_no || '-' }}</td> -->
+            <!-- <td>{{ item.address || '-' }}</td> -->
+            <td>{{ item.agreement_from || '-' }}</td>
+            <td>{{ item.agreement_to || '-' }}</td>
+            <!-- <td>{{ item.document || '-' }}</td> -->
+            <td>{{ item.paid_amount || '-' }}</td>
+            <td>{{ item.monthly_return || '-' }}</td>
+            <td>
+              <v-btn icon @click="toggleSubmodule(item)"><v-icon>mdi-credit-card</v-icon></v-btn>
+            </td>
+            <td>{{ item.remaining_amount || '-' }}</td>
+            <td>
+              <v-chip :color="getColor(item.payment_status)">
+                {{ item.payment_status }}
+              </v-chip>
+            </td>
+            <td>
+              <v-icon icon @click="viewCustomerDetails(item)">mdi-eye</v-icon>
+              <v-icon icon @click="editCustomerDialog(item)">mdi-pencil</v-icon>
+            </td>
+          </tr>
+          <tr v-else>
+            <td :colspan="headers.length" class="text-center">
+              No data available
+            </td>
+          </tr>
         </template>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      </v-data-table>
 
-  <!-- view Dealers Dialog -->
+      <v-dialog v-model="submoduleVisible" max-width="800px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Return History for {{ selectedCustomer.customer_name }}</span>
+            <v-btn icon="mdi-close" variant="text" @click="submoduleVisible = false"></v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-simple-table>
+              <thead>
+                <tr>
+                  <th>Given Date</th>
+                  <th>Given Amount</th>
+                  <th>Pending Amount</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, rowIndex) in submoduleRows" :key="rowIndex">
+                  <td><v-text-field v-model="row.givenDate" type="date" required></v-text-field></td>
+                  <td><v-text-field v-model="row.givenAmount" type="number" required></v-text-field></td>
+                  <td><v-text-field v-model="row.pendingAmount" type="number" required></v-text-field></td> 
+                  <td><v-textarea v-model="row.remarks" outlined rows="1" autogrow></v-textarea></td>
+                </tr>
+              </tbody>
+            </v-simple-table>
+            <v-btn @click="addSubmoduleRow" color="primary">Add Row</v-btn>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn @click="saveSubmoduleData" color="green">Save</v-btn>
+            <v-btn @click="cancelSubmodule" color="red">Cancel</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
-  <v-dialog v-model="dealersDialog" max-width="500px">
-    <v-card>
-      <v-card-title class="d-flex justify-space-between align-center">
-        <div class="text-h5 text-medium-emphasis ps-2">
-          Dealers Details
-        </div>
-        <v-btn icon="mdi-close" variant="text" @click="closeDealersDialog"></v-btn>
-      </v-card-title>
+      <v-dialog v-model="editCustomerDialogVisible" max-width="600px">
+        <v-card>
+          <v-card-title class="d-flex justify-space-between align-center">
+            <span class="headline">Edit Customer</span>
+            <v-btn icon="mdi-close" variant="text" @click="closeEditCustomerDialog"></v-btn>
+          </v-card-title>
 
-      <v-card-text>
-        <!-- Dealer Selection -->
-        <v-select v-model="dealersData.dealer_id" :items="dealers" item-title="name" item-value="id"
-          label="Select Dealer" outlined density="compact" :clearable="!disableDealer"
-          :readonly="disableDealer"></v-select>
+          <v-card-text>
+            <v-form ref="editForm" v-model="formValid">
+              <v-text-field label="Customer Name" v-model="selectedCustomer.customer_name" outlined></v-text-field>
+              <v-text-field label="Contact Number" v-model="selectedCustomer.contact_no" outlined maxlength="10"
+                type="tel"></v-text-field>
+              <v-text-field label="Alt Contact Number" v-model="selectedCustomer.alt_contact_no" outlined maxlength="10"
+                type="tel"></v-text-field>
+              <v-textarea label="Address" v-model="selectedCustomer.address" outlined rows="3" auto-grow></v-textarea>
+              <v-text-field label="Agreement From" v-model="selectedCustomer.agreement_from" outlined
+                type="date"></v-text-field>
+              <v-text-field label="Agreement To" v-model="selectedCustomer.agreement_to" outlined
+                type="date"></v-text-field>
+              <v-textarea label="Document" v-model="selectedCustomer.document" outlined rows="3" Auto-grow></v-textarea>
+              <v-text-field label="Paid Amount" type="number" v-model="selectedCustomer.paid_amount"
+                outlined></v-text-field>
+              <v-text-field label="Monthly Return" type="number" v-model="selectedCustomer.monthly_return"
+                outlined></v-text-field>
+            </v-form>
+          </v-card-text>
 
-        <!-- Product Description -->
-        <v-textarea v-model="dealersData.product_description" :readonly="isDealersReadOnly" label="Product Description"
-          outlined density="compact"></v-textarea>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="closeEditCustomerDialog">Cancel</v-btn>
+            <v-btn @click="saveCustomerData" :disabled="!formValid">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="showReport" max-width="900px" height="500px">
+        <v-card>
+          <v-card-title class="d-flex justify-space-between align-center">
+            <span class="headline">Customer Details</span>
+            <v-btn icon="mdi-printer" variant="text" @click="printContent"></v-btn>
+            <v-btn icon="mdi-close" variant="text" @click="showReport = false"></v-btn>
+          </v-card-title>
 
-        <!-- Product Status -->
-        <v-select v-model="dealersData.status_id" :items="dealersStatus" label="Product Status" item-title="status"
-          item-value="id" outlined density="compact" :readonly="isDealersReadOnly"></v-select>
+          <v-card-text>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <div><strong>Customer ID:</strong> {{ selectedCustomer.customer_id }}</div>
+              </v-col>
+            </v-row>
 
-        <!-- Payment Status -->
-        <v-select v-model="dealersData.payment_status_id" :items="filteredPaymentStatus" label="Payment Status"
-          item-title="payment_status" item-value="id" outlined density="compact"
-          :readonly="isDealersReadOnly"></v-select>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <div><strong>Customer Name:</strong> {{ selectedCustomer.customer_name }}</div>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <div><strong>Payment Given Date:</strong> {{ formatDate(selectedCustomer.payment_given_date) }}</div>
+              </v-col>
+            </v-row>
 
-        <!-- Amount (Only if payment status is 'Paid') -->
-        <v-text-field v-if="dealersData.payment_status_id === 2" v-model="dealersData.amount" label="Amount"
-          type="number" outlined density="compact" :readonly="isDealersReadOnly"></v-text-field>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <div><strong>Contact Number:</strong> {{ selectedCustomer.contact_no }}</div>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <div><strong>Alt Contact Number:</strong> {{ selectedCustomer.alt_contact_no }}</div>
+              </v-col>
+            </v-row>
 
-        <!-- Payment Date (Only if payment status is 'Paid') -->
-        <v-text-field v-if="dealersData.payment_status_id === 2" v-model="dealersData.amount_received_date"
-          label="Payment Date" type="date" :readonly="isDealersReadOnly" outlined density="compact"></v-text-field>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <div><strong>Agreement From:</strong> {{ formatDate(selectedCustomer.agreement_from) }}</div>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <div><strong>Agreement To:</strong> {{ formatDate(selectedCustomer.agreement_to) }}</div>
+              </v-col>
+            </v-row>
 
-        <v-select v-if="dealersData.payment_status_id === 2" v-model="dealersData.payment_mode" :items="paymentModes" label="Payment Mode" item-title="mode"
-          item-value="id" outlined :readonly="isPaymentReadOnly"></v-select>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <div><strong>Paid Amount:</strong> {{ selectedCustomer.paid_amount }}</div>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <div><strong>Monthly Return:</strong> {{ selectedCustomer.monthly_return }}</div>
+              </v-col>
+            </v-row>
 
-      </v-card-text>
-
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <template v-if="!isDealersReadOnly">
-          <v-btn variant="text" @click="closeDealersDialog" :disabled="disableDealerButton">Cancel</v-btn>
-          <v-btn color="primary" @click="saveDealersDetails" :disabled="disableDealerButton">Save</v-btn>
-        </template>
-        <template v-else-if="isDealersReadOnly">
-          <v-btn variant="text" @click="closeDealersDialog">Cancel</v-btn>
-        </template>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
-
-  <!-- View Dialog -->
-  <v-dialog v-model="viewDialog" max-width="900px">
-    <v-card>
-      <v-card-title class="d-flex justify-space-between align-center">
-        <div class="text-h5 text-medium-emphasis ps-2">
-          Customer Details
-        </div>
-        <v-btn icon="mdi-close" variant="text" @click="viewDialog = false"></v-btn>
-      </v-card-title>
-      <v-divider></v-divider>
-      <v-card-text>
-        <v-container>
-          <!-- Customer Information -->
-          <v-row dense class="mb-4">
-            <v-col cols="12" md="4">
-              <strong>Customer Name:</strong>
-              <div class="mt-1">{{ editedItem.customerName || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="4">
-              <strong>Phone:</strong>
-              <div class="mt-1">{{ editedItem.phone || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="4">
-              <strong>Email:</strong>
-              <div class="mt-1">{{ editedItem.email || 'N/A' }}</div>
-            </v-col>
-          </v-row>
-
-          <!-- Alternative Information -->
-          <v-row dense class="mb-4">
-            <v-col cols="12" md="4">
-              <strong>Alternative Phone:</strong>
-              <div class="mt-1">{{ editedItem.altPhone || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="4">
-              <strong>Product Type:</strong>
-              <div class="mt-1">{{ editedItem.productType || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="4">
-              <strong>Product Name:</strong>
-              <div class="mt-1">{{ editedItem.productName || 'N/A' }}</div>
-            </v-col>
-          </v-row>
-
-          <!-- Additional Product Information -->
-          <v-row dense class="mb-4">
-            <v-col cols="12" md="4">
-              <strong>Model:</strong>
-              <div class="mt-1">{{ editedItem.model || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="4">
-              <strong>Serial Number:</strong>
-              <div class="mt-1">{{ editedItem.serialNumber || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="4">
-              <strong>Date:</strong>
-              <div class="mt-1">{{ editedItem.date || 'N/A' }}</div>
-            </v-col>
-          </v-row>
-
-          <!-- Status and Issue Description -->
-          <v-row dense class="mb-4">
-            <v-col cols="12" md="4">
-              <strong>Status:</strong>
-              <div class="mt-1">{{ editedItem.status || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="8">
-              <strong>Issue Description:</strong>
-              <div class="mt-1">{{ editedItem.issueDescription || 'N/A' }}</div>
-            </v-col>
-          </v-row>
-
-          <!-- Payment Information -->
-          <v-row dense v-if="editedItem.paymentDetails" class="mb-4">
-            <v-col cols="12" md="4">
-              <strong>Repair Amount:</strong>
-              <div class="mt-1">{{ editedItem.paymentDetails.repair_cost || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="4">
-              <strong>Paid Amount:</strong>
-              <div class="mt-1">{{ editedItem.paymentDetails.paid_amount || 'N/A' }}</div>
-            </v-col>
-            <v-col cols="12" md="4">
-              <strong>Payment Status:</strong>
-              <div class="mt-1">{{ editedItem.paymentDetails.status || 'N/A' }}</div>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-divider></v-divider>
-      <v-card-actions class="justify-end">
-        <v-btn color="primary" @click="viewDialog = false">Close</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
-
-</template>
-
+            <v-row>
+              <v-col cols="12" sm="6">
+                <div><strong>Document:</strong> {{ selectedCustomer.document }}</div>
+              </v-col>
+              <v-col cols="12" sm="5" style="word-wrap: break-word; overflow-wrap: break-word;">
+                <div><strong>Address:</strong> {{ selectedCustomer.address }}</div>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </div>
+  </template>
 <script>
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import Toastify from "toastify-js";
-import moment from 'moment';
-
 export default {
-  mounted() {
-    this.fetchProductStatus();
-    this.fetchPaymentStatus();
-    this.fetchPaymentModes();
-    this.fetchCustomerDetails();
-    this.fetchDealers();
-    this.fetchDealersStatus();
-    this.fetchServiceProductDetails();
-    
-  },
-  data: () => ({
-    phoneNumberRule: (value) =>
-      /^\d{10}$/.test(value) || "Phone number must be exactly 10 digits.",
-
-    viewDialog: false,
-    isDealersReadOnly: false,
-    disableDealer : false,
-    isDisable: false,
-    isExistingCustomer: false,
-    search: '',
-    selectedCustomer: null,
-    dialog: false,
-    isLoading: false,
-    dialogMode: 'new',
-    paymentDialog: false,
-    customerDetails: [],
-    headers: [
-      { title: 'Service ID', key: 'service_id' },
-      { title: 'Customer Name', key: 'customer.name' },
-      { title: 'Product Type', key: 'product_type' },
-      { title: 'Product Name', key: 'product_name' },
-      { title: 'Date', key: 'product_received_date' },
-      { title: 'Dealers', key: 'payment', sortable: false },
-      { title: 'Status', key: 'status', sortable: false },
-      { title: 'Payment', key: 'payment', sortable: false },
-      { title: 'Payment Status', key: 'paymentStatus', sortable: false, },
-      { title: 'Actions', key: 'actions', sortable: false, },
-    ],
-    service_status: [],
-    selectedStatus: null,
-    isPaymentReadOnly: false,
-    disableDealerButton: false,
-    paymentStatus: [],
-    records: [],
-    editedItem: {
-      customerId: '',
-      id: '',
-      customerName: '',
-      phone: '',
-      email: '',
-      altPhone: '',
-      productType: '',
-      productName: '',
-      model: '',
-      serialNumber: '',
-      date: '',
-      issueDescription: '',
-      collectedItems: '',
-      status: '',
-      statusId: '',
-      paymentDetails: {
-        repair_cost: '',
-        advance_amount: '',
+  data() {
+    return {
+      reportFromDate: "",
+      customers: [],
+      showReport: false,
+      addCustomerDialog: false,
+      submoduleVisible: false, // To toggle the visibility of the submodule dialog
+      submoduleRows: [], // Stores the rows for the submodule table
+      editCustomerDialogVisible: false, // Flag to control dialog visibility
+      selectedCustomer: null,
+      reportToDate: "",
+      dialog: false,
+      dialogAction: "",
+      isLoading: false,
+      search: '',
+      selectedPaymentStatusId: null,
+      colorMode: null,
+      generateReportHeading: "",
+      reportGenerateDialogBox: false,
+      paymentStatusOptions: [],
+      paymentDetails: [],
+      formValid: false,
+      newCustomer: {
+        customer_id: '',
+        payment_given_date: '',
+        customer_name: '',
+        contact_no: '',
+        alt_contact_no: '',
+        address: '',
+        agreement_from: '',
+        agreement_to: '',
+        document: '',
+        paid_amount: '',
+        monthly_return: '',
+        return_history: '',
         remaining_amount: '',
-        date: '',
-        mode: '',
-
+        Action: '',
       },
-    },
-    defaultItem: {
-      customerId: '',
-      customerName: '',
-      phone: '',
-      email: '',
-      altPhone: '',
-      productType: '',
-      productName: '',
-      model: '',
-      serialNumber: '',
-      date: '',
-      issueDescription: '',
-      collectedItems: '',
-      status: '',
-      statusId: '',
-    },
-    paymentDetails: {
-      repair_cost: '',
-      advance_amount: '',
-      remaining_amount: '',
-      paid_amount: '',
-      status: '',
-      payment_date: '',
-      payment_mode: '',
-      customer_id: '',
-      service_id: '',
-    },
-    paymentModes: [],
-    dealers: [],
-    dealersDialog: false,
-    dealersData: {
-        dealer_id: null,
-        service_id : null,
-        product_description: '',
-        status_id: null,
-        payment_mode : '',
-        payment_status_id : null,
-        amount : '',
-        amount_received_date : '', 
-    },
-    dealersStatus: [],
-  }),
-  computed: {
-    formattedStatusOptions() {
-      return this.service_status;
-    },
-    filteredPaymentStatus() {
-      const hasId3 = this.paymentStatus.some((status) => status.id === 3);
-      return hasId3
-        ? this.paymentStatus.filter((status) => status.id !== 3)
-        : this.paymentStatus;
-    },
-    filteredRecords() {
-      return this.records.filter((record) => {
-        const matchesStatus =
-          this.selectedStatus === null || record.service_status === this.selectedStatus;
-        const matchesSearch =
-          this.search === '' ||
-          record.service_id.toString().includes(this.search) ||
-          record.customer.name.toLowerCase().includes(this.search.toLowerCase()) ||
-          record.product_name.toLowerCase().includes(this.search.toLowerCase());
-        return matchesStatus && matchesSearch;
-      });
-    },
+
+      selectedCustomer: {
+        customer_name: '',
+        contact_no: '',
+        alt_contact_no: '',
+        address: '',
+        agreement_from: '',
+        agreement_to: '',
+        document: '',
+        paid_amount: null,
+        monthly_return: null,
+      },
+
+      headers: [
+        { title: 'Customer ID', value: 'customer_id' },
+        { title: 'Payment Given Date', value: 'payment_given_date' },
+        { title: 'Customer Name', value: 'customer_name' },
+        { title: 'Contact Number', value: 'contact_no' },
+        // { title: 'Alt Contact Number', value: 'alt_contact_no' },
+        // { title: 'Address', value: 'address' },
+        { title: 'Agreement From', value: 'agreement_from' },
+        { title: 'Agreement To', value: 'agreement_to' },
+        // { title: 'Document', value: 'document' },
+        { title: 'Paid Amount', value: 'paid_amount' },
+        { title: 'Monthly Return', value: 'monthly_return' },
+        { title: 'Return History', value: 'return_history' },
+        { title: 'Remaining Amount', value: 'remaining_amount' },
+        { title: 'Payment Status', value: 'payment_status' },
+        { title: 'Action', value: 'action' },
+      ],
+
+      contactNumberRule: [
+        v => v.length === 10 || 'Contact number must be 10 digits.',
+        v => /^\d+$/.test(v) || 'Contact number must only contain digits.'
+      ],
+    }
   },
-  watch: {
-    isExistingCustomer(newVal) {
-      if (!newVal) {
-        this.resetForm();
-      }
-    },
-    'paymentDetails.repair_cost'(newValue) {
-      if (!newValue) {
-        this.paymentDetails.advance_amount = null;
-        this.paymentDetails.remaining_amount = null;
-      } else {
-        this.calculateRemainingAmount();
-      }
+  mounted() {
+    this.getPaymentStatus();
+    this.colorMode = localStorage.getItem('coreui-free-vue-admin-template-theme');
+  },
+  computed: {
+    filteredPaymentDetails() {
+      return this.paymentDetails.filter((item) => {
+        const matchesSearch =
+          !this.search || // No search input means all items match
+          item.Customer_id.toLowerCase().includes(this.search.toLowerCase()) ||
+          item.customer_name.toLowerCase().includes(this.search.toLowerCase()) ||
+          item.payment_given_date.toLowerCase().includes(this.search.toLowerCase()) ||
+          item.product_name.toLowerCase().includes(this.search.toLowerCase()) ||
+          item.payment_mode.toLowerCase().includes(this.search.toLowerCase());
+
+        const matchesPaymentStatus =
+          !this.selectedPaymentStatusId || // No payment status selected means all items match
+          item.payment_status_id === this.selectedPaymentStatusId;
+
+        return matchesSearch && matchesPaymentStatus;
+      });
     },
   },
 
   methods: {
-    handleOutsideClick() {
-      if (this.dialogMode === 'new') {
-        this.resetForm();
-        this.dialog = false;
+
+    openAddCustomerDialog() {
+      this.addCustomerDialog = true;
+      if (!this.newCustomer.payment_given_date) {
+        const currentDate = new Date();
+        this.newCustomer.payment_given_date = currentDate.toISOString().split('T')[0]; // Default to today
       }
     },
-    calculateRemainingAmount() {
-      const total = parseFloat(this.paymentDetails.repair_cost || 0);
-      const advance = parseFloat(this.paymentDetails.advance_amount || 0);
-      this.paymentDetails.remaining_amount = total > advance ? total - advance : 0;
-
-      if (advance > total) {
-        Toastify({
-          text: "Advance payment cannot exceed total amount.",
-          backgroundColor: "red",
-          className: "text-light",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-          close: true,
-        }).showToast();
-        this.paymentDetails.advance_amount = 0;
+    formatDate(date) {
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = ('0' + (d.getMonth() + 1)).slice(-2); // Month is zero-based
+      const day = ('0' + d.getDate()).slice(-2);
+      return `${year}-${month}-${day}`;
+    },
+    validateContactNumber() {
+      if (this.newCustomer.contact_no.length > 10) {
+        this.newCustomer.contact_no = this.newCustomer.contact_no.slice(0, 10); // Trim to 10 digits
       }
     },
-    isPaid(item) {
-      return item.payment_details && item.payment_details[0]?.payment_status.payment_status === 'Paid' && item.service_status === 3;
+    setPaymentGivenDate() {
+      const currentDate = new Date();
+      this.newCustomer.payment_given_date = this.formatDate(currentDate); // Set the formatted current date
+      console.log(this.newCustomer.payment_given_date);
     },
-    formattedServiceStatus(id) {
-      const filteredStatus = this.service_status.find((item) => item.id === id);
-      return filteredStatus ? filteredStatus.status : null;
-    },
-    checkServiceStatusChange(item) {
-      
-    if (
-      item.latest_dealer_detail?.status_id === 1 &&
-      (item.service_status === 3 || item.service_status === 4)
-    ) {
-      // Reset the dropdown to the previous value
-      item.service_status = item.previousServiceStatus || item.service_status;
+    saveCustomer() {
+      // Generate a new customer ID, or you could generate it via an API or other logic
+      const newCustomerWithID = { ...this.newCustomer, payment_status: 'pending', customer_id: Date.now(), return_history: [] };
 
-      // Show error message
+
+      // Add the customer to the customers list
+      this.customers.push(newCustomerWithID);
+
+      // Reset form after saving
+      this.newCustomer = {
+        payment_given_date: '',
+        customer_name: '',
+        contact_no: '',
+        alt_contact_no: '',
+        address: '',
+        agreement_from: '',
+        agreement_to: '',
+        document: '',
+        paid_amount: 0,
+        monthly_return: 0,
+        return_history: '',
+        remaining_amount: 0,
+        payment_status: 'Pending',
+      };
+
+      // Optionally reset form validation status
+      this.formValid = false;
+      console.log(this.customers);
+      this.closeAddCustomerDialog();
+    },
+    closeAddCustomerDialog() {
+      this.addCustomerDialog = false;
+      // Reset the form
+      this.newCustomer = {
+        customer_id: '',
+        payment_given_date: '',
+        customer_name: '',
+        contact_no: '',
+        alt_contact_no: '',
+        address: '',
+        agreement_from: '',
+        agreement_to: '',
+        document: '',
+        paid_amount: '',
+        monthly_return: '',
+        return_history: '',
+      };
+    },
+
+    toggleSubmodule(customer) {
+      this.selectedCustomer = customer;
+      // Load the customer's return history into the submodule rows
+      this.submoduleRows = customer.return_history.length > 0 ? [...customer.return_history] : [{
+        givenDate: '',
+        givenAmount: '',
+        pendingAmount: '',
+        remarks: ''
+      }];
+      this.submoduleVisible = true;
+    },
+
+    // Add a new row to the submodule table
+    addSubmoduleRow() {
+      this.submoduleRows.push({
+        givenDate: '',
+        givenAmount: '',
+        pendingAmount: '',
+        remarks: ''
+      });
+    },
+
+    // Save the submodule data and store it in the submodule itself
+    saveSubmoduleData() {
+      // Update the customer's return_history with the entered data
+      this.selectedCustomer.return_history = [...this.submoduleRows];
+      // Optionally, log the saved data for demonstration
+      console.log('Saved return history for customer:', this.selectedCustomer.customer_id);
+      console.log(this.submoduleRows);
+
+      // Close the submodule dialog
+      this.cancelSubmodule();
+    },
+
+
+    // Cancel and close the submodule table dialog
+    cancelSubmodule() {
+      this.submoduleVisible = false;
+      this.submoduleRows = []; // Reset the rows when canceling
+    },
+
+    async getPaymentStatus() {
+      try {
+        const response = await axios.get('get-payment-status-details');
+        this.paymentStatusOptions = response.data;
+      } catch (error) {
+        // console.log(error);
+      }
+    },
+    async getPaymentDetails() {
+      this.isLoading = true;
+      try {
+        const response = await axios.get('/get-payment-details');
+        this.paymentDetails = response.data;
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
+      }
+    },
+    // Open the edit dialog and pre-fill with the selected customer's data
+    editCustomerDialog(item) {
+      this.selectedCustomer = { ...item }; // Create a copy of the selected customer
+      this.editCustomerDialogVisible = true; // Show the dialog
+    },
+
+    closeEditCustomerDialog() {
+      this.editCustomerDialogVisible = false;
+    },
+    saveCustomerData() {
+      if (this.formValid) {
+        // Update the customer data with the selected data
+        this.updateMainModule(this.selectedCustomer);
+
+        // Close the dialog after saving
+        this.closeEditCustomerDialog();
+      } else {
+        console.log('Form is invalid');
+      }
+    },
+    updateMainModule(updatedCustomer) {
+      // This method updates the customer in the customers array based on the customer_id or any unique identifier
+      const index = this.customers.findIndex(customer => customer.customer_id === updatedCustomer.customer_id);
+
+      if (index !== -1) {
+        // If the customer exists, update their data
+        this.customers[index] = { ...this.customers[index], ...updatedCustomer };
+      } else {
+        // If the customer doesn't exist, add them as a new customer
+        this.customers.push(updatedCustomer);
+      }
+
+      // Optionally, you can also send this updated data to an API if needed
+      this.saveDataToBackend(updatedCustomer);
+    },
+    saveDataToBackend(customerData) {
+      // This is where you would save the customer data to an API or database
+      console.log('Saving customer data:', customerData);
+      setTimeout(() => {
+        console.log('Customer data saved successfully');
+      }, 1000);
+    },
+    formatDate(date) {
+      if (!date) return '';
+      const d = new Date(date);
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+      const year = d.getFullYear();
+      return `${day}-${month}-${year}`;
+    },
+    // This method is triggered when the view button is clicked
+    viewCustomerDetails(item) {
+      // Set the selected customer data
+      this.selectedCustomer = item;
+
+      // Show the report dialog
+      this.showReport = true;
+    },
+
+    // Method to trigger the print functionality for the specific content
+    printContent() {
+      const printContent = document.getElementById('printable-content');
+      const printWindow = window.open('', '', 'height=600,width=800');
+
+      // Add the content to the print window
+      printWindow.document.write('<html><head><title>Customer Details</title></head><body>');
+      printWindow.document.write(printContent.innerHTML);
+      printWindow.document.write('</body></html>');
+
+      // Print the content
+      printWindow.document.close();
+      printWindow.print();
+    },
+
+    getColor(value) {
+      return value == 'Paid' ? 'green' : 'red';
+    },
+    formatDataBasedOnDates(fromDate, toDate,) {
+      const fromDateObj = new Date(fromDate);
+      const toDateObj = new Date(toDate);
+      const filteredData = this.filteredPaymentDetails.filter(paymentDetail => {
+        const paymentDate = new Date(paymentDetail.payment_given_date);
+        return paymentDate >= fromDateObj && paymentDate <= toDateObj;
+      });
+      return filteredData;
+    },
+
+    showToastifyMessage() {
       Toastify({
-        text: "Status cannot be changed because the dealer status is pending.",
+        text: "No data available for the selected dates",
         backgroundColor: "red",
         className: "text-light",
         duration: 3000,
         gravity: "top",
-        position: "right",
-        close: true,
+        position: "right"
       }).showToast();
-      this.fetchServiceProductDetails();
-      return;
-    }
-
-    // Save the current value for future rollback if needed
-    item.previousServiceStatus = item.service_status;
-
-    // Proceed with the status update
-    this.updateServiceStatus(item);
-  },
-
-  async updateServiceStatus(item) {
-    try {
-      const response = await axios.put(`/service-status/${item.id}`, {
-        status_id: item.service_status,
-      });
-      this.fetchServiceProductDetails();
-      Toastify({
-        text: "Status updated successfully.",
-        backgroundColor: "green",
-        className: "text-light",
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        close: true,
-      }).showToast();
-    } catch (error) {
-      this.fetchServiceProductDetails();
-    }
-  },
-
-
-    openNewItemDialog() {
-      this.dialogMode = 'new';
-      this.dialog = true;
-      this.editedItem = { ...this.defaultItem };
     },
-    handleCustomerSelection(value) {
-      if (!value) {
-        this.resetForm();
+    openDialog(actionType) {
+      this.reportFromDate = "";
+      this.reportToDate = "";
+      if (actionType === 'exportExcel') {
+        this.generateReportHeading = 'Export Excel';
       } else {
-        this.populateCustomerDetails(value);
+        this.generateReportHeading = 'Download PDF';
       }
+      this.dialogAction = actionType;
+      this.reportGenerateDialogBox = true;
     },
-    async fetchProductStatus() {
-      try {
-        const response = await axios.get('/fetch-service-status');
-        this.service_status = response.data;
-      } catch (error) {
-      }
-    },
-    async fetchDealersStatus() {
-      try {
-        const response = await axios.get('/fetch-dealers-status');
-        this.dealersStatus = response.data;
-      } catch (error) {
-      }
-    },
-    async fetchDealers() {
-      try {
-        const response = await axios.get("/dealers");
-        this.dealers = response.data;
-      } catch (error) {
-      }
-    },
-    async fetchPaymentModes() {
-      try {
-        const response = await axios.get('/fetch-payment-modes');
-        this.paymentModes = response.data;
-      } catch (error) {
-      }
-    },
-    populateCustomerDetails() {
-      if (this.isExistingCustomer && this.selectedCustomer) {
-        const customer = this.customerDetails.find(
-          (item) => item.id === this.selectedCustomer
-        );
-        if (customer) {
-          this.editedItem.customerName = customer.name;
-          this.editedItem.phone = customer.phone_number;
-          this.editedItem.email = customer.email;
-          this.editedItem.altPhone = customer.alternate_phone_number;
-        }
-      }
-    },
-    async fetchServiceProductDetails() {
-      this.isLoading = true;
-      try {
-        const response = await axios.get('/service-details');
-        this.records = response.data.data;
-        this.isLoading = false;
-      } catch (error) {
-        this.isLoading = false;
-      }
-    },
-    async fetchCustomerDetails() {
-      try {
-        const response = await axios.get('/customers');
-        this.customerDetails = response.data.data;
-      } catch (error) {
-      }
-    },
-    async fetchPaymentStatus() {
-      try {
-        const response = await axios.get('/fetch-payment-status');
-        this.paymentStatus = response.data;
-      } catch (error) {
-      }
-    },
-    async saveItem() {
-      const payload = {
-        customer_name: this.editedItem.customerName,
-        phone: this.editedItem.phone,
-        email: this.editedItem.email,
-        altPhone: this.editedItem.altPhone,
-        productType: this.editedItem.productType,
-        productName: this.editedItem.productName,
-        model: this.editedItem.model,
-        serialNumber: this.editedItem.serialNumber,
-        issueDescription: this.editedItem.issueDescription,
-        date: this.editedItem.date,
-        collectedItems: this.editedItem.collectedItems,
-        status: this.editedItem.statusId,
-        selectedCustomer: this.selectedCustomer,
-      };
-      this.isDisable = true;
-      try {
-        const response = await axios.post('/store-product-service-details', payload);
-        this.closeDialog();
-        this.isDisable = false;
-        Toastify({
-          text: "Data saved successfully.",
-          backgroundColor: "green",
-          className: "text-light",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-        }).showToast();
-        this.fetchServiceProductDetails();
-        this.fetchCustomerDetails();
-      } catch (error) {
-        this.isDisable = false;
-        if (error.response && error.response.status === 422) {
-          const errors = error.response.data.errors;
-          const firstErrorKey = Object.keys(errors)[0];
-          const firstErrorMessage = errors[firstErrorKey][0];
-          Toastify({
-            text: firstErrorMessage,
-            backgroundColor: "red",
-            className: "text-light",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-          }).showToast();
-        } else {
-          Toastify({
-            text: "Failed to save data. Please try again.",
-            backgroundColor: "red",
-            className: "text-light",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-          }).showToast();
-        }
-      }
-    },
-    updateItem() {
-      const payload = {
-        id: this.editedItem.id,
-        product_type: this.editedItem.productType,
-        product_name: this.editedItem.productName,
-        model_number: this.editedItem.model,
-        serial_number: this.editedItem.serialNumber,
-        description: this.editedItem.issueDescription,
-        product_received_date: this.editedItem.date,
-        other_collected_item: this.editedItem.collectedItems,
-        service_status: this.editedItem.statusId,
-      };
-      this.isDisable = true;
-      const url = `/products/${payload.id}`;
-      axios
-        .put(url, payload)
-        .then((response) => {
-          this.isDisable = false;
-          Toastify({
-            text: "Record updated successfully.",
-            backgroundColor: "green",
-            className: "text-light",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-          }).showToast();
-          this.closeDialog();
-          this.fetchServiceProductDetails();
-        })
-        .catch((error) => {
-          this.isDisable = false;
-          if (error.response && error.response.status === 422) {
-            const errors = error.response.data.errors;
-            const firstErrorKey = Object.keys(errors)[0];
-            const firstErrorMessage = errors[firstErrorKey][0];
-            Toastify({
-              text: firstErrorMessage,
-              backgroundColor: "red",
-              className: "text-light",
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-            }).showToast();
-          } else {
-            Toastify({
-              text: "Failed to Update data. Please try again.",
-              backgroundColor: "red",
-              className: "text-light",
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-            }).showToast();
-          }
-        });
-    },
-    openEditDialog(item) {
-      this.resetForm();
-      this.dialogMode = 'edit';
-      this.editedItem = {
-        id: item.id,
-        productType: item.product_type,
-        productName: item.product_name,
-        model: item.model_number,
-        serialNumber: item.serial_number,
-        date: moment(item.product_received_date).format('YYYY-MM-DD'),
-        issueDescription: item.description,
-        collectedItems: item.other_collected_item,
-        statusId: item.service_status,
-      };
-      this.dialog = true;
-    },
-    openViewDialog(item) {
-      this.resetEditedItem();
-      this.editedItem = {
-        customerId: item.customer.id,
-        customerName: item.customer.name,
-        email: item.customer.email,
-        phone: item.customer.phone_number,
-        altPhone: item.customer.alternate_phone_number,
-        productName: item.product_name,
-        productType: item.product_type,
-        serialNumber: item.serial_number,
-        model: item.model_number,
-        collectedItems: item.other_collected_item,
-        issueDescription: item.description,
-        date: item.product_received_date,
-        status: this.formattedServiceStatus(item.service_status),
-        paymentDetails: {
-          repair_cost: item.payment_details[0]?.repair_cost || '',
-          paid_amount: item.payment_details[0]?.paid_amount || '',
-          date: item.payment_details[0]?.payment_date || '',
-          status: item.payment_details[0]?.payment_status.payment_status || '',
-        }
-      }
-      this.viewDialog = true;
-    },
-    resetEditedItem() {
-      this.editedItem = {
-        customerId: '',
-        customerName: '',
-        email: '',
-        phone: '',
-        altPhone: '',
-        productName: '',
-        productType: '',
-        serialNumber: '',
-        model: '',
-        collectedItems: '',
-        issueDescription: '',
-        date: '',
-        status: '',
-        paymentDetails: {
-          amount: '',
-          date: '',
-          status: ''
-        }
-      };
-    },
-    openPaymentDialog(item) {
-      this.paymentDetails = {
-        repair_cost: item.payment_details[0]?.repair_cost || '',
-        remaining_amount: item.payment_details[0]?.remaining_amount || '',
-        advance_amount: item.payment_details[0]?.advance_amount || '',
-        paid_amount: item.payment_details[0]?.paid_amount || '',
-        status: item.payment_details[0]?.payment_status.id || '',
-        payment_date: item.payment_details[0]?.payment_date
-          ? moment(item.payment_details[0].payment_date).format('YYYY-MM-DD')
-          : '',
-        payment_mode: item.payment_details[0]?.payment_mode || '',
-        customer_id: item.customer_id || null,
-        service_id: item.id || null,
-      };
-      this.isPaymentReadOnly = item.payment_details[0]?.payment_status?.id === 2;
-      this.paymentDialog = true;
-    },
-    openDealersDialog(item) {
-      this.dealersData = {
-        dealer_id: item.latest_dealer_detail?.dealer_id || null,
-        product_description: item.latest_dealer_detail?.product_description || '',
-        status_id: item.latest_dealer_detail?.status_id || null,
-        amount: item.latest_dealer_detail?.amount || '',
-        amount_received_date: item.latest_dealer_detail?.amount_received_date || '',
-        payment_status_id: item.latest_dealer_detail?.payment_status_id || null,
-        payment_mode: item.latest_dealer_detail?.payment_mode || null,
-        service_id: item.id || null,
-      };
-      this.dealersDialog = true;
-      this.disableDealer = item.latest_dealer_detail?.dealer_id ? true : false;
-      this.isDealersReadOnly= item.payment_details && item.service_status === 3;
-    },
-    closeDealersDialog(){
-      this.dealersDialog =false;
-    },
+
     closeDialog() {
       this.dialog = false;
-      this.resetForm();
     },
-    resetForm() {
-      this.isExistingCustomer = false;
-      this.selectedCustomer = null;
-      this.editedItem = {
-        customerName: '',
-        phone: '',
-        email: '',
-        altPhone: '',
-        productType: '',
-        productName: '',
-        model: '',
-        serialNumber: '',
-        date: '',
-        issueDescription: '',
-        collectedItems: '',
-        status: '',
-        statusId: '',
-      };
-    },
-    closePaymentDialog() {
-      this.paymentDialog = false;
-    },
-    async savePaymentDetails() {
-      if (this.paymentDetails.status === 2) {
-      // Full payment
-      this.paymentDetails.paid_amount = this.paymentDetails.repair_cost;
-      this.paymentDetails.remaining_amount = 0; // No remaining amount
-    } else if (this.paymentDetails.status === 1) {
-      // Payment not started
-      this.paymentDetails.paid_amount = null;
-      this.paymentDetails.remaining_amount = this.paymentDetails.repair_cost; // Entire amount remaining
-    } else if (this.paymentDetails.status === 3 || this.paymentDetails.status === 4) {
-      // Partial or advance payment
-      if (!this.paymentDetails.advance_amount) {
-        this.paymentDetails.advance_amount = 0; // Default to 0 if not set
+    generateReport() {
+      if (this.dialogAction === 'exportExcel') {
+        if (this.reportFromDate != "" && this.reportToDate != "") {
+          this.exportExcel();
+        }
+      } else if (this.dialogAction === 'downloadPdf') {
+        if (this.reportFromDate != "" && this.reportToDate != "") {
+          this.downloadPdf();
+        }
       }
-      this.paymentDetails.paid_amount = this.paymentDetails.advance_amount;
+      this.closeDialog();
     }
-      const payload = {
-        repair_cost: this.paymentDetails.repair_cost,
-        paid_amount: this.paymentDetails.paid_amount,
-        advance_amount: this.paymentDetails.advance_amount,
-        remaining_amount: this.paymentDetails.remaining_amount,
-        payment_status: this.paymentDetails.status,
-        payment_date: this.paymentDetails.payment_date,
-        payment_mode: this.paymentDetails.payment_mode,
-        product_service_id: this.paymentDetails.service_id,
-        customer_id: this.paymentDetails.customer_id,
-      };
-      try {
-        this.isDisable = true;
-        const response = await axios.get('/payment-details', {
-          params: {
-            service_id: this.paymentDetails.service_id,
-            customer_id: this.paymentDetails.customer_id,
-          },
-        });
-
-        if (response.data.exists && response.data.data) {
-          this.isDisable = true;
-          try {
-            const updateResponse = await axios.put(
-              `/payment-details/${response.data.data.id}`,
-              payload
-            );
-            this.fetchServiceProductDetails();
-            this.closePaymentDialog();
-            this.isDisable = false;
-            Toastify({
-              text: "data updated successfully",
-              backgroundColor: "green",
-              className: "text-light",
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-            }).showToast();
-          } catch (error) {
-            this.isDisable = false;
-            if (error.response && error.response.status === 422) {
-              const errors = error.response.data.errors;
-              const firstErrorKey = Object.keys(errors)[0];
-              const firstErrorMessage = errors[firstErrorKey][0];
-              Toastify({
-                text: firstErrorMessage,
-                backgroundColor: "red",
-                className: "text-light",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-              }).showToast();
-            } else {
-              Toastify({
-                text: "Failed to Update data. Please try again.",
-                backgroundColor: "red",
-                className: "text-light",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-              }).showToast();
-            }
-          }
-        } else {
-          this.isDisable = true;
-          try {
-            const createResponse = await axios.post('/payment-details', payload);
-            this.fetchServiceProductDetails();
-            this.closePaymentDialog();
-            this.isDisable = false;
-            Toastify({
-              text: "data saved successfully",
-              backgroundColor: "green",
-              className: "text-light",
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-            }).showToast();
-          } catch (error) {
-            this.isDisable = false;
-            if (error.response && error.response.status === 422) {
-              const errors = error.response.data.errors;
-              const firstErrorKey = Object.keys(errors)[0];
-              const firstErrorMessage = errors[firstErrorKey][0];
-              Toastify({
-                text: firstErrorMessage,
-                backgroundColor: "red",
-                className: "text-light",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-              }).showToast();
-            } else {
-              Toastify({
-                text: "Failed to save data. Please try again.",
-                backgroundColor: "red",
-                className: "text-light",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-              }).showToast();
-            }
-          }
-        }
-      } catch (error) {
-        this.isDisable = false;
-        Toastify({
-          text: "Something went wrong.",
-          backgroundColor: "red",
-          className: "text-light",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-        }).showToast();
-      }
-    },
-    async saveDealersDetails() {
-      this.disableDealerButton = true;
-      try {
-        // Check if the dealer details already exist
-        const response = await axios.get('/dealers-details', {
-          params: {
-            service_id: this.dealersData.service_id,
-            dealer_id: this.dealersData.dealer_id,
-          },
-        });
-
-        // If the dealer exists, update the record
-        if (response.data.exists && response.data.data) {
-          // Set the ID of the existing dealer to update
-          this.dealersData.id = response.data.data.id;
-
-          // Proceed to update
-          await this.updateDealersDetails();
-        } else {
-          // Dealer does not exist, create a new record
-          await this.createDealersDetails();
-        }
-        this.disableDealerButton = false;
-      } catch (error) {
-        Toastify({
-          text: "Something went wrong.",
-          backgroundColor: "red",
-          className: "text-light",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-        }).showToast();
-      }
-    },
-
-    // Create dealer details method
-    async createDealersDetails() {
-      // this.disableDealerButton = true;
-      try {
-        const createResponse = await axios.post('/dealers-details', this.dealersData);
-
-        // Show success message
-        Toastify({
-          text: "Dealer details saved successfully!",
-          backgroundColor: "green",
-          className: "text-light",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-        }).showToast();
-
-        this.closeDealersDialog();
-        this.fetchServiceProductDetails();
-      } catch (error) {
-        if (error.response && error.response.data) {
-                         const responseError = error.response.data;
-                         // If validation errors exist, display the first error message
-                         if (responseError.errors) {
-                              const firstErrorKey = Object.keys(responseError.errors)[0];
-                              Toastify({
-                                   text: responseError.errors[firstErrorKey][0],
-                                   backgroundColor: "red",
-                                   className: "text-light",
-                                   duration: 3000,
-                                   gravity: "top",
-                                   position: "right",
-                                   close: true,
-                              }).showToast();
-                         } else if (responseError.message) {
-                              // General error message
-                              Toastify({
-                                   text: responseError.message,
-                                   backgroundColor: "red",
-                                   className: "text-light",
-                                   duration: 3000,
-                                   gravity: "top",
-                                   position: "right",
-                                   close: true,
-                              }).showToast();
-                         } else {
-                              // Fallback for unexpected errors
-                              Toastify({
-                                   text: "An unexpected error occurred!",
-                                   backgroundColor: "red",
-                                   className: "text-light",
-                                   duration: 3000,
-                                   gravity: "top",
-                                   position: "right",
-                                   close: true,
-                              }).showToast();
-                         }
-                    } else {
-                         // Fallback for network or server errors
-                         Toastify({
-                              text: "Unable to connect to the server.",
-                              backgroundColor: "red",
-                              className: "text-light",
-                              duration: 3000,
-                              gravity: "top",
-                              position: "right",
-                              close: true,
-                         }).showToast();
-                    }
-      }
-    },
-
-    // Update dealer details method
-    async updateDealersDetails() {
-      try {
-        const updateResponse = await axios.put(`/dealers-details/${this.dealersData.id}`, this.dealersData);
-
-        // Show success message
-        Toastify({
-          text: "Dealer details updated successfully!",
-          backgroundColor: "green",
-          className: "text-light",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-        }).showToast();
-
-        this.closeDealersDialog();
-        this.fetchServiceProductDetails();
-      } catch (error) {
-        if (error.response && error.response.data) {
-                         const responseError = error.response.data;
-
-                         // If validation errors exist, display the first error message
-                         if (responseError.errors) {
-                              const firstErrorKey = Object.keys(responseError.errors)[0];
-                              Toastify({
-                                   text: responseError.errors[firstErrorKey][0],
-                                   backgroundColor: "red",
-                                   className: "text-light",
-                                   duration: 3000,
-                                   gravity: "top",
-                                   position: "right",
-                                   close: true,
-                              }).showToast();
-                         } else if (responseError.message) {
-                              // General error message
-                              Toastify({
-                                   text: responseError.message,
-                                   backgroundColor: "red",
-                                   className: "text-light",
-                                   duration: 3000,
-                                   gravity: "top",
-                                   position: "right",
-                                   close: true,
-                              }).showToast();
-                         } else {
-                              // Fallback for unexpected errors
-                              Toastify({
-                                   text: "An unexpected error occurred!",
-                                   backgroundColor: "red",
-                                   className: "text-light",
-                                   duration: 3000,
-                                   gravity: "top",
-                                   position: "right",
-                                   close: true,
-                              }).showToast();
-                         }
-                    } else {
-                         // Fallback for network or server errors
-                         Toastify({
-                              text: "Unable to connect to the server.",
-                              backgroundColor: "red",
-                              className: "text-light",
-                              duration: 3000,
-                              gravity: "top",
-                              position: "right",
-                              close: true,
-                         }).showToast();
-                    }
-      }
-    },
-    
-
   },
-};
+}
 </script>
 
 <style scoped>
-.text-danger {
-  color: red;
-}
+/* div {
+  white-space: nowrap;
+} */
 
-.v-card-title {
-  font-weight: bold;
-}
-
-.text-body-2 {
-  font-size: 12px;
-  /* Smaller font size */
-}
-
-.text-caption {
-  font-size: 10px;
-  /* Extra small font size for less prominent text */
-}
-
-.read-only-column {
-  pointer-events: none;
-  /* Disable pointer interactions */
-  background-color: #f9f9f9;
-  /* Subtle background for clarity */
-}
-
-.v-text-field[readonly] .v-input__control,
-.v-textarea[readonly] .v-input__control {
-  cursor: default;
-  /* Indicate no interaction allowed */
-}
-
-.v-card-title {
-  color: #3F51B5;
-}
-
-.v-col {
-  padding-left: 16px;
-  /* Add space to the left */
-  padding-right: 16px;
-  /* Add space to the right */
-}
-
-.v-row {
-  margin-bottom: 16px;
-  /* Add space between rows */
-}
-
-.read-only-column {
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  /* Optional for better design */
-}
-
-.toast-close {
-  color: white;
-  font-size: 16px;
-  margin-left: 10px;
-  cursor: pointer;
-}
-.full-width {
+.v-simple-table {
   width: 100%;
-}
-
-@media (max-width: 600px) {
-  .full-width {
-    width: calc(100% - 16px); /* Adjust padding if needed */
-  }
+  width: 80%;
+  max-width: 900px;
 }
 </style>
+
+
