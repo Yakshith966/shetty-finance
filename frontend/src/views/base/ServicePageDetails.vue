@@ -19,7 +19,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <template>
+      
+      <!-- <template>
         <v-toolbar flat>
           <v-toolbar-title>Customer Details</v-toolbar-title>
           <v-btn color="primary" @click="openAddCustomerDialog">Add Customer</v-btn>
@@ -33,6 +34,12 @@
                 <v-form ref="form" v-model="formValid">
                   <v-text-field label="Payment Given Date" v-model="newCustomer.payment_given_date" outlined type="date"
                     :value="newCustomer.payment_given_date"></v-text-field>
+                  <v-select
+                    label="Branch"
+                    v-model="newCustomer.branch"
+                    :items="branchOptions"
+                    outlined
+                  ></v-select>  
                   <v-text-field label="Customer Name" v-model="newCustomer.customer_name" outlined>
                   </v-text-field>
                   <v-text-field label="Contact Number" v-model="newCustomer.contact_no" outlined
@@ -62,7 +69,7 @@
             </v-card>
           </v-dialog>
         </v-toolbar>
-      </template>
+      </template> -->
       <v-data-table :headers="headers" v-model:search="search" :items="customers">
         <template v-slot:top>
           <v-toolbar flat>
@@ -78,6 +85,12 @@
                   <v-form ref="form" v-model="formValid">
                     <v-text-field label="Payment Given Date" v-model="newCustomer.payment_given_date" outlined
                       type="date" :value="newCustomer.payment_given_date"></v-text-field>
+                    <v-select
+                      label="Branch"
+                      v-model="newCustomer.branch"
+                      :items="branchOptions"
+                      outlined
+                    ></v-select>
                     <v-text-field label="Customer Name" v-model="newCustomer.customer_name" outlined>
                     </v-text-field>
                     <v-text-field label="Contact Number" v-model="newCustomer.contact_no" outlined
@@ -137,6 +150,7 @@
           <tr v-else-if="items.length > 0" v-for="(item, index) in customers" :key="index">
             <td>{{ item.customer_id }}</td>
             <td>{{ item.payment_given_date || '-' }}</td>
+            <!-- <td>{{ item.branch || '-' }}</td> -->
             <td>{{ item.customer_name || '-' }}</td>
             <td>{{ item.contact_no || '-' }}</td>
             <!-- <td>{{ item.alt_contact_no || '-' }}</td> -->
@@ -147,7 +161,7 @@
             <td>{{ item.paid_amount || '-' }}</td>
             <td>{{ item.monthly_return || '-' }}</td>
             <td>
-              <v-btn icon @click="toggleSubmodule(item)"><v-icon>mdi-credit-card</v-icon></v-btn>
+              <v-btn icon @click="toggleSubmodule(item, index)"><v-icon>mdi-credit-card</v-icon></v-btn>
             </td>
             <td>{{ item.remaining_amount || '-' }}</td>
             <td>
@@ -187,11 +201,19 @@
               <tbody>
                 <tr v-for="(row, rowIndex) in submoduleRows" :key="rowIndex">
                   <td><v-text-field v-model="row.givenDate" type="date" required></v-text-field></td>
-                  <td><v-text-field v-model="row.givenAmount" type="number" required></v-text-field></td>
+                  <td><v-text-field v-model="row.givenAmount" type="number" required @input="updateTotal"></v-text-field></td>
                   <td><v-text-field v-model="row.pendingAmount" type="number" required></v-text-field></td> 
                   <td><v-textarea v-model="row.remarks" outlined rows="1" autogrow></v-textarea></td>
                 </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="1" class="text-right"><strong>Total:</strong></td>
+                  <td colspan="3">
+                    <strong>{{ totalGivenAmount }}</strong>
+                  </td>
+                </tr>
+              </tfoot>
             </v-simple-table>
             <v-btn @click="addSubmoduleRow" color="primary">Add Row</v-btn>
           </v-card-text>
@@ -211,6 +233,12 @@
 
           <v-card-text>
             <v-form ref="editForm" v-model="formValid">
+              <v-select
+                label="Branch"
+                v-model="selectedCustomer.branch"
+                :items="branchOptions"
+                outlined
+              ></v-select>
               <v-text-field label="Customer Name" v-model="selectedCustomer.customer_name" outlined></v-text-field>
               <v-text-field label="Contact Number" v-model="selectedCustomer.contact_no" outlined maxlength="10"
                 type="tel"></v-text-field>
@@ -248,6 +276,9 @@
             <v-row>
               <v-col cols="12" sm="6">
                 <div><strong>Customer ID:</strong> {{ selectedCustomer.customer_id }}</div>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <div><strong>Branch:</strong> {{ selectedCustomer.branch }}</div>
               </v-col>
             </v-row>
 
@@ -309,12 +340,17 @@ export default {
     return {
       reportFromDate: "",
       customers: [],
+      picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      branchOptions: ["Test1", "Test2"],
       showReport: false,
       addCustomerDialog: false,
       submoduleVisible: false, // To toggle the visibility of the submodule dialog
-      submoduleRows: [], // Stores the rows for the submodule table
+      submoduleRows: [
+      { givenDate: '', givenAmount: 0, pendingAmount: 0, remarks: '' },], // Stores the rows for the submodule table
+      totalGivenAmount: 0, // To store the total of the "Given Amount"
       editCustomerDialogVisible: false, // Flag to control dialog visibility
       selectedCustomer: null,
+      // selectedCustomerIndex: null,
       reportToDate: "",
       dialog: false,
       dialogAction: "",
@@ -330,6 +366,7 @@ export default {
       newCustomer: {
         customer_id: '',
         payment_given_date: '',
+        branch: '',
         customer_name: '',
         contact_no: '',
         alt_contact_no: '',
@@ -345,6 +382,8 @@ export default {
       },
 
       selectedCustomer: {
+        payment_given_date: '',
+        branch: '',
         customer_name: '',
         contact_no: '',
         alt_contact_no: '',
@@ -359,6 +398,7 @@ export default {
       headers: [
         { title: 'Customer ID', value: 'customer_id' },
         { title: 'Payment Given Date', value: 'payment_given_date' },
+        // { title: 'Branch', value: 'branch'},
         { title: 'Customer Name', value: 'customer_name' },
         { title: 'Contact Number', value: 'contact_no' },
         // { title: 'Alt Contact Number', value: 'alt_contact_no' },
@@ -441,6 +481,7 @@ export default {
       // Reset form after saving
       this.newCustomer = {
         payment_given_date: '',
+        branch: '',
         customer_name: '',
         contact_no: '',
         alt_contact_no: '',
@@ -466,6 +507,7 @@ export default {
       this.newCustomer = {
         customer_id: '',
         payment_given_date: '',
+        branch: '',
         customer_name: '',
         contact_no: '',
         alt_contact_no: '',
@@ -479,8 +521,9 @@ export default {
       };
     },
 
-    toggleSubmodule(customer) {
+    toggleSubmodule(customer, index) {
       this.selectedCustomer = customer;
+      // this.selectedCustomerIndex = index;
       // Load the customer's return history into the submodule rows
       this.submoduleRows = customer.return_history.length > 0 ? [...customer.return_history] : [{
         givenDate: '',
@@ -488,7 +531,9 @@ export default {
         pendingAmount: '',
         remarks: ''
       }];
+      
       this.submoduleVisible = true;
+
     },
 
     // Add a new row to the submodule table
@@ -500,16 +545,29 @@ export default {
         remarks: ''
       });
     },
+    updateTotal() {
+      // console.log(this.submoduleRows);
+      this.totalGivenAmount = this.submoduleRows.reduce((total, row) => {
+        return total + (parseFloat(row.givenAmount) || 0);
+      }, 0);
+      // Update the remaining amount in the main module
+      if (this.selectedCustomer !== null) {
+        
+        const paidAmount = parseFloat(this.selectedCustomer.paid_amount) || 0;
+        this.selectedCustomer.remaining_amount = paidAmount - this.totalGivenAmount;
+      }
+      this.updatePaymentStatus();
+    },
 
     // Save the submodule data and store it in the submodule itself
     saveSubmoduleData() {
+      this.updateTotal();
       // Update the customer's return_history with the entered data
       this.selectedCustomer.return_history = [...this.submoduleRows];
       // Optionally, log the saved data for demonstration
+      console.log(this.selectedCustomer);
       console.log('Saved return history for customer:', this.selectedCustomer.customer_id);
       console.log(this.submoduleRows);
-
-      // Close the submodule dialog
       this.cancelSubmodule();
     },
 
@@ -517,7 +575,8 @@ export default {
     // Cancel and close the submodule table dialog
     cancelSubmodule() {
       this.submoduleVisible = false;
-      this.submoduleRows = []; // Reset the rows when canceling
+      // this.submoduleRows = [{ givenDate: '', givenAmount: 0, pendingAmount: 0, remarks: '' }]; // Reset the rows when canceling
+      this.totalGivenAmount = 0;
     },
 
     async getPaymentStatus() {
@@ -528,16 +587,31 @@ export default {
         // console.log(error);
       }
     },
-    async getPaymentDetails() {
-      this.isLoading = true;
-      try {
-        const response = await axios.get('/get-payment-details');
-        this.paymentDetails = response.data;
-        this.isLoading = false;
-      } catch (error) {
-        this.isLoading = false;
+
+    updatePaymentStatus() {
+      if (this.selectedCustomer !== null) {
+        const customer = this.selectedCustomer;
+        // Check if any row in the submodule satisfies the conditions
+        const isPaymentDone = this.submoduleRows.some((row) => {
+          const givenDate = new Date(row.givenDate);
+          const currentMonth = new Date().getMonth();
+          const currentYear = new Date().getFullYear();
+
+          // Condition 1: Given Date is in the current month
+          const isCurrentMonth =
+            givenDate.getMonth() === currentMonth && givenDate.getFullYear() === currentYear;
+
+          // Condition 2: Given Amount equals Monthly Return
+          const isMatchingAmount = parseFloat(row.givenAmount) === parseFloat(customer.monthly_return);
+
+          return isCurrentMonth && isMatchingAmount;
+        });
+
+        // Update payment status
+        customer.payment_status = isPaymentDone ? "Paid" : "Pending";
       }
     },
+
     // Open the edit dialog and pre-fill with the selected customer's data
     editCustomerDialog(item) {
       this.selectedCustomer = { ...item }; // Create a copy of the selected customer
@@ -662,6 +736,15 @@ export default {
       }
       this.closeDialog();
     }
+  },
+  watch: {
+    // Recalculate total whenever submoduleRows changes
+    submoduleRows: {
+      handler() {
+        this.updateTotal();
+      },
+      deep: true,
+    },
   },
 }
 </script>
