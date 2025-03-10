@@ -182,7 +182,7 @@
         </template>
       </v-data-table>
 
-      <v-dialog v-model="submoduleVisible" max-width="800px">
+      <v-dialog v-model="submoduleVisible" max-width="1000px">
         <v-card>
           <v-card-title>
             <span class="headline">Return History for {{ selectedCustomer.customer_name }}</span>
@@ -195,6 +195,7 @@
                   <th>Given Date</th>
                   <th>Given Amount</th>
                   <th>Pending Amount</th>
+                  <th>Penalty</th>
                   <th>Remarks</th>
                 </tr>
               </thead>
@@ -202,7 +203,8 @@
                 <tr v-for="(row, rowIndex) in submoduleRows" :key="rowIndex">
                   <td><v-text-field v-model="row.givenDate" type="date" required></v-text-field></td>
                   <td><v-text-field v-model="row.givenAmount" type="number" required @input="updateTotal"></v-text-field></td>
-                  <td><v-text-field v-model="row.pendingAmount" type="number" required></v-text-field></td> 
+                  <td><v-text-field v-model="row.pendingAmount" type="number" required></v-text-field></td>
+                  <td><v-text-field v-model="row.penalty" type="number" required></v-text-field></td> 
                   <td><v-textarea v-model="row.remarks" outlined rows="1" autogrow></v-textarea></td>
                 </tr>
               </tbody>
@@ -346,7 +348,7 @@ export default {
       addCustomerDialog: false,
       submoduleVisible: false, // To toggle the visibility of the submodule dialog
       submoduleRows: [
-      { givenDate: '', givenAmount: 0, pendingAmount: 0, remarks: '' },], // Stores the rows for the submodule table
+      { givenDate: '', givenAmount: 0, pendingAmount: 0,penalty: 0, remarks: '' },], // Stores the rows for the submodule table
       totalGivenAmount: 0, // To store the total of the "Given Amount"
       editCustomerDialogVisible: false, // Flag to control dialog visibility
       selectedCustomer: null,
@@ -520,31 +522,135 @@ export default {
         return_history: '',
       };
     },
-
     toggleSubmodule(customer, index) {
-      this.selectedCustomer = customer;
-      // this.selectedCustomerIndex = index;
-      // Load the customer's return history into the submodule rows
-      this.submoduleRows = customer.return_history.length > 0 ? [...customer.return_history] : [{
-        givenDate: '',
-        givenAmount: '',
-        pendingAmount: '',
-        remarks: ''
-      }];
+  this.selectedCustomer = customer;
+  this.submoduleRows =
+    customer.return_history.length > 0
+      ? [...customer.return_history]
+      : [
+          {
+            givenDate: '',
+            givenAmount: '',
+            pendingAmount: '',
+            penalty: '',
+            remarks: '',
+          },
+        ];
+
+  // Validate previous month's row before allowing edits
+  for (let i = 1; i < this.submoduleRows.length; i++) {
+    const prevRow = this.submoduleRows[i - 1];
+    const prevRowDate = new Date(prevRow.givenDate);
+
+    if (!prevRow.givenAmount || parseFloat(prevRow.givenAmount) === 0) {
+      this.showBlockingMessage(
+        `The given amount for the previous month (row ${i}) must be filled before updating the current month's row.`
+      );
+      return;
+    }
+  }
+
+  this.submoduleVisible = true;
+},
+
+
+    // toggleSubmodule(customer, index) {
+    //   this.selectedCustomer = customer;
+    //   // this.selectedCustomerIndex = index;
+    //   // Load the customer's return history into the submodule rows
+    //   this.submoduleRows = customer.return_history.length > 0 ? [...customer.return_history] : [{
+    //     givenDate: '',
+    //     givenAmount: '',
+    //     pendingAmount: '',
+    //     penalty:'',
+    //     remarks: ''
+    //   }];
       
-      this.submoduleVisible = true;
+    //   this.submoduleVisible = true;
 
-    },
-
-    // Add a new row to the submodule table
+    // },
     addSubmoduleRow() {
-      this.submoduleRows.push({
-        givenDate: '',
-        givenAmount: '',
-        pendingAmount: '',
-        remarks: ''
-      });
-    },
+  if (this.submoduleRows.length === 0) {
+    this.showBlockingMessage("No rows available. Please add a row for the previous month first.");
+    return;
+  }
+
+  const lastRow = this.submoduleRows[this.submoduleRows.length - 1];
+  const lastGivenDate = new Date(lastRow.givenDate);
+
+  if (isNaN(lastGivenDate)) {
+    this.showBlockingMessage("The last row must have a valid date before adding a new one.");
+    return;
+  }
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+
+  const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+  const previousMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+  // Ensure the last row corresponds to the previous month
+  if (
+    !(lastGivenDate.getMonth() === previousMonth && lastGivenDate.getFullYear() === previousMonthYear)
+  ) {
+    this.showBlockingMessage(
+      "The last row does not correspond to the previous month. Please ensure the previous month's entry is added first."
+    );
+    return;
+  }
+
+  // Ensure the `givenAmount` for the previous month is filled
+  if (!lastRow.givenAmount || parseFloat(lastRow.givenAmount) === 0) {
+    this.showBlockingMessage("Please fill the given amount for the previous month before adding a new row.");
+    return;
+  }
+
+  // Add the new row
+  this.submoduleRows.push({
+    givenDate: '',
+    givenAmount: '',
+    pendingAmount: '',
+    penalty: '',
+    remarks: '',
+  });
+
+  this.showSuccessMessage("New row added successfully.");
+},
+showBlockingMessage(message) {
+  Toastify({
+    text: message,
+    duration: 3000,
+    close: true,
+    gravity: "top",
+    position: "right",
+    backgroundColor: "#f44336", // Red color for blocking message
+  }).showToast();
+},
+
+showSuccessMessage(message) {
+  Toastify({
+    text: message,
+    duration: 3000,
+    close: true,
+    gravity: "top",
+    position: "right",
+    backgroundColor: "#4CAF50", // Green color for success
+  }).showToast();
+},
+
+
+
+    // // Add a new row to the submodule table
+    // addSubmoduleRow() {
+    //   this.submoduleRows.push({
+    //     givenDate: '',
+    //     givenAmount: '',
+    //     pendingAmount: '',
+    //     penalty:'',
+    //     remarks: ''
+    //   });
+    // },
     updateTotal() {
       // console.log(this.submoduleRows);
       this.totalGivenAmount = this.submoduleRows.reduce((total, row) => {
@@ -591,26 +697,62 @@ export default {
     updatePaymentStatus() {
       if (this.selectedCustomer !== null) {
         const customer = this.selectedCustomer;
+
         // Check if any row in the submodule satisfies the conditions
         const isPaymentDone = this.submoduleRows.some((row) => {
           const givenDate = new Date(row.givenDate);
-          const currentMonth = new Date().getMonth();
-          const currentYear = new Date().getFullYear();
+          const currentDate = new Date();
+          const currentMonth = currentDate.getMonth();
+          const currentYear = currentDate.getFullYear();
 
-          // Condition 1: Given Date is in the current month
+          // Calculate previous month and year
+          const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+          const previousMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+          // Condition 1: Given Date is in the current month or previous month
           const isCurrentMonth =
             givenDate.getMonth() === currentMonth && givenDate.getFullYear() === currentYear;
+
+          const isPreviousMonth =
+            givenDate.getMonth() === previousMonth && givenDate.getFullYear() === previousMonthYear;
+
+          const isValidMonth = isCurrentMonth || isPreviousMonth;
 
           // Condition 2: Given Amount equals Monthly Return
           const isMatchingAmount = parseFloat(row.givenAmount) === parseFloat(customer.monthly_return);
 
-          return isCurrentMonth && isMatchingAmount;
+          return isValidMonth && isMatchingAmount;
         });
 
         // Update payment status
         customer.payment_status = isPaymentDone ? "Paid" : "Pending";
       }
     },
+
+
+    // updatePaymentStatus() {
+    //   if (this.selectedCustomer !== null) {
+    //     const customer = this.selectedCustomer;
+    //     // Check if any row in the submodule satisfies the conditions
+    //     const isPaymentDone = this.submoduleRows.some((row) => {
+    //       const givenDate = new Date(row.givenDate);
+    //       const currentMonth = new Date().getMonth();
+    //       const currentYear = new Date().getFullYear();
+
+    //       // Condition 1: Given Date is in the current month
+    //       const isCurrentMonth =
+    //         givenDate.getMonth() === currentMonth && givenDate.getFullYear() === currentYear;
+
+    //       // Condition 2: Given Amount equals Monthly Return
+    //       const isMatchingAmount = parseFloat(row.givenAmount) === parseFloat(customer.monthly_return);
+
+    //       return isCurrentMonth && isMatchingAmount;
+    //     });
+
+    //     // Update payment status
+    //     customer.payment_status = isPaymentDone ? "Paid" : "Pending";
+    //   }
+    // },
 
     // Open the edit dialog and pre-fill with the selected customer's data
     editCustomerDialog(item) {

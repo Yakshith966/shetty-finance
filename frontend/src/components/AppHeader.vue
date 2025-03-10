@@ -17,29 +17,6 @@ const month = ref({
   year: new Date().getFullYear()
 });
 
-const selectedMonthYear = ref(`${new Date().toLocaleString('default', { month: 'short' }).toUpperCase()}/${new Date().getFullYear()}`) // Default to current month/year
-
-// Generate Month/Year Options
-const months = [
-  'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-  'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
-]
-const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i) // Generate last 10 years
-const monthYearOptions = computed(() => {
-  const options = []
-  years.forEach((year) => {
-    months.forEach((month) => {
-      options.push(`${month}/${year}`)
-    })
-  })
-  return options
-})
-
-const handleMonthYearChange = () => {
-  console.log('Selected Month/Year:', selectedMonthYear.value)
-  // Use this value globally
-}
-
 onMounted(() => {
   document.addEventListener('scroll', () => {
     if (document.documentElement.scrollTop > 0) {
@@ -59,19 +36,11 @@ onMounted(() => {
       </CHeaderToggler>
       <CHeaderNav class="d-none d-md-flex">
         <CNavItem>
-          <CNavLink href="/dashboard"> S Finance </CNavLink>
+          <CNavLink href="/dashboard">S FINANCE </CNavLink>
         </CNavItem>
       
       </CHeaderNav>
       <CHeaderNav class="ms-auto">
-        <!-- Combined Month/Year Selector -->
-        <!-- <div class="d-flex align-items-center me-4">
-          <CFormSelect v-model="selectedMonthYear"  @change="handleMonthYearChange" class="w-auto">
-            <option v-for="option in monthYearOptions" :key="option" :value="option">
-              {{ option }}
-            </option>
-          </CFormSelect>
-        </div> -->
         <VueDatePicker v-model="month" month-picker />
       </CHeaderNav>
       <CHeaderNav>

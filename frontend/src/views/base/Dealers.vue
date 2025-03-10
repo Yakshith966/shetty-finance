@@ -22,7 +22,6 @@
                          <CSpinner color="primary" />
                     </td>
                </tr>
-
                <!-- Display Items if Available -->
                <tr v-else-if="items.length > 0" v-for="(item, index) in items" :key="index">
                     <td>{{ index + 1 }}</td> <!-- Index column -->

@@ -21,7 +21,7 @@ const sidebar = useSidebarStore()
     <CSidebarHeader class="border-bottom">
       <RouterLink custom to="/dashboard" v-slot="{ href, navigate }">
         <CSidebarBrand v-bind="$attrs" as="a" :href="href" @click="navigate" style="text-decoration: none !important; margin-top: 10px;">
-          <h5><span style="color: orange; font-size: 25px;">ASSET</span> <span style="font-size: 18px; padding-bottom: 20px;">MANAGEMENT</span></h5>
+          <h5><span style="color: orange; font-size: 25px;">S</span> <span style="font-size: 18px; padding-bottom: 20px;">FINANCE</span></h5>
           <CIcon custom-class-name="sidebar-brand-narrow" :icon="sygnet" :height="32" />
         </CSidebarBrand>
       </RouterLink>

@@ -1,241 +1,319 @@
 <template>
-
   <div>
-    <v-data-table :headers="headers" :items="storedrecords" item-value="id" class="elevation-1" :search="searchQuery">
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>Customer Details</v-toolbar-title>
-
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-
-        </v-toolbar>
-        <v-card-title class="d-flex align-center pe-2" v-if="!isLoading">
-          <v-btn color="primary" @click="exportCustomerDetails">
-            Export to Excel
-            <v-icon right>mdi-download</v-icon>
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-spacer></v-spacer>
-          <v-text-field v-model="searchQuery" label="Search" prepend-inner-icon="mdi-magnify" outlined density="compact"
-            variant="solo-filled" flat hide-details single-line></v-text-field>
-        </v-card-title>
-      </template>
-
-      <!-- Loading State -->
-      <template v-slot:body="{ items }">
-        <tr v-if="isLoading">
-          <td :colspan="headers.length" class="text-center">
-            <v-progress-circular indeterminate color="primary" />
-          </td>
-        </tr>
-        <tr v-else-if="items.length > 0" v-for="(item, index) in items" :key="index">
-          <td>{{ index + 1 }}</td>
-          <td>{{ item.name }}</td>
-          <td>{{ item.phone_number }}</td>
-          <td>{{ item.email || 'N/A' }}</td>
-          <td>{{ item.alternate_phone_number || 'N/A' }}</td>
-          <td>
-            <v-icon small @click="editCustomer(item)">mdi-pencil</v-icon>
-          </td>
-        </tr>
-        <tr v-else>
-          <td :colspan="headers.length" class="text-center">
-            No data available
-          </td>
-        </tr>
-      </template>
-
-      <!-- No Data Alert -->
-      <template v-slot:no-data>
-        <v-alert>No customer data available.</v-alert>
-      </template>
-    </v-data-table>
-
-    <!-- Edit Customer Dialog -->
-    <v-dialog v-model="dialog" max-width="700px">
-      <v-card>
-        <v-card-title>
-          <span class="text-h6">Edit Customer</span>
-        </v-card-title>
+    <!-- Consolidated Sheet Dialog -->
+    <v-dialog max-width="500" v-model="consolidatedSheetDialog">
+      <v-card :title="generateConsolidatedSheetHeading">
         <v-card-text>
-          <v-form ref="editForm">
-            <v-text-field v-model="editItem.name" label="Customer Name" required></v-text-field>
-            <v-text-field v-model="editItem.phone_number" label="Phone Number" required></v-text-field>
-            <v-text-field v-model="editItem.email" label="Email"></v-text-field>
-            <v-text-field v-model="editItem.alternate_phone_number" label="Alternate Mobile"></v-text-field>
-          </v-form>
+          <div class="mb-4">
+            <v-text-field
+              label="Start Date"
+              v-model="consolidatedFromDate"
+              type="date"
+              outlined
+            ></v-text-field>
+          </div>
+          <div>
+            <v-text-field
+              label="End Date"
+              v-model="consolidatedToDate"
+              type="date"
+              outlined
+            ></v-text-field>
+          </div>
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text :disabled="isDisable" @click="saveCustomer">
-            Save
-          </v-btn>
-          <v-btn color="red darken-1" text @click="closeDialog">
-            Cancel
+          <v-btn text @click="closeConsolidatedDialog()">Cancel</v-btn>
+          <v-btn text @click="generateConsolidatedSheet()" :disabled="!consolidatedFromDate || !consolidatedToDate">
+            Generate
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Consolidated Sheet Data Table -->
+    <v-data-table :headers="consolidatedHeaders" :items="filteredConsolidatedDetails" v-model:search="searchConsolidated">
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>Consolidated Sheet</v-toolbar-title>
+          <v-btn color="success" @click="openAddConsolidatedDialog">Add Consolidated Sheet</v-btn>
+
+          <!-- Add Consolidated Sheet Dialog -->
+          <v-dialog v-model="addConsolidatedDialog" max-width="600px">
+            <v-card>
+              <v-card-title>
+                <span class="text-h6">Add Consolidated Sheet Details</span>
+                <v-btn icon="mdi-close" variant="text" @click="closeAddConsolidatedDialog"></v-btn>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        label="Month"
+                        v-model="newConsolidatedSheet.month"
+                        type="month"
+                        outlined
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        label="Total Investment"
+                        v-model="newConsolidatedSheet.total_investment"
+                        type="number"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        label="Payment Return"
+                        v-model="newConsolidatedSheet.payment_return"
+                        type="number"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        label="New Payment"
+                        v-model="newConsolidatedSheet.new_payment"
+                        type="number"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        label="Customer Receives"
+                        v-model="newConsolidatedSheet.customer_receives"
+                        type="number"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        label="Customer Received"
+                        v-model="newConsolidatedSheet.customer_received"
+                        type="number"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        label="Difference Amount"
+                        v-model="newConsolidatedSheet.difference_amount"
+                        type="number"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn text @click="closeAddConsolidatedDialog">Cancel</v-btn>
+                <v-btn text color="success" @click="saveConsolidatedSheetDetails">
+                  Save
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+
+        <v-card-title class="d-flex align-center pe-2" v-if="!isLoadingConsolidated">
+          <template v-if="!isLoadingConsolidated && filteredConsolidatedDetails.length > 0">
+            <CButton color="info" style="color: white" @click="openDialog('exportConsolidatedExcel')">Export Excel</CButton>
+            <v-spacer></v-spacer>
+            <CButton color="warning" variant="outline" @click="openDialog('downloadConsolidatedPdf')">Download PDF</CButton>
+          </template>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="searchConsolidated"
+            density="compact"
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            variant="solo-filled"
+            flat
+            hide-details
+            single-line
+          ></v-text-field>
+        </v-card-title>
+        
+      </template>
+
+      <template v-slot:body="{ items }">
+        <tr v-if="isLoadingConsolidated">
+          <td :colspan="consolidatedHeaders.length" class="text-center">
+            <CSpinner color="primary" />
+          </td>
+        </tr>
+        <tr v-else-if="items.length > 0" v-for="(item, index) in items" :key="index">
+          <td>{{ index + 1}}</td>
+          <td>{{ item.month }}</td>
+          <td>{{ item.total_investment || '-' }}</td>
+          <td>{{ item.payment_return || '-' }}</td>
+          <td>{{ item.new_payment || '-' }}</td>
+          <td>{{ item.customer_receives || '-' }}</td>
+          <td>{{ item.customer_received || '-' }}</td>
+          <td>{{ item.difference_amount || '-' }}</td>
+          <td>
+            <v-icon icon @click="handleEditConsolidated(item)">mdi-pencil</v-icon>
+          </td>
+        </tr>
+        <tr v-else>
+          <td :colspan="consolidatedHeaders.length" class="text-center">
+            No data available
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
   </div>
 </template>
+
 <script>
-import Toastify from 'toastify-js';
-import "toastify-js/src/toastify.css";
-
 export default {
-  data: () => ({
-    isDisable: false,
-    isLoading: false,
-    headers: [
-      { title: 'Customer ID', value: 'id' },
-      { title: 'Customer Name', value: 'name', sortable: true },
-      { title: 'Phone Number', value: 'phone_number' },
-      { title: 'Email', value: 'email' },
-      { title: 'Alternate Mobile', value: 'alternate_phone_number' },
-      { title: 'Actions', value: 'actions' },
-    ],
-    storedrecords: [],
-    dialog: false,
-    editItem: {},
-    searchQuery: '',
-  }),
-  computed: {
-    sortedAndFilteredRecords() {
-      // Filter customers by name based on search query and then sort them
-      const filtered = this.storedrecords.filter((item) =>
-        item.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-      return filtered.sort((a, b) => a.name.localeCompare(b.name)); // Sorting in ascending order
-    },
+  data() {
+    return {
+      addConsolidatedDialog: false,
+      newConsolidatedSheet: {
+        month: '',
+        total_investment: '',
+        payment_return: '',
+        new_payment: '',
+        customer_receives: '',
+        customer_received: '',
+        difference_amount: '',
+      },
+      isLoadingConsolidated: false,
+      searchConsolidated: "",
+      generateConsolidatedSheetHeading: "",
+      consolidatedSheetDialog: false,
+      consolidatedDetails: [],
+      consolidatedHeaders: [
+        { title: "Sl. No", key: "sl_no" },
+        { title: "Month", key: "month" },
+        { title: "Total Investment", key: "total_investment" },
+        { title: "Payment Return", key: "payment_return" },
+        { title: "New Payment", key: "new_payment" },
+        { title: "Customer Receives", key: "customer_receives" },
+        { title: "Customer Received", key: "customer_received" },
+        { title: "Difference Amount", key: "difference_amount" },
+        { title: "Action", key: "action", sortable: false },
+      ],
+    };
   },
-  mounted() {
-    this.fetchCustomers();
-
+  computed: {
+    filteredConsolidatedDetails() {
+      return this.consolidatedDetails.filter((item) => {
+        return (
+          !this.searchConsolidated ||
+          item.month.toLowerCase().includes(this.searchConsolidated.toLowerCase()) ||
+          item.total_investment.toString().includes(this.searchConsolidated) ||
+          item.payment_return.toString().includes(this.searchConsolidated)
+        );
+      });
+    },
   },
   methods: {
-    async fetchCustomers() {
-      this.isLoading = true;
-      setTimeout(() => {
-        if (this.isLoading) {
-          this.isLoading = false;
-        }
-      }, 1000);
-      try {
-        const response = await axios.get('/customers');
-        this.storedrecords = response.data.data;
-      } catch (error) {
-        this.isLoading = false;
-      }
+    openAddConsolidatedDialog() {
+      this.resetNewConsolidatedSheet();
+      this.addConsolidatedDialog = true;
+      this.setDefaultMonthConsolidated();
     },
-    editCustomer(item) {
-      this.editItem = { ...item };
-      this.dialog = true;
-      // Here, you can navigate to an edit page or open a dialog box
-      // Example: this.$router.push(`/edit-customer/${customer.id}`);
-    },
-    closeDialog() {
-      // Close dialog and reset editedItem
-      this.dialog = false;
-      this.editItem = {};
-    },
-    async saveCustomer() {
 
-      this.isDisable = true; // Disable buttons to prevent multiple submissions
-      const payload = {
-        name: this.editItem.name,
-        phone_number: this.editItem.phone_number,
-        email: this.editItem.email,
-        alternate_phone_number: this.editItem.alternate_phone_number,
+    setDefaultMonthConsolidated() {
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+      this.newConsolidatedSheet.month = `${year}-${month}`;
+    },
+
+    closeAddConsolidatedDialog() {
+      this.addConsolidatedDialog = false;
+    },
+
+    saveConsolidatedSheetDetails() {
+      this.consolidatedDetails.push({
+        sl_no: this.consolidatedDetails.length + 1,
+        ...this.newConsolidatedSheet,
+      });
+
+      this.closeAddConsolidatedDialog();
+      this.showSuccessMessage("Consolidated Sheet details added successfully!");
+    },
+
+    resetNewConsolidatedSheet() {
+      this.newConsolidatedSheet = {
+        month: "",
+        total_investment: 0,
+        payment_return: 0,
+        new_payment: 0,
+        customer_receives: 0,
+        customer_received: 0,
+        difference_amount: 0,
       };
+    },
 
+    showSuccessMessage(message) {
+      Toastify({
+        text: message,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#4CAF50",
+      }).showToast();
+    },
+
+    async getConsolidatedDetails() {
+      this.isLoadingConsolidated = true;
       try {
-        // Send update request to backend
-        const response = await axios.put(`/customers/${this.editItem.id}`, payload);
-
-        // Update the local records
-        const index = this.storedrecords.findIndex(
-          (customer) => customer.id === this.editItem.id
-        );
-        if (index !== -1) {
-          this.storedrecords[index] = { ...response.data.data };
-        }
-        // Display success message
-        Toastify({
-          text: response.data.message || "Customer updated successfully!",
-          backgroundColor: "green",
-          className: "text-light",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-        }).showToast();
-
-        // Close the dialog and reset state
-        this.closeDialog();
-
+        const response = await axios.get("/get-consolidated-details");
+        this.consolidatedDetails = response.data.map((item, index) => ({
+          sl_no: index + 1,
+          ...item,
+        }));
+        this.isLoadingConsolidated = false;
       } catch (error) {
-        // Handle validation errors
-        if (error.response && error.response.status === 422) {
-          const errors = error.response.data.errors;
-          const firstErrorKey = Object.keys(errors)[0];
-          const firstErrorMessage = errors[firstErrorKey][0];
-
-          Toastify({
-            text: firstErrorMessage,
-            backgroundColor: "red",
-            className: "text-light",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-          }).showToast();
-        } else {
-          // Handle other errors
-          Toastify({
-            text: "Failed to update customer. Please try again.",
-            backgroundColor: "red",
-            className: "text-light",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-          }).showToast();
-        }
-      } finally {
-        this.isDisable = false; // Re-enable buttons
+        this.isLoadingConsolidated = false;
+        console.error(error);
       }
     },
-    exportCustomerDetails() {
-      axios
-        .post(
-          "/download-customer-details",  // Route for the customer details export
-          {},
-          {
-            responseType: "blob",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          // Create a URL for the blob response
-          const url = window.URL.createObjectURL(
-            new Blob([response.data], {
-              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            })
-          );
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "customer_details.xlsx");  // Name of the downloaded file
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
 
-          // Cleanup: Revoke the object URL after download
-          window.URL.revokeObjectURL(url);
-        })
-        .catch((error) => {
-          alert("There was an error generating the report. Please try again later.");
-        });
+    openDialog(actionType) {
+      this.consolidatedFromDate = "";
+      this.consolidatedToDate = "";
+      this.generateConsolidatedSheetHeading =
+        actionType === "exportConsolidatedExcel" ? "Export Excel" : "Download PDF";
+      this.dialogAction = actionType;
+      this.consolidatedSheetDialog = true;
+    },
+
+    closeConsolidatedDialog() {
+      this.consolidatedSheetDialog = false;
+      this.dialogAction = "";
+    },
+
+    handleEditConsolidated(item) {
+      console.log("Edit Item:", item);
+      // Implement your edit functionality here
+    },
+
+    generateConsolidatedSheet() {
+      if (this.dialogAction === "exportConsolidatedExcel") {
+        this.exportConsolidatedExcel();
+      } else if (this.dialogAction === "downloadConsolidatedPdf") {
+        this.downloadConsolidatedPdf();
+      }
+      this.closeConsolidatedDialog();
+    },
+
+    exportConsolidatedExcel() {
+      // Add your Excel export logic here
+    },
+
+    downloadConsolidatedPdf() {
+      // Add your PDF download logic here
     },
   },
-}
+};
 </script>

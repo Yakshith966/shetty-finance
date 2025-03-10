@@ -16,6 +16,8 @@ import axios from 'axios';
 import "toastify-js/src/toastify.css";
 import '@coreui/icons/css/all.min.css';
 import '@mdi/font/css/materialdesignicons.css';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 
 function getToken() {
@@ -60,7 +62,8 @@ app.provide('icons', icons)
 app.component('CIcon', CIcon)
 app.component('DocsComponents', DocsComponents)
 app.component('DocsExample', DocsExample)
-app.component('DocsIcons', DocsIcons)
+app.component('DocsIcons', DocsIcons);
+app.component('VueDatePicker', VueDatePicker);
 app.use(store)
 
 app.mount('#app')

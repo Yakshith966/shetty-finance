@@ -58,6 +58,13 @@ class SideBarMenuSeeder extends Seeder
             'icon'=>'cil-dollar',
         ],
         [
+            'name'=>'Reports',
+            'component'=>'CNavTitle',
+            'slug'=>'reports',
+            'path'=>null,
+            'icon'=>null,
+        ],
+        [
             'name'=>'Masters',
             'component'=>'CNavTitle',
             'slug'=>'masters',
@@ -143,6 +150,13 @@ class SideBarMenuSeeder extends Seeder
             'slug'=>'dealers-payment-details',
             'view_path'=>'pages/DealersPayment.vue',
             'icon'=>'cil-dollar',
+        ],
+        [
+            'name'=>'Reports    ',
+            'component'=>'CNavTitle',
+            'slug'=>'reports',
+            'path'=>null,
+            'icon'=>null,
         ],
         [
             'name'=>'Masters',

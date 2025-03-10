@@ -21,7 +21,7 @@
                </v-card>
           </v-dialog>
           <v-data-table :headers="headers" v-model:search="search" :items="filteredDealersDetails">
-               <!-- disable-pagination -->
+               
 
                <template v-slot:top>
                     <v-toolbar flat>
