@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify';
 import store  from './stores/store';
+import Antd from 'ant-design-vue';
 
 import CoreuiVue from '@coreui/vue'
 import CIcon from '@coreui/icons-vue'
@@ -57,6 +58,7 @@ window.axios = axiosInstance;
 app.use(createPinia())
 app.use(router)
 app.use(vuetify);
+app.use(Antd);
 app.use(CoreuiVue)
 app.provide('icons', icons)
 app.component('CIcon', CIcon)

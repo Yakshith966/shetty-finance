@@ -30,6 +30,7 @@
     "@mdi/js": "^7.4.47",
     "@popperjs/core": "^2.11.8",
     "@vuepic/vue-datepicker": "^10.0.0",
+    "ant-design-vue": "^4.2.6",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
     "jspdf": "^2.5.2",
