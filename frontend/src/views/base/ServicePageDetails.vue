@@ -50,7 +50,8 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item label="Given Date">
-                <a-date-picker v-model:value="newReturnHistory.givenDate" style="width: 100%;" />
+                <a-date-picker v-model:value="newReturnHistory.givenDate" style="width: 100%;" get-popup-container="trigger => trigger.parentNode" 
+                  :dropdown-style="{ zIndex: 3000 }" />
               </a-form-item>
             </a-col>
             <a-col :span="12">
@@ -89,7 +90,8 @@
         <a-row :gutter="16">
           <a-col :span="12">
             <a-form-item label="Payment Given Date">
-              <a-date-picker v-model:value="form.paymentDate" style="width: 100%;" />
+              <a-date-picker v-model:value="form.paymentDate" style="width: 100%;"    :get-popup-container="trigger => trigger.parentNode" 
+                :dropdown-style="{ zIndex: 3000 }"  />
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -119,12 +121,14 @@
           </a-col>
           <a-col :span="12">
             <a-form-item label="Agreement From">
-              <a-date-picker v-model:value="form.agreementFrom" style="width: 100%;" />
+              <a-date-picker v-model:value="form.agreementFrom" style="width: 100%;" :get-popup-container="trigger => trigger.parentNode" 
+                :dropdown-style="{ zIndex: 3000 }"  />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item label="Agreement To">
-              <a-date-picker v-model:value="form.agreementTo" style="width: 100%;" />
+              <a-date-picker v-model:value="form.agreementTo" style="width: 100%;" :get-popup-container="trigger => trigger.parentNode" 
+                :dropdown-style="{ zIndex: 3000 }"  />
             </a-form-item>
           </a-col>
           <a-col :span="12">
