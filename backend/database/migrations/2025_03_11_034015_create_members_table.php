@@ -15,14 +15,14 @@ class CreateMembersTable extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->foreign('branch_id')->references('id')->on('branches');
+            $table->foreignId('branch_id')->constrained('branches')->onDelete('cascade');
+            // $table->foreign('branch_id')->references('id')->on('branches');
             $table->string('name',30);
+            $table->string('email',50)->unique()->nullable();
             $table->string('phone_number',15);
             $table->string('alt_phone_number',15)->nullable();
             $table->text('address');
             $table->string('document_proof_id');
-            $table->date('agreement_from');
-            $table->date('agreement_to');
             $table->timestamps();
         });
     }

@@ -15,16 +15,20 @@ class CreateLoansTable extends Migration
     {
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
-            $table->foreign('member_id')->references('id')->on('members');
+            $table->foreignId('member_id')->constrained('members')->onDelete('cascade');
+            $table->decimal('principal_amount', 15, 2);
+            $table->decimal('interest_rate', 5, 2);
+            $table->integer('loan_months');
+            $table->decimal('interest_deducted_upfront', 15, 2);
+            $table->decimal('amount_given', 15, 2);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->boolean('is_closed')->default(false);
+            $table->foreignId('original_loan_id')->nullable()->constrained('loans')->onDelete('set null');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('loans');

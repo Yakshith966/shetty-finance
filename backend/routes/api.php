@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerExportController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BranchController;
+use App\Http\Controllers\LoanController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RolePermissionMapController;
 
@@ -95,6 +98,12 @@ Route::get('/fetch-users', [AuthController::class, 'fetchUsers']);
 Route::post('/save-user', [AuthController::class, 'saveUser']);
 Route::put('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::put('/reset-password', [AuthController::class, 'resetPassword']);
+
+Route::get('/branches', [BranchController::class, 'index']);
+Route::post('/members', [MemberController::class, 'store']);
+Route::get('/members', [MemberController::class, 'index']);
+Route::post('/loans', [LoanController::class, 'store']);
+Route::get('/loans-with-payments', [LoanController::class, 'index']);
 
 
 });
