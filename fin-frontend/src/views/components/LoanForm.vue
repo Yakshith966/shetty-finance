@@ -1,4 +1,5 @@
 <template>
+  <main>
       <a-page-header title="Add New Loan" @back="$router.go(-1)" />
      <div class="loan-form">
       
@@ -83,6 +84,7 @@
        <a-table v-if="monthlySchedule.length" :dataSource="monthlySchedule" :columns="monthlyColumns" rowKey="month"
          bordered size="small" />
      </div>
+     </main>
    </template>
    
    <script>

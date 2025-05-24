@@ -188,6 +188,7 @@ export default {
                     this.editRow = null;
                     await this.fetchLoanData();
                     this.submitLoading = false;
+                    this.$emit('submitted');
                   
                } catch (error) {
                     if (error.response?.data?.errors) {
